@@ -1,0 +1,23 @@
+# wp-a2z
+WordPress A2Z core without wp-content etc
+
+
+The version of WordPress that is made available from GitHub at https://github.com/WordPress/WordPress is a 
+Git-ified version of the run-time code.
+
+It is a mirror of the WordPress subversion repository, synchronized every 15 minutes, including branches and tags! 
+
+The wp-a2z repository is much simpler. 
+
+- The first version is WordPress 4.5
+- It only contains the published releases: 4.5, 4.5.1 and 4.5.2.
+- It does not contain any of the plugins or themes
+
+
+### Purpose
+- Primarily to help build the WP-a2z Dynamic API Reference.
+- It may also be used in sites where the source code is mostly under Git control.
+
+
+
+
