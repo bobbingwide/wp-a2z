@@ -92,6 +92,7 @@ class WP_Term_Query {
 	 * Sets up the term query, based on the query vars passed.
 	 *
 	 * @since 4.6.0
+	 * @since 4.6.0 Introduced 'term_taxonomy_id' parameter.
 	 * @access public
 	 *
 	 * @param string|array $query {
@@ -136,6 +137,8 @@ class WP_Term_Query {
 	 *                                                Default empty.
 	 *     @type string|array $slug                   Optional. Slug or array of slugs to return term(s) for.
 	 *                                                Default empty.
+	 *     @type int|array    $term_taxonomy_id       Optional. Term taxonomy ID, or array of term taxonomy IDs,
+	 *                                                to match when querying terms.
 	 *     @type bool         $hierarchical           Whether to include terms that have non-empty descendants (even
 	 *                                                if $hide_empty is set to true). Default true.
 	 *     @type string       $search                 Search criteria to match terms. Will be SQL-formatted with
@@ -183,6 +186,7 @@ class WP_Term_Query {
 			'count'                  => false,
 			'name'                   => '',
 			'slug'                   => '',
+			'term_taxonomy_id'       => '',
 			'hierarchical'           => true,
 			'search'                 => '',
 			'name__like'             => '',
@@ -215,7 +219,7 @@ class WP_Term_Query {
 			$query = $this->query_vars;
 		}
 
-		$taxonomies = isset( $query['taxonomy'] ) ? $query['taxonomy'] : null;
+		$taxonomies = isset( $query['taxonomy'] ) ? (array) $query['taxonomy'] : null;
 
 		/**
 		 * Filters the terms query default arguments.
@@ -380,6 +384,10 @@ class WP_Term_Query {
 		}
 
 		$orderby = $this->parse_orderby( $this->query_vars['orderby'] );
+		if ( $orderby ) {
+			$orderby = "ORDER BY $orderby";
+		}
+
 		$order = $this->parse_order( $this->query_vars['order'] );
 
 		if ( $taxonomies ) {
@@ -470,6 +478,15 @@ class WP_Term_Query {
 			} else {
 				$slug = sanitize_title( $args['slug'] );
 				$this->sql_clauses['where']['slug'] = "t.slug = '$slug'";
+			}
+		}
+
+		if ( ! empty( $args['term_taxonomy_id'] ) ) {
+			if ( is_array( $args['term_taxonomy_id'] ) ) {
+				$tt_ids = implode( ',', array_map( 'intval', $args['term_taxonomy_id'] ) );
+				$this->sql_clauses['where']['term_taxonomy_id'] = "tt.term_taxonomy_id IN ({$tt_ids})";
+			} else {
+				$this->sql_clauses['where']['term_taxonomy_id'] = $wpdb->prepare( "tt.term_taxonomy_id = %d", $args['term_taxonomy_id'] );
 			}
 		}
 
@@ -605,10 +622,10 @@ class WP_Term_Query {
 
 		$this->sql_clauses['select']  = "SELECT $distinct $fields";
 		$this->sql_clauses['from']    = "FROM $wpdb->terms AS t $join";
-		$this->sql_clauses['orderby'] = $orderby ? "ORDER BY $orderby $order" : '';
+		$this->sql_clauses['orderby'] = $orderby ? "$orderby $order" : '';
 		$this->sql_clauses['limits']  = $limits;
 
-		$this->request = $this->request = "{$this->sql_clauses['select']} {$this->sql_clauses['from']} {$where} {$this->sql_clauses['orderby']} {$this->sql_clauses['limits']}";
+		$this->request = "{$this->sql_clauses['select']} {$this->sql_clauses['from']} {$where} {$this->sql_clauses['orderby']} {$this->sql_clauses['limits']}";
 
 		// $args can be anything. Only use the args defined in defaults to compute the key.
 		$key = md5( serialize( wp_array_slice_assoc( $args, array_keys( $this->query_var_defaults ) ) ) . serialize( $taxonomies ) . $this->request );
@@ -624,7 +641,8 @@ class WP_Term_Query {
 				$cache = array_map( 'get_term', $cache );
 			}
 
-			return $cache;
+			$this->terms = $cache;
+			return $this->terms;
 		}
 
 		if ( 'count' == $_fields ) {
@@ -801,6 +819,8 @@ class WP_Term_Query {
 	protected function parse_orderby_meta( $orderby_raw ) {
 		$orderby = '';
 
+		// Tell the meta query to generate its SQL, so we have access to table aliases.
+		$this->meta_query->get_sql( 'term', 't', 'term_id' );
 		$meta_clauses = $this->meta_query->get_clauses();
 		if ( ! $meta_clauses || ! $orderby_raw ) {
 			return $orderby;
