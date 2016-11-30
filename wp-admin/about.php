@@ -34,15 +34,15 @@ function _wp_override_admin_video_width_limit( $output ) {
 }
 
 $video_url = 'https://videopress.com/embed/GbdhpGF3?hd=true';
-$locale    = str_replace( '_', '-', get_locale() );
-list( $locale ) = explode( '-', $locale );
-if ( 'en' !== $locale ) {
-	$video_url = add_query_arg( 'defaultLangCode', $locale, $video_url );
+$lang_code = str_replace( '_', '-', get_user_locale() );
+list( $lang_code ) = explode( '-', $lang_code );
+if ( 'en' !== $lang_code ) {
+	$video_url = add_query_arg( 'defaultLangCode', $lang_code, $video_url );
 }
 
 $title = __( 'About' );
 
-list( $display_version ) = explode( '-', $wp_version );
+list( $display_version ) = explode( '-', get_bloginfo( 'version' ) );
 
 include( ABSPATH . 'wp-admin/admin-header.php' );
 ?>
@@ -57,14 +57,6 @@ include( ABSPATH . 'wp-admin/admin-header.php' );
 			<a href="credits.php" class="nav-tab"><?php _e( 'Credits' ); ?></a>
 			<a href="freedoms.php" class="nav-tab"><?php _e( 'Freedoms' ); ?></a>
 		</h2>
-
-		<div class="changelog point-releases">
-			<h3><?php _e( 'Maintenance and Security Release' ); ?></h3>
-			<p><?php printf( _n( '<strong>Version %1$s</strong> addressed some security issues and fixed %2$s bug.',
-				'<strong>Version %1$s</strong> addressed some security issues and fixed %2$s bugs.', 15 ), '4.6.1', number_format_i18n( 15 ) ); ?>
-				<?php printf( __( 'For more information, see <a href="%s">the release notes</a>.' ), 'https://codex.wordpress.org/Version_4.6.1' ); ?>
-			</p>
-		</div>
 
 		<div class="headline-feature feature-video">
 			<iframe width="1050" height="591" src="<?php echo esc_url( $video_url ); ?>" frameborder="0" allowfullscreen></iframe>
