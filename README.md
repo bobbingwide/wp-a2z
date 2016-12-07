@@ -10,7 +10,7 @@ It is a mirror of the WordPress subversion repository, synchronized every 15 min
 The wp-a2z repository is much simpler. 
 
 - The first version is WordPress 4.5
-- It only contains the published releases: 4.5, 4.5.1 and 4.5.2, 4.6, 4.6.1
+- It only contains the published releases: 4.5, 4.5.1 and 4.5.2, 4.6, 4.6.1, 4.7
 - It does not contain any of the plugins or themes
 
 

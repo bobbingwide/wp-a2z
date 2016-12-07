@@ -294,6 +294,8 @@ function is_taxonomy_hierarchical($taxonomy) {
  * @since 4.4.0 The `show_ui` argument is now enforced on the term editing screen.
  * @since 4.4.0 The `public` argument now controls whether the taxonomy can be queried on the front end.
  * @since 4.5.0 Introduced `publicly_queryable` argument.
+ * @since 4.7.0 Introduced `show_in_rest`, 'rest_base' and 'rest_controller_class'
+ *              arguments to register the Taxonomy in REST API.
  *
  * @global array $wp_taxonomies Registered taxonomies.
  *
@@ -323,6 +325,9 @@ function is_taxonomy_hierarchical($taxonomy) {
  *                                                (default true).
  *     @type bool          $show_in_nav_menus     Makes this taxonomy available for selection in navigation menus. If not
  *                                                set, the default is inherited from `$public` (default true).
+ *     @type bool          $show_in_rest          Whether to include the taxonomy in the REST API.
+ *     @type string        $rest_base             To change the base url of REST API route. Default is $taxonomy.
+ *     @type string        $rest_controller_class REST API Controller class name. Default is 'WP_REST_Terms_Controller'.
  *     @type bool          $show_tagcloud         Whether to list the taxonomy in the Tag Cloud Widget controls. If not set,
  *                                                the default is inherited from `$show_ui` (default true).
  *     @type bool          $show_in_quick_edit    Whether to show the taxonomy in the quick/bulk edit panel. It not set,
@@ -824,54 +829,48 @@ function get_term( $term, $taxonomy = '', $output = OBJECT, $filter = 'raw' ) {
  *                             or `$term` was not found.
  */
 function get_term_by( $field, $value, $taxonomy = '', $output = OBJECT, $filter = 'raw' ) {
+	global $wpdb;
 
 	// 'term_taxonomy_id' lookups don't require taxonomy checks.
 	if ( 'term_taxonomy_id' !== $field && ! taxonomy_exists( $taxonomy ) ) {
 		return false;
 	}
 
-	if ( 'id' === $field || 'term_id' === $field ) {
+	$tax_clause = $wpdb->prepare( "AND tt.taxonomy = %s", $taxonomy );
+
+	if ( 'slug' == $field ) {
+		$_field = 't.slug';
+		$value = sanitize_title($value);
+		if ( empty($value) )
+			return false;
+	} elseif ( 'name' == $field ) {
+		// Assume already escaped
+		$value = wp_unslash($value);
+		$_field = 't.name';
+	} elseif ( 'term_taxonomy_id' == $field ) {
+		$value = (int) $value;
+		$_field = 'tt.term_taxonomy_id';
+
+		// No `taxonomy` clause when searching by 'term_taxonomy_id'.
+		$tax_clause = '';
+	} else {
 		$term = get_term( (int) $value, $taxonomy, $output, $filter );
-		if ( is_wp_error( $term ) || null === $term ) {
+		if ( is_wp_error( $term ) || is_null( $term ) ) {
 			$term = false;
 		}
 		return $term;
 	}
 
-	$args = array(
-		'get'                    => 'all',
-		'number'                 => 1,
-		'taxonomy'               => $taxonomy,
-		'update_term_meta_cache' => false,
-		'orderby'                => 'none',
-	);
-
-	switch ( $field ) {
-		case 'slug' :
-			$args['slug'] = $value;
-			break;
-		case 'name' :
-			$args['name'] = $value;
-			break;
-		case 'term_taxonomy_id' :
-			$args['term_taxonomy_id'] = $value;
-			unset( $args[ 'taxonomy' ] );
-			break;
-		default :
-			return false;
-	}
-
-	$terms = get_terms( $args );
-	if ( is_wp_error( $terms ) || empty( $terms ) ) {
+	$term = $wpdb->get_row( $wpdb->prepare( "SELECT t.*, tt.* FROM $wpdb->terms AS t INNER JOIN $wpdb->term_taxonomy AS tt ON t.term_id = tt.term_id WHERE $_field = %s", $value ) . " $tax_clause LIMIT 1" );
+	if ( ! $term )
 		return false;
-	}
-
-	$term = array_shift( $terms );
 
 	// In the case of 'term_taxonomy_id', override the provided `$taxonomy` with whatever we find in the db.
 	if ( 'term_taxonomy_id' === $field ) {
 		$taxonomy = $term->taxonomy;
 	}
+
+	wp_cache_add( $term->term_id, $term, 'terms' );
 
 	return get_term( $term, $taxonomy, $output, $filter );
 }
@@ -3020,7 +3019,7 @@ function clean_term_cache($ids, $taxonomy = '', $clean_taxonomy = true) {
  * function only fetches relationship data that is already in the cache.
  *
  * @since 2.3.0
- * @since 4.6.2 Returns a WP_Error object if get_term() returns an error for
+ * @since 4.7.0 Returns a WP_Error object if get_term() returns an error for
  *              any of the matched terms.
  *
  * @param int    $id       Term object ID.
