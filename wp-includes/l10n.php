@@ -6,7 +6,6 @@
  * @subpackage i18n
  * @since 1.2.0
  */
-
 /**
  * Retrieves the current locale.
  *
@@ -1324,3 +1323,4 @@ function is_locale_switched() {
 
 	return $wp_locale_switcher->is_switched();
 }
+
