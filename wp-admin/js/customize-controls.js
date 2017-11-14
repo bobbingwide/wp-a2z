@@ -5280,6 +5280,27 @@
 				codemirror: $.Deferred()
 			} );
 			api.Control.prototype.initialize.call( control, id, options );
+
+			// Note that rendering is debounced so the props will be used when rendering happens after add event.
+			control.notifications.bind( 'add', function( notification ) {
+
+				// Skip if control notification is not from setting csslint_error notification.
+				if ( notification.code !== control.setting.id + ':csslint_error' ) {
+					return;
+				}
+
+				// Customize the template and behavior of csslint_error notifications.
+				notification.templateId = 'customize-code-editor-lint-error-notification';
+				notification.render = (function( render ) {
+					return function() {
+						var li = render.call( this );
+						li.find( 'input[type=checkbox]' ).on( 'click', function() {
+							control.setting.notifications.remove( 'csslint_error' );
+						} );
+						return li;
+					};
+				})( notification.render );
+			} );
 		},
 
 		/**
@@ -8248,7 +8269,7 @@
 
 		// Set up initial notifications.
 		(function() {
-			var removedQueryParams = [];
+			var removedQueryParams = [], autosaveDismissed = false;
 
 			/**
 			 * Obtain the URL to restore the autosave.
@@ -8295,6 +8316,25 @@
 			}
 
 			/**
+			 * Dismiss autosave.
+			 *
+			 * @returns {void}
+			 */
+			function dismissAutosave() {
+				if ( autosaveDismissed ) {
+					return;
+				}
+				wp.ajax.post( 'customize_dismiss_autosave_or_lock', {
+					wp_customize: 'on',
+					customize_theme: api.settings.theme.stylesheet,
+					customize_changeset_uuid: api.settings.changeset.uuid,
+					nonce: api.settings.nonce.dismiss_autosave_or_lock,
+					dismiss_autosave: true
+				} );
+				autosaveDismissed = true;
+			}
+
+			/**
 			 * Add notification regarding the availability of an autosave to restore.
 			 *
 			 * @returns {void}
@@ -8319,15 +8359,7 @@
 						} );
 
 						// Handle dismissal of notice.
-						li.find( '.notice-dismiss' ).on( 'click', function() {
-							wp.ajax.post( 'customize_dismiss_autosave_or_lock', {
-								wp_customize: 'on',
-								customize_theme: api.settings.theme.stylesheet,
-								customize_changeset_uuid: api.settings.changeset.uuid,
-								nonce: api.settings.nonce.dismiss_autosave_or_lock,
-								dismiss_autosave: true
-							} );
-						} );
+						li.find( '.notice-dismiss' ).on( 'click', dismissAutosave );
 
 						return li;
 					}
@@ -8335,6 +8367,7 @@
 
 				// Remove the notification once the user starts making changes.
 				onStateChange = function() {
+					dismissAutosave();
 					api.notifications.remove( code );
 					api.unbind( 'change', onStateChange );
 					api.state( 'changesetStatus' ).unbind( onStateChange );
@@ -9191,12 +9224,14 @@
 
 			api.unbind( 'change', startAutosaving ); // Ensure startAutosaving only fires once.
 
-			api.state( 'saved' ).bind( function( isSaved ) {
+			function onChangeSaved( isSaved ) {
 				if ( ! isSaved && ! api.settings.changeset.autosaved ) {
 					api.settings.changeset.autosaved = true; // Once a change is made then autosaving kicks in.
 					api.previewer.send( 'autosaving' );
 				}
-			} );
+			}
+			api.state( 'saved' ).bind( onChangeSaved );
+			onChangeSaved( api.state( 'saved' ).get() );
 
 			/**
 			 * Request changeset update and then re-schedule the next changeset update time.
