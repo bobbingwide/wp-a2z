@@ -37,6 +37,7 @@ remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
 
 wp_enqueue_script( 'heartbeat' );
 wp_enqueue_script( 'wp-edit-post' );
+wp_enqueue_script( 'wp-format-library' );
 
 $rest_base = ! empty( $post_type_object->rest_base ) ? $post_type_object->rest_base : $post_type_object->name;
 
@@ -49,7 +50,20 @@ $preload_paths = array(
 	sprintf( '/wp/v2/%s/%s?context=edit', $rest_base, $post->ID ),
 	sprintf( '/wp/v2/types/%s?context=edit', $post_type ),
 	sprintf( '/wp/v2/users/me?post_type=%s&context=edit', $post_type ),
+	array( '/wp/v2/media', 'OPTIONS' ),
 );
+
+/**
+ * Preload common data by specifying an array of REST API paths that will be preloaded.
+ *
+ * Filters the array of paths that will be preloaded.
+ *
+ * @since 5.0.0
+ *
+ * @param array  $preload_paths Array of paths to preload.
+ * @param object $post          The post resource data.
+ */
+$preload_paths = apply_filters( 'block_editor_preload_paths', $preload_paths, $post );
 
 /*
  * Ensure the global $post remains the same after API data is preloaded.
@@ -342,6 +356,7 @@ wp_enqueue_editor();
  * Styles
  */
 wp_enqueue_style( 'wp-edit-post' );
+wp_enqueue_style( 'wp-format-library' );
 
 /**
  * Fires after block assets have been enqueued for the editing interface.
@@ -354,6 +369,14 @@ wp_enqueue_style( 'wp-edit-post' );
  * @since 5.0.0
  */
 do_action( 'enqueue_block_editor_assets' );
+
+// In order to duplicate classic meta box behaviour, we need to run the classic meta box actions.
+require_once( ABSPATH . 'wp-admin/includes/meta-boxes.php' );
+register_and_do_post_meta_boxes( $post );
+
+// Some meta boxes hook into the 'edit_form_advanced' filter.
+/** This action is documented in wp-admin/edit-form-advanced.php */
+do_action( 'edit_form_advanced', $post );
 
 require_once( ABSPATH . 'wp-admin/admin-header.php' );
 ?>
