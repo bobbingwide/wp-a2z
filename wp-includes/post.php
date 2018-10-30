@@ -225,6 +225,42 @@ function create_initial_post_types() {
 		'supports'         => array(),
 	) );
 
+	register_post_type(
+		'wp_block',
+		array(
+			'labels'                => array(
+				'name'          => __( 'Blocks' ),
+				'singular_name' => __( 'Block' ),
+				'search_items'  => __( 'Search Blocks' ),
+			),
+			'public'                => false,
+			'_builtin'              => true, /* internal use only. don't use this when registering your own post type. */
+			'show_ui'               => true,
+			'show_in_menu'          => false,
+			'rewrite'               => false,
+			'show_in_rest'          => true,
+			'rest_base'             => 'blocks',
+			'rest_controller_class' => 'WP_REST_Blocks_Controller',
+			'capability_type'       => 'block',
+			'capabilities'          => array(
+				// You need to be able to edit posts, in order to read blocks in their raw form.
+				'read'                   => 'edit_posts',
+				// You need to be able to publish posts, in order to create blocks.
+				'create_posts'           => 'publish_posts',
+				'edit_published_posts'   => 'edit_published_posts',
+				'delete_published_posts' => 'delete_published_posts',
+				'edit_others_posts'      => 'edit_others_posts',
+				'delete_others_posts'    => 'delete_others_posts',
+			),
+			'map_meta_cap'          => true,
+			'supports'              => array(
+				'title',
+				'editor',
+			),
+		)
+	);
+
+
 	register_post_status( 'publish', array(
 		'label'       => _x( 'Published', 'post status' ),
 		'public'      => true,
@@ -775,7 +811,7 @@ function get_page_statuses() {
 /**
  * Return statuses for privacy requests.
  *
- * @since 5.0.0
+ * @since 4.9.6
  *
  * @return array
  */
@@ -1420,6 +1456,14 @@ function _post_type_meta_capabilities( $capabilities = null ) {
  * - `items_list_navigation` - Label for the table pagination hidden heading. Default is 'Posts list navigation' /
  *                           'Pages list navigation'.
  * - `items_list` - Label for the table hidden heading. Default is 'Posts list' / 'Pages list'.
+ * - `item_published` - Label used when an item is published. Default is 'Post published.' / 'Page published.'
+ * - `item_published_privately` - Label used when an item is published with private visibility.
+ *                              Default is 'Post published privately.' / 'Page published privately.'
+ * - `item_reverted_to_draft` - Label used when an item is switched to a draft.
+ *                            Default is 'Post reverted to draft.' / 'Page reverted to draft.'
+ * - `item_scheduled` - Label used when an item is scheduled for publishing. Default is 'Post scheduled.' /
+ *                    'Page scheduled.'
+ * - `item_updated` - Label used when an item is updated. Default is 'Post updated.' / 'Page updated.'
  *
  * Above, the first default value is for non-hierarchical post types (like posts)
  * and the second one is for hierarchical post types (like pages).
@@ -1433,6 +1477,8 @@ function _post_type_meta_capabilities( $capabilities = null ) {
  *              `items_list_navigation`, and `items_list` labels.
  * @since 4.6.0 Converted the `$post_type` parameter to accept a WP_Post_Type object.
  * @since 4.7.0 Added the `view_items` and `attributes` labels.
+ * @since 5.0.0 Added the `item_published`, `item_published_privately`, `item_reverted_to_draft`,
+ *              `item_scheduled`, and `item_updated` labels.
  *
  * @access private
  *
@@ -1465,6 +1511,11 @@ function get_post_type_labels( $post_type_object ) {
 		'filter_items_list' => array( __( 'Filter posts list' ), __( 'Filter pages list' ) ),
 		'items_list_navigation' => array( __( 'Posts list navigation' ), __( 'Pages list navigation' ) ),
 		'items_list' => array( __( 'Posts list' ), __( 'Pages list' ) ),
+		'item_published' => array( __( 'Post published.' ), __( 'Page published.' ) ),
+		'item_published_privately' => array( __( 'Post published privately.' ), __( 'Page published privately.' ) ),
+		'item_reverted_to_draft' => array( __( 'Post reverted to draft.' ), __( 'Page reverted to draft.' ) ),
+		'item_scheduled' => array( __( 'Post scheduled.' ), __( 'Page scheduled.' ) ),
+		'item_updated' => array( __( 'Post updated.' ), __( 'Page updated.' ) ),
 	);
 	$nohier_vs_hier_defaults['menu_name'] = $nohier_vs_hier_defaults['name'];
 
@@ -1784,14 +1835,12 @@ function get_posts( $args = null ) {
  */
 function add_post_meta( $post_id, $meta_key, $meta_value, $unique = false ) {
 	// Make sure meta is added to the post, not a revision.
-	if ( $the_post = wp_is_post_revision($post_id) )
+	$the_post = wp_is_post_revision( $post_id );
+	if ( $the_post ) {
 		$post_id = $the_post;
-
-	$added = add_metadata( 'post', $post_id, $meta_key, $meta_value, $unique );
-	if ( $added ) {
-		wp_cache_set( 'last_changed', microtime(), 'posts' );
 	}
-	return $added;
+
+	return add_metadata( 'post', $post_id, $meta_key, $meta_value, $unique );
 }
 
 /**
@@ -1811,14 +1860,12 @@ function add_post_meta( $post_id, $meta_key, $meta_value, $unique = false ) {
  */
 function delete_post_meta( $post_id, $meta_key, $meta_value = '' ) {
 	// Make sure meta is added to the post, not a revision.
-	if ( $the_post = wp_is_post_revision($post_id) )
+	$the_post = wp_is_post_revision( $post_id );
+	if ( $the_post ) {
 		$post_id = $the_post;
-
-	$deleted = delete_metadata( 'post', $post_id, $meta_key, $meta_value );
-	if ( $deleted ) {
-		wp_cache_set( 'last_changed', microtime(), 'posts' );
 	}
-	return $deleted;
+
+	return delete_metadata( 'post', $post_id, $meta_key, $meta_value );
 }
 
 /**
@@ -1857,14 +1904,12 @@ function get_post_meta( $post_id, $key = '', $single = false ) {
  */
 function update_post_meta( $post_id, $meta_key, $meta_value, $prev_value = '' ) {
 	// Make sure meta is added to the post, not a revision.
-	if ( $the_post = wp_is_post_revision($post_id) )
+	$the_post = wp_is_post_revision( $post_id );
+	if ( $the_post ) {
 		$post_id = $the_post;
-
-	$updated = update_metadata( 'post', $post_id, $meta_key, $meta_value, $prev_value );
-	if ( $updated ) {
-		wp_cache_set( 'last_changed', microtime(), 'posts' );
 	}
-	return $updated;
+
+	return update_metadata( 'post', $post_id, $meta_key, $meta_value, $prev_value );
 }
 
 /**
@@ -1876,11 +1921,7 @@ function update_post_meta( $post_id, $meta_key, $meta_value, $prev_value = '' ) 
  * @return bool Whether the post meta key was deleted from the database.
  */
 function delete_post_meta_by_key( $post_meta_key ) {
-	$deleted = delete_metadata( 'post', null, $post_meta_key, '', true );
-	if ( $deleted ) {
-		wp_cache_set( 'last_changed', microtime(), 'posts' );
-	}
-	return $deleted;
+	return delete_metadata( 'post', null, $post_meta_key, '', true );
 }
 
 /**
@@ -3374,6 +3415,13 @@ function wp_insert_post( $postarr, $wp_error = false ) {
 		$post_parent = 0;
 	}
 
+	$new_postarr = array_merge(
+		array(
+			'ID' => $post_ID,
+		),
+		compact( array_diff( array_keys( $defaults ), array( 'context', 'filter' ) ) )
+	);
+
 	/**
 	 * Filters the post parent -- used to check for and prevent hierarchy loops.
 	 *
@@ -3384,7 +3432,7 @@ function wp_insert_post( $postarr, $wp_error = false ) {
 	 * @param array $new_postarr Array of parsed post data.
 	 * @param array $postarr     Array of sanitized, but otherwise unmodified post data.
 	 */
-	$post_parent = apply_filters( 'wp_insert_post_parent', $post_parent, $post_ID, compact( array_keys( $postarr ) ), $postarr );
+	$post_parent = apply_filters( 'wp_insert_post_parent', $post_parent, $post_ID, $new_postarr, $postarr );
 
 	/*
 	 * If the post is being untrashed and it has a desired slug stored in post meta,
@@ -6474,4 +6522,13 @@ function _filter_query_attachment_filenames( $clauses ) {
 		$clauses['where'] );
 
 	return $clauses;
+}
+
+/**
+ * Sets the last changed time for the 'posts' cache group.
+ *
+ * @since 5.0.0
+ */
+function wp_cache_set_posts_last_changed() {
+	wp_cache_set( 'last_changed', microtime(), 'posts' );
 }
