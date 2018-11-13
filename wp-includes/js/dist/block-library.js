@@ -697,7 +697,7 @@ __webpack_require__.r(__webpack_exports__);
 var name = 'core/archives';
 var settings = {
   title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Archives'),
-  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Display a monthly archive of your site’s Posts.'),
+  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Display a monthly archive of your posts.'),
   icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["SVG"], {
     viewBox: "0 0 24 24",
     xmlns: "http://www.w3.org/2000/svg"
@@ -1044,7 +1044,7 @@ __webpack_require__.r(__webpack_exports__);
 var name = 'core/audio';
 var settings = {
   title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Audio'),
-  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed an audio file and a simple audio player.'),
+  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed a simple audio player.'),
   icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__["SVG"], {
     viewBox: "0 0 24 24",
     xmlns: "http://www.w3.org/2000/svg"
@@ -1506,9 +1506,9 @@ function (_Component) {
 
 /* harmony default export */ __webpack_exports__["default"] = (Object(_wordpress_compose__WEBPACK_IMPORTED_MODULE_14__["compose"])([Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_11__["withSelect"])(function (select, ownProps) {
   var _select = select('core/editor'),
-      getReusableBlock = _select.getReusableBlock,
-      isFetchingReusableBlock = _select.isFetchingReusableBlock,
-      isSavingReusableBlock = _select.isSavingReusableBlock,
+      getReusableBlock = _select.__experimentalGetReusableBlock,
+      isFetchingReusableBlock = _select.__experimentalIsFetchingReusableBlock,
+      isSavingReusableBlock = _select.__experimentalIsSavingReusableBlock,
       getBlock = _select.getBlock;
 
   var ref = ownProps.attributes.ref;
@@ -1521,10 +1521,10 @@ function (_Component) {
   };
 }), Object(_wordpress_data__WEBPACK_IMPORTED_MODULE_11__["withDispatch"])(function (dispatch, ownProps) {
   var _dispatch = dispatch('core/editor'),
-      fetchReusableBlocks = _dispatch.fetchReusableBlocks,
+      fetchReusableBlocks = _dispatch.__experimentalFetchReusableBlocks,
       updateBlockAttributes = _dispatch.updateBlockAttributes,
-      updateReusableBlockTitle = _dispatch.updateReusableBlockTitle,
-      saveReusableBlock = _dispatch.saveReusableBlock;
+      updateReusableBlockTitle = _dispatch.__experimentalUpdateReusableBlockTitle,
+      saveReusableBlock = _dispatch.__experimentalSaveReusableBlock;
 
   var ref = ownProps.attributes.ref;
   return {
@@ -1894,7 +1894,7 @@ var colorsMigration = function colorsMigration(attributes) {
 
 var settings = {
   title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__["__"])('Button'),
-  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__["__"])('Want visitors to click to subscribe, buy, or read more? Get their attention with a button.'),
+  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__["__"])('Prompt visitors to take action with a custom button.'),
   icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__["SVG"], {
     viewBox: "0 0 24 24",
     xmlns: "http://www.w3.org/2000/svg"
@@ -2345,7 +2345,7 @@ __webpack_require__.r(__webpack_exports__);
 var name = 'core/categories';
 var settings = {
   title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Categories'),
-  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Display a list of all your site’s categories.'),
+  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Display a list of all categories.'),
   icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["SVG"], {
     viewBox: "0 0 24 24",
     xmlns: "http://www.w3.org/2000/svg"
@@ -2686,7 +2686,7 @@ __webpack_require__.r(__webpack_exports__);
 var name = 'core/freeform';
 var settings = {
   title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["_x"])('Classic', 'block title'),
-  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('It’s the classic WordPress editor and it’s a block! Drop the editor right in.'),
+  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Use the classic WordPress editor.'),
   icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["SVG"], {
     viewBox: "0 0 24 24",
     xmlns: "http://www.w3.org/2000/svg"
@@ -2857,7 +2857,7 @@ __webpack_require__.r(__webpack_exports__);
 var name = 'core/code';
 var settings = {
   title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Code'),
-  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Add text that respects your spacing and tabs -- perfect for displaying code.'),
+  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Display code snippets that respect your spacing and tabs.'),
   icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__["SVG"], {
     viewBox: "0 0 24 24",
     xmlns: "http://www.w3.org/2000/svg"
@@ -3292,7 +3292,7 @@ var IMAGE_BACKGROUND_TYPE = 'image';
 var VIDEO_BACKGROUND_TYPE = 'video';
 var settings = {
   title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__["__"])('Cover'),
-  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__["__"])('Add a full-width image or video, and layer text over it — great for headers.'),
+  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__["__"])('Add an image or video with a text overlay — great for headers.'),
   icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__["SVG"], {
     xmlns: "http://www.w3.org/2000/svg",
     viewBox: "0 0 24 24"
@@ -3776,7 +3776,8 @@ var common = [{
   settings: {
     title: 'Twitter',
     icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedTwitterIcon"],
-    keywords: ['tweet']
+    keywords: ['tweet'],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed a tweet.')
   },
   patterns: [/^https?:\/\/(www\.)?twitter\.com\/.+/i]
 }, {
@@ -3784,14 +3785,16 @@ var common = [{
   settings: {
     title: 'YouTube',
     icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedYouTubeIcon"],
-    keywords: [Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('music'), Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('video')]
+    keywords: [Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('music'), Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('video')],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed a YouTube video.')
   },
   patterns: [/^https?:\/\/((m|www)\.)?youtube\.com\/.+/i, /^https?:\/\/youtu\.be\/.+/i]
 }, {
   name: 'core-embed/facebook',
   settings: {
     title: 'Facebook',
-    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedFacebookIcon"]
+    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedFacebookIcon"],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed a Facebook post.')
   },
   patterns: [/^https?:\/\/www\.facebook.com\/.+/i]
 }, {
@@ -3799,7 +3802,8 @@ var common = [{
   settings: {
     title: 'Instagram',
     icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedInstagramIcon"],
-    keywords: [Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('image')]
+    keywords: [Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('image')],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed an Instagram post.')
   },
   patterns: [/^https?:\/\/(www\.)?instagr(\.am|am\.com)\/.+/i]
 }, {
@@ -3808,14 +3812,16 @@ var common = [{
     title: 'WordPress',
     icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedWordPressIcon"],
     keywords: [Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('post'), Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('blog')],
-    responsive: false
+    responsive: false,
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed a WordPress post.')
   }
 }, {
   name: 'core-embed/soundcloud',
   settings: {
     title: 'SoundCloud',
     icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedAudioIcon"],
-    keywords: [Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('music'), Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('audio')]
+    keywords: [Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('music'), Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('audio')],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed SoundCloud content.')
   },
   patterns: [/^https?:\/\/(www\.)?soundcloud\.com\/.+/i]
 }, {
@@ -3823,7 +3829,8 @@ var common = [{
   settings: {
     title: 'Spotify',
     icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedSpotifyIcon"],
-    keywords: [Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('music'), Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('audio')]
+    keywords: [Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('music'), Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('audio')],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed Spotify content.')
   },
   patterns: [/^https?:\/\/(open|play)\.spotify\.com\/.+/i]
 }, {
@@ -3831,7 +3838,8 @@ var common = [{
   settings: {
     title: 'Flickr',
     icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedFlickrIcon"],
-    keywords: [Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('image')]
+    keywords: [Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('image')],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed Flickr content.')
   },
   patterns: [/^https?:\/\/(www\.)?flickr\.com\/.+/i, /^https?:\/\/flic\.kr\/.+/i]
 }, {
@@ -3839,7 +3847,8 @@ var common = [{
   settings: {
     title: 'Vimeo',
     icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedVimeoIcon"],
-    keywords: [Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('video')]
+    keywords: [Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('video')],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed a Vimeo video.')
   },
   patterns: [/^https?:\/\/(www\.)?vimeo\.com\/.+/i]
 }];
@@ -3847,70 +3856,80 @@ var others = [{
   name: 'core-embed/animoto',
   settings: {
     title: 'Animoto',
-    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedVideoIcon"]
+    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedVideoIcon"],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed an Animoto video.')
   },
   patterns: [/^https?:\/\/(www\.)?(animoto|video214)\.com\/.+/i]
 }, {
   name: 'core-embed/cloudup',
   settings: {
     title: 'Cloudup',
-    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedContentIcon"]
+    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedContentIcon"],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed Cloudup content.')
   },
   patterns: [/^https?:\/\/cloudup\.com\/.+/i]
 }, {
   name: 'core-embed/collegehumor',
   settings: {
     title: 'CollegeHumor',
-    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedVideoIcon"]
+    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedVideoIcon"],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed CollegeHumor content.')
   },
   patterns: [/^https?:\/\/(www\.)?collegehumor\.com\/.+/i]
 }, {
   name: 'core-embed/dailymotion',
   settings: {
     title: 'Dailymotion',
-    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedVideoIcon"]
+    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedVideoIcon"],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed a Dailymotion video.')
   },
   patterns: [/^https?:\/\/(www\.)?dailymotion\.com\/.+/i]
 }, {
   name: 'core-embed/funnyordie',
   settings: {
     title: 'Funny or Die',
-    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedVideoIcon"]
+    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedVideoIcon"],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed Funny or Die content.')
   },
   patterns: [/^https?:\/\/(www\.)?funnyordie\.com\/.+/i]
 }, {
   name: 'core-embed/hulu',
   settings: {
     title: 'Hulu',
-    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedVideoIcon"]
+    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedVideoIcon"],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed Hulu content.')
   },
   patterns: [/^https?:\/\/(www\.)?hulu\.com\/.+/i]
 }, {
   name: 'core-embed/imgur',
   settings: {
     title: 'Imgur',
-    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedPhotoIcon"]
+    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedPhotoIcon"],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed Imgur content.')
   },
   patterns: [/^https?:\/\/(.+\.)?imgur\.com\/.+/i]
 }, {
   name: 'core-embed/issuu',
   settings: {
     title: 'Issuu',
-    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedContentIcon"]
+    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedContentIcon"],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed Issuu content.')
   },
   patterns: [/^https?:\/\/(www\.)?issuu\.com\/.+/i]
 }, {
   name: 'core-embed/kickstarter',
   settings: {
     title: 'Kickstarter',
-    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedContentIcon"]
+    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedContentIcon"],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed Kickstarter content.')
   },
   patterns: [/^https?:\/\/(www\.)?kickstarter\.com\/.+/i, /^https?:\/\/kck\.st\/.+/i]
 }, {
   name: 'core-embed/meetup-com',
   settings: {
     title: 'Meetup.com',
-    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedContentIcon"]
+    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedContentIcon"],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed Meetup.com content.')
   },
   patterns: [/^https?:\/\/(www\.)?meetu(\.ps|p\.com)\/.+/i]
 }, {
@@ -3918,63 +3937,72 @@ var others = [{
   settings: {
     title: 'Mixcloud',
     icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedAudioIcon"],
-    keywords: [Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('music'), Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('audio')]
+    keywords: [Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('music'), Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('audio')],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed Mixcloud content.')
   },
   patterns: [/^https?:\/\/(www\.)?mixcloud\.com\/.+/i]
 }, {
   name: 'core-embed/photobucket',
   settings: {
     title: 'Photobucket',
-    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedPhotoIcon"]
+    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedPhotoIcon"],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed a Photobucket image.')
   },
   patterns: [/^http:\/\/g?i*\.photobucket\.com\/.+/i]
 }, {
   name: 'core-embed/polldaddy',
   settings: {
     title: 'Polldaddy',
-    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedContentIcon"]
+    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedContentIcon"],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed Polldaddy content.')
   },
   patterns: [/^https?:\/\/(www\.)?polldaddy\.com\/.+/i]
 }, {
   name: 'core-embed/reddit',
   settings: {
     title: 'Reddit',
-    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedRedditIcon"]
+    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedRedditIcon"],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed a Reddit thread.')
   },
   patterns: [/^https?:\/\/(www\.)?reddit\.com\/.+/i]
 }, {
   name: 'core-embed/reverbnation',
   settings: {
     title: 'ReverbNation',
-    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedAudioIcon"]
+    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedAudioIcon"],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed ReverbNation content.')
   },
   patterns: [/^https?:\/\/(www\.)?reverbnation\.com\/.+/i]
 }, {
   name: 'core-embed/screencast',
   settings: {
     title: 'Screencast',
-    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedVideoIcon"]
+    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedVideoIcon"],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed Screencast content.')
   },
   patterns: [/^https?:\/\/(www\.)?screencast\.com\/.+/i]
 }, {
   name: 'core-embed/scribd',
   settings: {
     title: 'Scribd',
-    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedContentIcon"]
+    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedContentIcon"],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed Scribd content.')
   },
   patterns: [/^https?:\/\/(www\.)?scribd\.com\/.+/i]
 }, {
   name: 'core-embed/slideshare',
   settings: {
     title: 'Slideshare',
-    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedContentIcon"]
+    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedContentIcon"],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed Slideshare content.')
   },
   patterns: [/^https?:\/\/(.+?\.)?slideshare\.net\/.+/i]
 }, {
   name: 'core-embed/smugmug',
   settings: {
     title: 'SmugMug',
-    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedPhotoIcon"]
+    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedPhotoIcon"],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed SmugMug content.')
   },
   patterns: [/^https?:\/\/(www\.)?smugmug\.com\/.+/i]
 }, {
@@ -4001,21 +4029,24 @@ var others = [{
           content: content
         });
       }
-    }]
+    }],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed Speaker Deck content.')
   },
   patterns: [/^https?:\/\/(www\.)?speakerdeck\.com\/.+/i]
 }, {
   name: 'core-embed/ted',
   settings: {
     title: 'TED',
-    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedVideoIcon"]
+    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedVideoIcon"],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed a TED video.')
   },
   patterns: [/^https?:\/\/(www\.|embed\.)?ted\.com\/.+/i]
 }, {
   name: 'core-embed/tumblr',
   settings: {
     title: 'Tumblr',
-    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedTumbrIcon"]
+    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedTumbrIcon"],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed a Tumblr post.')
   },
   patterns: [/^https?:\/\/(www\.)?tumblr\.com\/.+/i]
 }, {
@@ -4023,14 +4054,16 @@ var others = [{
   settings: {
     title: 'VideoPress',
     icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedVideoIcon"],
-    keywords: [Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('video')]
+    keywords: [Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('video')],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed a VideoPress video.')
   },
   patterns: [/^https?:\/\/videopress\.com\/.+/i]
 }, {
   name: 'core-embed/wordpress-tv',
   settings: {
     title: 'WordPress.tv',
-    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedVideoIcon"]
+    icon: _icons__WEBPACK_IMPORTED_MODULE_0__["embedVideoIcon"],
+    description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed a WordPress.tv video.')
   },
   patterns: [/^https?:\/\/wordpress\.tv\/.+/i]
 }];
@@ -4048,34 +4081,23 @@ var others = [{
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getEmbedEditComponent", function() { return getEmbedEditComponent; });
-/* harmony import */ var _babel_runtime_helpers_esm_defineProperty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/defineProperty */ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js");
-/* harmony import */ var _babel_runtime_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/esm/objectSpread */ "./node_modules/@babel/runtime/helpers/esm/objectSpread.js");
-/* harmony import */ var _babel_runtime_helpers_esm_classCallCheck__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babel/runtime/helpers/esm/classCallCheck */ "./node_modules/@babel/runtime/helpers/esm/classCallCheck.js");
-/* harmony import */ var _babel_runtime_helpers_esm_createClass__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @babel/runtime/helpers/esm/createClass */ "./node_modules/@babel/runtime/helpers/esm/createClass.js");
-/* harmony import */ var _babel_runtime_helpers_esm_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @babel/runtime/helpers/esm/possibleConstructorReturn */ "./node_modules/@babel/runtime/helpers/esm/possibleConstructorReturn.js");
-/* harmony import */ var _babel_runtime_helpers_esm_getPrototypeOf__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @babel/runtime/helpers/esm/getPrototypeOf */ "./node_modules/@babel/runtime/helpers/esm/getPrototypeOf.js");
-/* harmony import */ var _babel_runtime_helpers_esm_inherits__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @babel/runtime/helpers/esm/inherits */ "./node_modules/@babel/runtime/helpers/esm/inherits.js");
-/* harmony import */ var _babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @babel/runtime/helpers/esm/assertThisInitialized */ "./node_modules/@babel/runtime/helpers/esm/assertThisInitialized.js");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./util */ "./node_modules/@wordpress/block-library/build-module/embed/util.js");
-/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./constants */ "./node_modules/@wordpress/block-library/build-module/embed/constants.js");
-/* harmony import */ var url__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! url */ "./node_modules/url/url.js");
-/* harmony import */ var url__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(url__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var _babel_runtime_helpers_esm_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/classCallCheck */ "./node_modules/@babel/runtime/helpers/esm/classCallCheck.js");
+/* harmony import */ var _babel_runtime_helpers_esm_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/esm/createClass */ "./node_modules/@babel/runtime/helpers/esm/createClass.js");
+/* harmony import */ var _babel_runtime_helpers_esm_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babel/runtime/helpers/esm/possibleConstructorReturn */ "./node_modules/@babel/runtime/helpers/esm/possibleConstructorReturn.js");
+/* harmony import */ var _babel_runtime_helpers_esm_getPrototypeOf__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @babel/runtime/helpers/esm/getPrototypeOf */ "./node_modules/@babel/runtime/helpers/esm/getPrototypeOf.js");
+/* harmony import */ var _babel_runtime_helpers_esm_inherits__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @babel/runtime/helpers/esm/inherits */ "./node_modules/@babel/runtime/helpers/esm/inherits.js");
+/* harmony import */ var _babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @babel/runtime/helpers/esm/assertThisInitialized */ "./node_modules/@babel/runtime/helpers/esm/assertThisInitialized.js");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./util */ "./node_modules/@wordpress/block-library/build-module/embed/util.js");
+/* harmony import */ var _embed_controls__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./embed-controls */ "./node_modules/@wordpress/block-library/build-module/embed/embed-controls.js");
+/* harmony import */ var _embed_loading__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./embed-loading */ "./node_modules/@wordpress/block-library/build-module/embed/embed-loading.js");
+/* harmony import */ var _embed_placeholder__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./embed-placeholder */ "./node_modules/@wordpress/block-library/build-module/embed/embed-placeholder.js");
+/* harmony import */ var _embed_preview__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./embed-preview */ "./node_modules/@wordpress/block-library/build-module/embed/embed-preview.js");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! lodash */ "lodash");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_12__);
-/* harmony import */ var classnames_dedupe__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! classnames/dedupe */ "./node_modules/classnames/dedupe.js");
-/* harmony import */ var classnames_dedupe__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(classnames_dedupe__WEBPACK_IMPORTED_MODULE_13__);
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
-/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_14__);
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
-/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_15__);
-/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
-/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_16___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_16__);
-/* harmony import */ var _wordpress_editor__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! @wordpress/editor */ "@wordpress/editor");
-/* harmony import */ var _wordpress_editor__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/__webpack_require__.n(_wordpress_editor__WEBPACK_IMPORTED_MODULE_17__);
-
-
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_13__);
 
 
 
@@ -4089,11 +4111,12 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
+
+
+
 /**
  * External dependencies
  */
-
-
 
 
 /**
@@ -4102,31 +4125,26 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-
-
 function getEmbedEditComponent(title, icon) {
   var responsive = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
   return (
     /*#__PURE__*/
     function (_Component) {
-      Object(_babel_runtime_helpers_esm_inherits__WEBPACK_IMPORTED_MODULE_6__["default"])(_class, _Component);
+      Object(_babel_runtime_helpers_esm_inherits__WEBPACK_IMPORTED_MODULE_4__["default"])(_class, _Component);
 
       function _class() {
         var _this;
 
-        Object(_babel_runtime_helpers_esm_classCallCheck__WEBPACK_IMPORTED_MODULE_2__["default"])(this, _class);
+        Object(_babel_runtime_helpers_esm_classCallCheck__WEBPACK_IMPORTED_MODULE_0__["default"])(this, _class);
 
-        _this = Object(_babel_runtime_helpers_esm_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_4__["default"])(this, Object(_babel_runtime_helpers_esm_getPrototypeOf__WEBPACK_IMPORTED_MODULE_5__["default"])(_class).apply(this, arguments));
-        _this.switchBackToURLInput = _this.switchBackToURLInput.bind(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_7__["default"])(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_7__["default"])(_this)));
-        _this.setUrl = _this.setUrl.bind(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_7__["default"])(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_7__["default"])(_this)));
-        _this.maybeSwitchBlock = _this.maybeSwitchBlock.bind(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_7__["default"])(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_7__["default"])(_this)));
-        _this.getAttributesFromPreview = _this.getAttributesFromPreview.bind(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_7__["default"])(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_7__["default"])(_this)));
-        _this.setAttributesFromPreview = _this.setAttributesFromPreview.bind(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_7__["default"])(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_7__["default"])(_this)));
-        _this.setAspectRatioClassNames = _this.setAspectRatioClassNames.bind(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_7__["default"])(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_7__["default"])(_this)));
-        _this.getResponsiveHelp = _this.getResponsiveHelp.bind(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_7__["default"])(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_7__["default"])(_this)));
-        _this.toggleResponsive = _this.toggleResponsive.bind(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_7__["default"])(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_7__["default"])(_this)));
-        _this.handleIncomingPreview = _this.handleIncomingPreview.bind(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_7__["default"])(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_7__["default"])(_this)));
+        _this = Object(_babel_runtime_helpers_esm_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_2__["default"])(this, Object(_babel_runtime_helpers_esm_getPrototypeOf__WEBPACK_IMPORTED_MODULE_3__["default"])(_class).apply(this, arguments));
+        _this.switchBackToURLInput = _this.switchBackToURLInput.bind(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_5__["default"])(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_5__["default"])(_this)));
+        _this.setUrl = _this.setUrl.bind(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_5__["default"])(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_5__["default"])(_this)));
+        _this.getAttributesFromPreview = _this.getAttributesFromPreview.bind(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_5__["default"])(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_5__["default"])(_this)));
+        _this.setAttributesFromPreview = _this.setAttributesFromPreview.bind(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_5__["default"])(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_5__["default"])(_this)));
+        _this.getResponsiveHelp = _this.getResponsiveHelp.bind(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_5__["default"])(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_5__["default"])(_this)));
+        _this.toggleResponsive = _this.toggleResponsive.bind(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_5__["default"])(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_5__["default"])(_this)));
+        _this.handleIncomingPreview = _this.handleIncomingPreview.bind(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_5__["default"])(Object(_babel_runtime_helpers_esm_assertThisInitialized__WEBPACK_IMPORTED_MODULE_5__["default"])(_this)));
         _this.state = {
           editingURL: false,
           url: _this.props.attributes.url
@@ -4139,11 +4157,16 @@ function getEmbedEditComponent(title, icon) {
         return _this;
       }
 
-      Object(_babel_runtime_helpers_esm_createClass__WEBPACK_IMPORTED_MODULE_3__["default"])(_class, [{
+      Object(_babel_runtime_helpers_esm_createClass__WEBPACK_IMPORTED_MODULE_1__["default"])(_class, [{
         key: "handleIncomingPreview",
         value: function handleIncomingPreview() {
+          var allowResponsive = this.props.attributes.allowResponsive;
           this.setAttributesFromPreview();
-          this.maybeSwitchBlock();
+          var upgradedBlock = Object(_util__WEBPACK_IMPORTED_MODULE_7__["createUpgradedEmbedBlock"])(this.props, this.getAttributesFromPreview(this.props.preview, allowResponsive));
+
+          if (upgradedBlock) {
+            this.props.onReplace(upgradedBlock);
+          }
         }
       }, {
         key: "componentDidUpdate",
@@ -4153,35 +4176,14 @@ function getEmbedEditComponent(title, icon) {
           var switchedPreview = this.props.preview && this.props.attributes.url !== prevProps.attributes.url;
           var switchedURL = this.props.attributes.url !== prevProps.attributes.url;
 
-          if ((switchedURL || hasPreview && !hadPreview) && this.maybeSwitchBlock()) {
-            // Dont do anything if we are going to switch to a different block,
-            // and we've just changed the URL, or we've just received a preview.
-            return;
-          }
-
-          if (hasPreview && !hadPreview || switchedPreview) {
+          if (hasPreview && !hadPreview || switchedPreview || switchedURL) {
             if (this.props.cannotEmbed) {
               // Can't embed this URL, and we've just received or switched the preview.
-              this.setState({
-                editingURL: true
-              });
               return;
             }
 
             this.handleIncomingPreview();
           }
-        }
-      }, {
-        key: "getPhotoHtml",
-        value: function getPhotoHtml(photo) {
-          // 100% width for the preview so it fits nicely into the document, some "thumbnails" are
-          // acually the full size photo.
-          var photoPreview = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])("p", null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])("img", {
-            src: photo.thumbnail_url,
-            alt: photo.title,
-            width: "100%"
-          }));
-          return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["renderToString"])(photoPreview);
         }
       }, {
         key: "setUrl",
@@ -4197,106 +4199,6 @@ function getEmbedEditComponent(title, icon) {
           });
           setAttributes({
             url: url
-          });
-        }
-        /***
-         * Switches to a different embed block type, based on the URL
-         * and the HTML in the preview, if the preview or URL match a different block.
-         *
-         * @return {boolean} Whether the block was switched.
-         */
-
-      }, {
-        key: "maybeSwitchBlock",
-        value: function maybeSwitchBlock() {
-          var preview = this.props.preview;
-          var url = this.props.attributes.url;
-
-          if (!url) {
-            return false;
-          }
-
-          var matchingBlock = Object(_util__WEBPACK_IMPORTED_MODULE_9__["findBlock"])(url); // WordPress blocks can work on multiple sites, and so don't have patterns,
-          // so if we're in a WordPress block, assume the user has chosen it for a WordPress URL.
-
-          if (_constants__WEBPACK_IMPORTED_MODULE_10__["WORDPRESS_EMBED_BLOCK"] !== this.props.name && _constants__WEBPACK_IMPORTED_MODULE_10__["DEFAULT_EMBED_BLOCK"] !== matchingBlock) {
-            // At this point, we have discovered a more suitable block for this url, so transform it.
-            if (this.props.name !== matchingBlock) {
-              this.props.onReplace(Object(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_16__["createBlock"])(matchingBlock, {
-                url: url
-              }));
-              return true;
-            }
-          }
-
-          if (preview) {
-            var html = preview.html; // We can't match the URL for WordPress embeds, we have to check the HTML instead.
-
-            if (Object(_util__WEBPACK_IMPORTED_MODULE_9__["isFromWordPress"])(html)) {
-              // If this is not the WordPress embed block, transform it into one.
-              if (_constants__WEBPACK_IMPORTED_MODULE_10__["WORDPRESS_EMBED_BLOCK"] !== this.props.name) {
-                this.props.onReplace(Object(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_16__["createBlock"])(_constants__WEBPACK_IMPORTED_MODULE_10__["WORDPRESS_EMBED_BLOCK"], Object(_babel_runtime_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_1__["default"])({
-                  url: url
-                }, this.getAttributesFromPreview(this.props.preview, this.props.attributes.allowResponsive))));
-                return true;
-              }
-            }
-          }
-
-          return false;
-        }
-        /**
-         * Gets the appropriate CSS class names to enforce an aspect ratio when the embed is resized
-         * if the HTML has an iframe with width and height set.
-         *
-         * @param {string} html The preview HTML that possibly contains an iframe with width and height set.
-         * @param {boolean} allowResponsive If the classes should be added, or removed.
-         * @return {Object} Object with classnames set for use with `classnames`.
-         */
-
-      }, {
-        key: "getAspectRatioClassNames",
-        value: function getAspectRatioClassNames(html) {
-          var allowResponsive = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-          var previewDocument = document.implementation.createHTMLDocument('');
-          previewDocument.body.innerHTML = html;
-          var iframe = previewDocument.body.querySelector('iframe'); // If we have a fixed aspect iframe, and it's a responsive embed block.
-
-          if (responsive && iframe && iframe.height && iframe.width) {
-            var aspectRatio = (iframe.width / iframe.height).toFixed(2); // Given the actual aspect ratio, find the widest ratio to support it.
-
-            for (var ratioIndex = 0; ratioIndex < _constants__WEBPACK_IMPORTED_MODULE_10__["ASPECT_RATIOS"].length; ratioIndex++) {
-              var potentialRatio = _constants__WEBPACK_IMPORTED_MODULE_10__["ASPECT_RATIOS"][ratioIndex];
-
-              if (aspectRatio >= potentialRatio.ratio) {
-                var _ref;
-
-                return _ref = {}, Object(_babel_runtime_helpers_esm_defineProperty__WEBPACK_IMPORTED_MODULE_0__["default"])(_ref, potentialRatio.className, allowResponsive), Object(_babel_runtime_helpers_esm_defineProperty__WEBPACK_IMPORTED_MODULE_0__["default"])(_ref, 'wp-has-aspect-ratio', allowResponsive), _ref;
-              }
-            }
-          }
-
-          return this.props.attributes.className;
-        }
-        /**
-         * Sets the aspect ratio related class names returned by `getAspectRatioClassNames`
-         * if `allowResponsive` is truthy.
-         *
-         * @param {string} html The preview HTML.
-         */
-
-      }, {
-        key: "setAspectRatioClassNames",
-        value: function setAspectRatioClassNames(html) {
-          var allowResponsive = this.props.attributes.allowResponsive;
-
-          if (!allowResponsive) {
-            return;
-          }
-
-          var className = classnames_dedupe__WEBPACK_IMPORTED_MODULE_13___default()(this.props.attributes.className, this.getAspectRatioClassNames(html));
-          this.props.setAttributes({
-            className: className
           });
         }
         /***
@@ -4321,7 +4223,7 @@ function getEmbedEditComponent(title, icon) {
               providerName = preview.provider_name;
           var providerNameSlug = Object(lodash__WEBPACK_IMPORTED_MODULE_12__["kebabCase"])(Object(lodash__WEBPACK_IMPORTED_MODULE_12__["toLower"])('' !== providerName ? providerName : title));
 
-          if (Object(_util__WEBPACK_IMPORTED_MODULE_9__["isFromWordPress"])(html)) {
+          if (Object(_util__WEBPACK_IMPORTED_MODULE_7__["isFromWordPress"])(html)) {
             type = 'wp-embed';
           }
 
@@ -4330,7 +4232,7 @@ function getEmbedEditComponent(title, icon) {
             attributes.providerNameSlug = providerNameSlug;
           }
 
-          attributes.className = classnames_dedupe__WEBPACK_IMPORTED_MODULE_13___default()(this.props.attributes.className, this.getAspectRatioClassNames(html, allowResponsive));
+          attributes.className = Object(_util__WEBPACK_IMPORTED_MODULE_7__["getClassNames"])(html, this.props.attributes.className, responsive && allowResponsive);
           return attributes;
         }
         /***
@@ -4356,7 +4258,7 @@ function getEmbedEditComponent(title, icon) {
       }, {
         key: "getResponsiveHelp",
         value: function getResponsiveHelp(checked) {
-          return checked ? Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_14__["__"])('This embed will preserve its aspect ratio when the browser is resized.') : Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_14__["__"])('This embed may not preserve its aspect ratio when the browser is resized.');
+          return checked ? Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_13__["__"])('This embed will preserve its aspect ratio when the browser is resized.') : Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_13__["__"])('This embed may not preserve its aspect ratio when the browser is resized.');
         }
       }, {
         key: "toggleResponsive",
@@ -4365,10 +4267,10 @@ function getEmbedEditComponent(title, icon) {
               allowResponsive = _this$props$attribute.allowResponsive,
               className = _this$props$attribute.className;
           var html = this.props.preview.html;
-          var responsiveClassNames = this.getAspectRatioClassNames(html, !allowResponsive);
+          var newAllowResponsive = !allowResponsive;
           this.props.setAttributes({
-            allowResponsive: !allowResponsive,
-            className: classnames_dedupe__WEBPACK_IMPORTED_MODULE_13___default()(className, responsiveClassNames)
+            allowResponsive: newAllowResponsive,
+            className: Object(_util__WEBPACK_IMPORTED_MODULE_7__["getClassNames"])(html, className, responsive && newAllowResponsive)
           });
         }
       }, {
@@ -4390,114 +4292,319 @@ function getEmbedEditComponent(title, icon) {
               className = _this$props2.className,
               preview = _this$props2.preview,
               cannotEmbed = _this$props2.cannotEmbed,
-              supportsResponsive = _this$props2.supportsResponsive;
-          var controls = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["Fragment"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])(_wordpress_editor__WEBPACK_IMPORTED_MODULE_17__["BlockControls"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_15__["Toolbar"], null, preview && !cannotEmbed && Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_15__["IconButton"], {
-            className: "components-toolbar__control",
-            label: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_14__["__"])('Edit URL'),
-            icon: "edit",
-            onClick: this.switchBackToURLInput
-          }))), supportsResponsive && Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])(_wordpress_editor__WEBPACK_IMPORTED_MODULE_17__["InspectorControls"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_15__["PanelBody"], {
-            title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_14__["__"])('Media Settings'),
-            className: "blocks-responsive"
-          }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_15__["ToggleControl"], {
-            label: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_14__["__"])('Resize for smaller devices'),
-            checked: allowResponsive,
-            help: this.getResponsiveHelp,
-            onChange: this.toggleResponsive
-          }))));
+              themeSupportsResponsive = _this$props2.themeSupportsResponsive;
 
           if (fetching) {
-            return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])("div", {
-              className: "wp-block-embed is-loading"
-            }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_15__["Spinner"], null), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])("p", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_14__["__"])('Embedding…')));
+            return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_embed_loading__WEBPACK_IMPORTED_MODULE_9__["default"], null);
           } // translators: %s: type of embed e.g: "YouTube", "Twitter", etc. "Embed" is used when no specific type exists
 
 
-          var label = Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_14__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_14__["__"])('%s URL'), title); // No preview, or we can't embed the current URL, or we've clicked the edit button.
+          var label = Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_13__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_13__["__"])('%s URL'), title); // No preview, or we can't embed the current URL, or we've clicked the edit button.
 
           if (!preview || cannotEmbed || editingURL) {
-            return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_15__["Placeholder"], {
-              icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])(_wordpress_editor__WEBPACK_IMPORTED_MODULE_17__["BlockIcon"], {
-                icon: icon,
-                showColors: true
-              }),
+            return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_embed_placeholder__WEBPACK_IMPORTED_MODULE_10__["default"], {
+              icon: icon,
               label: label,
-              className: "wp-block-embed"
-            }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])("form", {
-              onSubmit: this.setUrl
-            }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])("input", {
-              type: "url",
-              value: url || '',
-              className: "components-placeholder__input",
-              "aria-label": label,
-              placeholder: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_14__["__"])('Enter URL to embed here…'),
+              onSubmit: this.setUrl,
+              value: url,
+              cannotEmbed: cannotEmbed,
               onChange: function onChange(event) {
                 return _this2.setState({
                   url: event.target.value
                 });
               }
-            }), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_15__["Button"], {
-              isLarge: true,
-              type: "submit"
-            }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_14__["_x"])('Embed', 'button label')), cannotEmbed && Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])("p", {
-              className: "components-placeholder__error"
-            }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_14__["__"])('Sorry, we could not embed that content.'))));
+            });
           }
 
-          var html = 'photo' === type ? this.getPhotoHtml(preview) : preview.html;
-          var scripts = preview.scripts;
-          var parsedUrl = Object(url__WEBPACK_IMPORTED_MODULE_11__["parse"])(url);
-          var cannotPreview = Object(lodash__WEBPACK_IMPORTED_MODULE_12__["includes"])(_constants__WEBPACK_IMPORTED_MODULE_10__["HOSTS_NO_PREVIEWS"], parsedUrl.host.replace(/^www\./, '')); // translators: %s: host providing embed content e.g: www.youtube.com
-
-          var iframeTitle = Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_14__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_14__["__"])('Embedded content from %s'), parsedUrl.host);
-          var sandboxClassnames = classnames_dedupe__WEBPACK_IMPORTED_MODULE_13___default()(type, className);
-          var embedWrapper = 'wp-embed' === type ? Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])("div", {
-            className: "wp-block-embed__wrapper",
-            dangerouslySetInnerHTML: {
-              __html: html
-            }
-          }) : Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])("div", {
-            className: "wp-block-embed__wrapper"
-          }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_15__["SandBox"], {
-            html: html,
-            scripts: scripts,
-            title: iframeTitle,
-            type: sandboxClassnames
-          }));
-          return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])("figure", {
-            className: classnames_dedupe__WEBPACK_IMPORTED_MODULE_13___default()(className, 'wp-block-embed', {
-              'is-type-video': 'video' === type
-            })
-          }, controls, cannotPreview ? Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_15__["Placeholder"], {
-            icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])(_wordpress_editor__WEBPACK_IMPORTED_MODULE_17__["BlockIcon"], {
-              icon: icon,
-              showColors: true
-            }),
-            label: label
-          }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])("p", {
-            className: "components-placeholder__error"
-          }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])("a", {
-            href: url
-          }, url)), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])("p", {
-            className: "components-placeholder__error"
-          }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_14__["__"])('Previews for this are unavailable in the editor, sorry!'))) : embedWrapper, (!_wordpress_editor__WEBPACK_IMPORTED_MODULE_17__["RichText"].isEmpty(caption) || isSelected) && Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])(_wordpress_editor__WEBPACK_IMPORTED_MODULE_17__["RichText"], {
-            tagName: "figcaption",
-            placeholder: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_14__["__"])('Write caption…'),
-            value: caption,
-            onChange: function onChange(value) {
+          return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["Fragment"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_embed_controls__WEBPACK_IMPORTED_MODULE_8__["default"], {
+            showEditButton: preview && !cannotEmbed,
+            themeSupportsResponsive: themeSupportsResponsive,
+            blockSupportsResponsive: responsive,
+            allowResponsive: allowResponsive,
+            getResponsiveHelp: this.getResponsiveHelp,
+            toggleResponsive: this.toggleResponsive,
+            switchBackToURLInput: this.switchBackToURLInput
+          }), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_embed_preview__WEBPACK_IMPORTED_MODULE_11__["default"], {
+            preview: preview,
+            className: className,
+            url: url,
+            type: type,
+            caption: caption,
+            onCaptionChange: function onCaptionChange(value) {
               return setAttributes({
                 caption: value
               });
             },
-            inlineToolbar: true
+            isSelected: isSelected,
+            icon: icon,
+            label: label
           }));
         }
       }]);
 
       return _class;
-    }(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["Component"])
+    }(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["Component"])
   );
 }
+
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/block-library/build-module/embed/embed-controls.js":
+/*!************************************************************************************!*\
+  !*** ./node_modules/@wordpress/block-library/build-module/embed/embed-controls.js ***!
+  \************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_editor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/editor */ "@wordpress/editor");
+/* harmony import */ var _wordpress_editor__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_editor__WEBPACK_IMPORTED_MODULE_3__);
+
+
+/**
+ * WordPress dependencies
+ */
+
+
+
+
+
+var EmbedControls = function EmbedControls(props) {
+  var blockSupportsResponsive = props.blockSupportsResponsive,
+      showEditButton = props.showEditButton,
+      themeSupportsResponsive = props.themeSupportsResponsive,
+      allowResponsive = props.allowResponsive,
+      getResponsiveHelp = props.getResponsiveHelp,
+      toggleResponsive = props.toggleResponsive,
+      switchBackToURLInput = props.switchBackToURLInput;
+  return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["Fragment"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_editor__WEBPACK_IMPORTED_MODULE_3__["BlockControls"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["Toolbar"], null, showEditButton && Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["IconButton"], {
+    className: "components-toolbar__control",
+    label: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Edit URL'),
+    icon: "edit",
+    onClick: switchBackToURLInput
+  }))), themeSupportsResponsive && blockSupportsResponsive && Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_editor__WEBPACK_IMPORTED_MODULE_3__["InspectorControls"], null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["PanelBody"], {
+    title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Media Settings'),
+    className: "blocks-responsive"
+  }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["ToggleControl"], {
+    label: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Resize for smaller devices'),
+    checked: allowResponsive,
+    help: getResponsiveHelp,
+    onChange: toggleResponsive
+  }))));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (EmbedControls);
+
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/block-library/build-module/embed/embed-loading.js":
+/*!***********************************************************************************!*\
+  !*** ./node_modules/@wordpress/block-library/build-module/embed/embed-loading.js ***!
+  \***********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
+
+
+/**
+ * WordPress dependencies
+ */
+
+
+
+var EmbedLoading = function EmbedLoading() {
+  return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("div", {
+    className: "wp-block-embed is-loading"
+  }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["Spinner"], null), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("p", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embedding…')));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (EmbedLoading);
+
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/block-library/build-module/embed/embed-placeholder.js":
+/*!***************************************************************************************!*\
+  !*** ./node_modules/@wordpress/block-library/build-module/embed/embed-placeholder.js ***!
+  \***************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_editor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/editor */ "@wordpress/editor");
+/* harmony import */ var _wordpress_editor__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_editor__WEBPACK_IMPORTED_MODULE_3__);
+
+
+/**
+ * WordPress dependencies
+ */
+
+
+
+
+var EmbedPlaceholder = function EmbedPlaceholder(props) {
+  var icon = props.icon,
+      label = props.label,
+      value = props.value,
+      onSubmit = props.onSubmit,
+      onChange = props.onChange,
+      cannotEmbed = props.cannotEmbed;
+  return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["Placeholder"], {
+    icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_editor__WEBPACK_IMPORTED_MODULE_3__["BlockIcon"], {
+      icon: icon,
+      showColors: true
+    }),
+    label: label,
+    className: "wp-block-embed"
+  }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("form", {
+    onSubmit: onSubmit
+  }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("input", {
+    type: "url",
+    value: value || '',
+    className: "components-placeholder__input",
+    "aria-label": label,
+    placeholder: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Enter URL to embed here…'),
+    onChange: onChange
+  }), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["Button"], {
+    isLarge: true,
+    type: "submit"
+  }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["_x"])('Embed', 'button label')), cannotEmbed && Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("p", {
+    className: "components-placeholder__error"
+  }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Sorry, we could not embed that content.'))));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (EmbedPlaceholder);
+
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/block-library/build-module/embed/embed-preview.js":
+/*!***********************************************************************************!*\
+  !*** ./node_modules/@wordpress/block-library/build-module/embed/embed-preview.js ***!
+  \***********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./constants */ "./node_modules/@wordpress/block-library/build-module/embed/constants.js");
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./util */ "./node_modules/@wordpress/block-library/build-module/embed/util.js");
+/* harmony import */ var url__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! url */ "./node_modules/url/url.js");
+/* harmony import */ var url__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(url__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var classnames_dedupe__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! classnames/dedupe */ "./node_modules/classnames/dedupe.js");
+/* harmony import */ var classnames_dedupe__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(classnames_dedupe__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _wordpress_editor__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/editor */ "@wordpress/editor");
+/* harmony import */ var _wordpress_editor__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_wordpress_editor__WEBPACK_IMPORTED_MODULE_8__);
+
+
+/**
+ * Internal dependencies
+ */
+
+
+/**
+ * External dependencies
+ */
+
+
+
+
+/**
+ * WordPress dependencies
+ */
+
+
+
+
+
+var EmbedPreview = function EmbedPreview(props) {
+  var preview = props.preview,
+      url = props.url,
+      type = props.type,
+      caption = props.caption,
+      onCaptionChange = props.onCaptionChange,
+      isSelected = props.isSelected,
+      className = props.className,
+      icon = props.icon,
+      label = props.label;
+  var scripts = preview.scripts;
+  var html = 'photo' === type ? Object(_util__WEBPACK_IMPORTED_MODULE_2__["getPhotoHtml"])(preview) : preview.html;
+  var parsedUrl = Object(url__WEBPACK_IMPORTED_MODULE_3__["parse"])(url);
+  var cannotPreview = Object(lodash__WEBPACK_IMPORTED_MODULE_4__["includes"])(_constants__WEBPACK_IMPORTED_MODULE_1__["HOSTS_NO_PREVIEWS"], parsedUrl.host.replace(/^www\./, '')); // translators: %s: host providing embed content e.g: www.youtube.com
+
+  var iframeTitle = Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__["sprintf"])(Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__["__"])('Embedded content from %s'), parsedUrl.host);
+  var sandboxClassnames = classnames_dedupe__WEBPACK_IMPORTED_MODULE_5___default()(type, className, 'wp-block-embed__wrapper');
+  var embedWrapper = 'wp-embed' === type ? Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("div", {
+    className: sandboxClassnames,
+    dangerouslySetInnerHTML: {
+      __html: html
+    }
+  }) : Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("div", {
+    className: "wp-block-embed__wrapper"
+  }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__["SandBox"], {
+    html: html,
+    scripts: scripts,
+    title: iframeTitle,
+    type: sandboxClassnames
+  }));
+  return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("figure", {
+    className: classnames_dedupe__WEBPACK_IMPORTED_MODULE_5___default()(className, 'wp-block-embed', {
+      'is-type-video': 'video' === type
+    })
+  }, cannotPreview ? Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__["Placeholder"], {
+    icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_editor__WEBPACK_IMPORTED_MODULE_8__["BlockIcon"], {
+      icon: icon,
+      showColors: true
+    }),
+    label: label
+  }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("p", {
+    className: "components-placeholder__error"
+  }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("a", {
+    href: url
+  }, url)), Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("p", {
+    className: "components-placeholder__error"
+  }, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__["__"])('Previews for this are unavailable in the editor, sorry!'))) : embedWrapper, (!_wordpress_editor__WEBPACK_IMPORTED_MODULE_8__["RichText"].isEmpty(caption) || isSelected) && Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_editor__WEBPACK_IMPORTED_MODULE_8__["RichText"], {
+    tagName: "figcaption",
+    placeholder: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_6__["__"])('Write caption…'),
+    value: caption,
+    onChange: onCaptionChange,
+    inlineToolbar: true
+  }));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (EmbedPreview);
 
 
 /***/ }),
@@ -4688,7 +4795,7 @@ __webpack_require__.r(__webpack_exports__);
 var name = 'core/embed';
 var settings = Object(_settings__WEBPACK_IMPORTED_MODULE_3__["getEmbedBlockSettings"])({
   title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["_x"])('Embed', 'block title'),
-  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('The Embed block allows you to easily add videos, images, tweets, audio, and other content to your post or page.'),
+  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('Embed videos, images, tweets, audio, and other content from external sources.'),
   icon: _icons__WEBPACK_IMPORTED_MODULE_2__["embedContentIcon"],
   // Unknown embeds should not be responsive by default.
   responsive: false,
@@ -4835,7 +4942,7 @@ function getEmbedBlockSettings(_ref) {
       return {
         preview: validPreview ? preview : undefined,
         fetching: fetching,
-        supportsResponsive: themeSupports['responsive-embeds'],
+        themeSupportsResponsive: themeSupports['responsive-embeds'],
         cannotEmbed: cannotEmbed
       };
     }))(edit),
@@ -4900,7 +5007,7 @@ function getEmbedBlockSettings(_ref) {
 /*!**************************************************************************!*\
   !*** ./node_modules/@wordpress/block-library/build-module/embed/util.js ***!
   \**************************************************************************/
-/*! exports provided: matchesPatterns, findBlock, isFromWordPress */
+/*! exports provided: matchesPatterns, findBlock, isFromWordPress, getPhotoHtml, createUpgradedEmbedBlock, getClassNames */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4908,11 +5015,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "matchesPatterns", function() { return matchesPatterns; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "findBlock", function() { return findBlock; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isFromWordPress", function() { return isFromWordPress; });
-/* harmony import */ var _babel_runtime_helpers_esm_toConsumableArray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/toConsumableArray */ "./node_modules/@babel/runtime/helpers/esm/toConsumableArray.js");
-/* harmony import */ var _core_embeds__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./core-embeds */ "./node_modules/@wordpress/block-library/build-module/embed/core-embeds.js");
-/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./constants */ "./node_modules/@wordpress/block-library/build-module/embed/constants.js");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! lodash */ "lodash");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getPhotoHtml", function() { return getPhotoHtml; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createUpgradedEmbedBlock", function() { return createUpgradedEmbedBlock; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getClassNames", function() { return getClassNames; });
+/* harmony import */ var _babel_runtime_helpers_esm_defineProperty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/esm/defineProperty */ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js");
+/* harmony import */ var _babel_runtime_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/esm/objectSpread */ "./node_modules/@babel/runtime/helpers/esm/objectSpread.js");
+/* harmony import */ var _babel_runtime_helpers_esm_toConsumableArray__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babel/runtime/helpers/esm/toConsumableArray */ "./node_modules/@babel/runtime/helpers/esm/toConsumableArray.js");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _core_embeds__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./core-embeds */ "./node_modules/@wordpress/block-library/build-module/embed/core-embeds.js");
+/* harmony import */ var _constants__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./constants */ "./node_modules/@wordpress/block-library/build-module/embed/constants.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! lodash */ "lodash");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var classnames_dedupe__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! classnames/dedupe */ "./node_modules/classnames/dedupe.js");
+/* harmony import */ var classnames_dedupe__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(classnames_dedupe__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/blocks */ "@wordpress/blocks");
+/* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_8__);
+
+
+
 
 
 /**
@@ -4925,11 +5046,18 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 
+
+/**
+ * WordPress dependencies
+ */
+
+
+
 /**
  * Returns true if any of the regular expressions match the URL.
  *
- * @param {string} url The URL to test.
- * @param {Array} patterns The list of regular expressions to test agains.
+ * @param {string}   url      The URL to test.
+ * @param {Array}    patterns The list of regular expressions to test agains.
  * @return {boolean} True if any of the regular expressions match the URL.
  */
 
@@ -4943,12 +5071,12 @@ var matchesPatterns = function matchesPatterns(url) {
  * Finds the block name that should be used for the URL, based on the
  * structure of the URL.
  *
- * @param {string} url The URL to test.
+ * @param {string}  url The URL to test.
  * @return {string} The name of the block that should be used for this URL, e.g. core-embed/twitter
  */
 
 var findBlock = function findBlock(url) {
-  var _arr = Object(_babel_runtime_helpers_esm_toConsumableArray__WEBPACK_IMPORTED_MODULE_0__["default"])(_core_embeds__WEBPACK_IMPORTED_MODULE_1__["common"]).concat(Object(_babel_runtime_helpers_esm_toConsumableArray__WEBPACK_IMPORTED_MODULE_0__["default"])(_core_embeds__WEBPACK_IMPORTED_MODULE_1__["others"]));
+  var _arr = Object(_babel_runtime_helpers_esm_toConsumableArray__WEBPACK_IMPORTED_MODULE_2__["default"])(_core_embeds__WEBPACK_IMPORTED_MODULE_4__["common"]).concat(Object(_babel_runtime_helpers_esm_toConsumableArray__WEBPACK_IMPORTED_MODULE_2__["default"])(_core_embeds__WEBPACK_IMPORTED_MODULE_4__["others"]));
 
   for (var _i = 0; _i < _arr.length; _i++) {
     var block = _arr[_i];
@@ -4958,11 +5086,117 @@ var findBlock = function findBlock(url) {
     }
   }
 
-  return _constants__WEBPACK_IMPORTED_MODULE_2__["DEFAULT_EMBED_BLOCK"];
+  return _constants__WEBPACK_IMPORTED_MODULE_5__["DEFAULT_EMBED_BLOCK"];
 };
 var isFromWordPress = function isFromWordPress(html) {
-  return Object(lodash__WEBPACK_IMPORTED_MODULE_3__["includes"])(html, 'class="wp-embedded-content" data-secret');
+  return Object(lodash__WEBPACK_IMPORTED_MODULE_6__["includes"])(html, 'class="wp-embedded-content" data-secret');
 };
+var getPhotoHtml = function getPhotoHtml(photo) {
+  // 100% width for the preview so it fits nicely into the document, some "thumbnails" are
+  // acually the full size photo.
+  var photoPreview = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_3__["createElement"])("p", null, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_3__["createElement"])("img", {
+    src: photo.thumbnail_url,
+    alt: photo.title,
+    width: "100%"
+  }));
+  return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_3__["renderToString"])(photoPreview);
+};
+/***
+ * Creates a more suitable embed block based on the passed in props
+ * and attributes generated from an embed block's preview.
+ *
+ * We require `attributesFromPreview` to be generated from the latest attributes
+ * and preview, and because of the way the react lifecycle operates, we can't
+ * guarantee that the attributes contained in the block's props are the latest
+ * versions, so we require that these are generated separately.
+ * See `getAttributesFromPreview` in the generated embed edit component.
+ *
+ * @param {Object}            props                 The block's props.
+ * @param {Object}            attributesFromPreview Attributes generated from the block's most up to date preview.
+ * @return {Object|undefined} A more suitable embed block if one exists.
+ */
+
+var createUpgradedEmbedBlock = function createUpgradedEmbedBlock(props, attributesFromPreview) {
+  var preview = props.preview,
+      name = props.name;
+  var url = props.attributes.url;
+
+  if (!url) {
+    return;
+  }
+
+  var matchingBlock = findBlock(url); // WordPress blocks can work on multiple sites, and so don't have patterns,
+  // so if we're in a WordPress block, assume the user has chosen it for a WordPress URL.
+
+  if (_constants__WEBPACK_IMPORTED_MODULE_5__["WORDPRESS_EMBED_BLOCK"] !== name && _constants__WEBPACK_IMPORTED_MODULE_5__["DEFAULT_EMBED_BLOCK"] !== matchingBlock) {
+    // At this point, we have discovered a more suitable block for this url, so transform it.
+    if (name !== matchingBlock) {
+      return Object(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_8__["createBlock"])(matchingBlock, {
+        url: url
+      });
+    }
+  }
+
+  if (preview) {
+    var html = preview.html; // We can't match the URL for WordPress embeds, we have to check the HTML instead.
+
+    if (isFromWordPress(html)) {
+      // If this is not the WordPress embed block, transform it into one.
+      if (_constants__WEBPACK_IMPORTED_MODULE_5__["WORDPRESS_EMBED_BLOCK"] !== name) {
+        return Object(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_8__["createBlock"])(_constants__WEBPACK_IMPORTED_MODULE_5__["WORDPRESS_EMBED_BLOCK"], Object(_babel_runtime_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_1__["default"])({
+          url: url
+        }, attributesFromPreview));
+      }
+    }
+  }
+};
+/**
+ * Returns class names with any relevant responsive aspect ratio names.
+ *
+ * @param {string}  html               The preview HTML that possibly contains an iframe with width and height set.
+ * @param {string}  existingClassNames Any existing class names.
+ * @param {boolean} allowResponsive    If the responsive class names should be added, or removed.
+ * @return {string} Deduped class names.
+ */
+
+function getClassNames(html) {
+  var existingClassNames = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+  var allowResponsive = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+
+  if (!allowResponsive) {
+    // Remove all of the aspect ratio related class names.
+    var aspectRatioClassNames = {
+      'wp-has-aspect-ratio': false
+    };
+
+    for (var ratioIndex = 0; ratioIndex < _constants__WEBPACK_IMPORTED_MODULE_5__["ASPECT_RATIOS"].length; ratioIndex++) {
+      var aspectRatioToRemove = _constants__WEBPACK_IMPORTED_MODULE_5__["ASPECT_RATIOS"][ratioIndex];
+      aspectRatioClassNames[aspectRatioToRemove.className] = false;
+    }
+
+    return classnames_dedupe__WEBPACK_IMPORTED_MODULE_7___default()(existingClassNames, aspectRatioClassNames);
+  }
+
+  var previewDocument = document.implementation.createHTMLDocument('');
+  previewDocument.body.innerHTML = html;
+  var iframe = previewDocument.body.querySelector('iframe'); // If we have a fixed aspect iframe, and it's a responsive embed block.
+
+  if (iframe && iframe.height && iframe.width) {
+    var aspectRatio = (iframe.width / iframe.height).toFixed(2); // Given the actual aspect ratio, find the widest ratio to support it.
+
+    for (var _ratioIndex = 0; _ratioIndex < _constants__WEBPACK_IMPORTED_MODULE_5__["ASPECT_RATIOS"].length; _ratioIndex++) {
+      var potentialRatio = _constants__WEBPACK_IMPORTED_MODULE_5__["ASPECT_RATIOS"][_ratioIndex];
+
+      if (aspectRatio >= potentialRatio.ratio) {
+        var _classnames;
+
+        return classnames_dedupe__WEBPACK_IMPORTED_MODULE_7___default()(existingClassNames, (_classnames = {}, Object(_babel_runtime_helpers_esm_defineProperty__WEBPACK_IMPORTED_MODULE_0__["default"])(_classnames, potentialRatio.className, allowResponsive), Object(_babel_runtime_helpers_esm_defineProperty__WEBPACK_IMPORTED_MODULE_0__["default"])(_classnames, 'wp-has-aspect-ratio', allowResponsive), _classnames));
+      }
+    }
+  }
+
+  return existingClassNames;
+}
 
 
 /***/ }),
@@ -5324,7 +5558,7 @@ __webpack_require__.r(__webpack_exports__);
 var name = 'core/file';
 var settings = {
   title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__["__"])('File'),
-  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__["__"])('Add a link to a file that visitors can download.'),
+  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__["__"])('Add a link to a downloadable file.'),
   icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__["SVG"], {
     viewBox: "0 0 24 24",
     xmlns: "http://www.w3.org/2000/svg"
@@ -5380,20 +5614,23 @@ var settings = {
     from: [{
       type: 'files',
       isMatch: function isMatch(files) {
-        return files.length === 1;
+        return files.length > 0;
       },
       // We define a lower priorty (higher number) than the default of 10. This
       // ensures that the File block is only created as a fallback.
       priority: 15,
       transform: function transform(files) {
-        var file = files[0];
-        var blobURL = Object(_wordpress_blob__WEBPACK_IMPORTED_MODULE_3__["createBlobURL"])(file); // File will be uploaded in componentDidMount()
+        var blocks = [];
+        files.map(function (file) {
+          var blobURL = Object(_wordpress_blob__WEBPACK_IMPORTED_MODULE_3__["createBlobURL"])(file); // File will be uploaded in componentDidMount()
 
-        return Object(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__["createBlock"])('core/file', {
-          href: blobURL,
-          fileName: file.name,
-          textLinkHref: blobURL
+          blocks.push(Object(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_4__["createBlock"])('core/file', {
+            href: blobURL,
+            fileName: file.name,
+            textLinkHref: blobURL
+          }));
         });
+        return blocks;
       }
     }, {
       type: 'block',
@@ -6109,14 +6346,16 @@ function (_Component) {
           break;
       } // Disable reason: Image itself is not meant to be
       // interactive, but should direct image selection and unfocus caption fields
-      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
 
 
       var img = url ? Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])("img", {
         src: url,
         alt: alt,
         "data-id": id,
-        onClick: this.onImageClick
+        onClick: this.onImageClick,
+        tabIndex: "0",
+        onKeyDown: this.onImageClick
       }) : Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_6__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__["Spinner"], null);
       var className = classnames__WEBPACK_IMPORTED_MODULE_7___default()({
         'is-selected': isSelected,
@@ -6270,7 +6509,7 @@ var blockAttributes = {
 var name = 'core/gallery';
 var settings = {
   title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Gallery'),
-  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Display multiple images in an elegantly organized tiled layout.'),
+  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__["__"])('Display multiple images in a rich gallery.'),
   icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__["SVG"], {
     viewBox: "0 0 24 24",
     xmlns: "http://www.w3.org/2000/svg"
@@ -6835,7 +7074,7 @@ var schema = {
 var name = 'core/heading';
 var settings = {
   title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('Heading'),
-  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('Introduce topics and help visitors (and search engines!) understand how your content is organized.'),
+  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__["__"])('Introduce new sections and organize content to help visitors (and search engines) understand the structure of your content.'),
   icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_7__["SVG"], {
     xmlns: "http://www.w3.org/2000/svg",
     viewBox: "0 0 24 24"
@@ -7006,7 +7245,7 @@ __webpack_require__.r(__webpack_exports__);
 var name = 'core/html';
 var settings = {
   title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Custom HTML'),
-  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Add your own HTML (and view it right here as you edit!).'),
+  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Add custom HTML code and preview it as you edit.'),
   icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["SVG"], {
     viewBox: "0 0 24 24",
     xmlns: "http://www.w3.org/2000/svg"
@@ -7319,7 +7558,7 @@ function (_Component) {
       if (value === LINK_DESTINATION_NONE) {
         href = undefined;
       } else if (value === LINK_DESTINATION_MEDIA) {
-        href = this.props.attributes.url;
+        href = this.props.image && this.props.image.source_url || this.props.attributes.url;
       } else if (value === LINK_DESTINATION_ATTACHMENT) {
         href = this.props.image && this.props.image.link;
       } else {
@@ -7428,8 +7667,8 @@ function (_Component) {
       };
     }
   }, {
-    key: "getAvailableSizes",
-    value: function getAvailableSizes() {
+    key: "getImageSizes",
+    value: function getImageSizes() {
       return Object(lodash__WEBPACK_IMPORTED_MODULE_10__["get"])(this.props.image, ['media_details', 'sizes'], {});
     }
   }, {
@@ -7472,7 +7711,8 @@ function (_Component) {
           noticeOperations = _this$props2.noticeOperations,
           noticeUI = _this$props2.noticeUI,
           toggleSelection = _this$props2.toggleSelection,
-          isRTL = _this$props2.isRTL;
+          isRTL = _this$props2.isRTL,
+          availableImageSizes = _this$props2.availableImageSizes;
       var url = attributes.url,
           alt = attributes.alt,
           caption = attributes.caption,
@@ -7484,6 +7724,7 @@ function (_Component) {
           height = attributes.height,
           linkTarget = attributes.linkTarget;
       var isExternal = isExternalImage(id, url);
+      var availableImageSizesBySlug = Object(lodash__WEBPACK_IMPORTED_MODULE_10__["keyBy"])(availableImageSizes, 'slug');
       var toolbarEditButton;
 
       if (url) {
@@ -7540,7 +7781,7 @@ function (_Component) {
         'is-resized': !!width || !!height,
         'is-focused': isSelected
       });
-      var availableSizes = this.getAvailableSizes();
+      var imageSizes = this.getImageSizes();
       var isResizable = ['wide', 'full'].indexOf(align) === -1 && isLargeViewport;
       var isLinkURLInputDisabled = linkDestination !== LINK_DESTINATION_CUSTOM;
 
@@ -7552,13 +7793,13 @@ function (_Component) {
           value: alt,
           onChange: _this3.updateAlt,
           help: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_11__["__"])('Alternative text describes your image to people who can’t see it. Add a short description with its key details.')
-        }), !Object(lodash__WEBPACK_IMPORTED_MODULE_10__["isEmpty"])(availableSizes) && Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_13__["SelectControl"], {
+        }), !Object(lodash__WEBPACK_IMPORTED_MODULE_10__["isEmpty"])(imageSizes) && Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_13__["SelectControl"], {
           label: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_11__["__"])('Image Size'),
           value: url,
-          options: Object(lodash__WEBPACK_IMPORTED_MODULE_10__["map"])(availableSizes, function (size, name) {
+          options: Object(lodash__WEBPACK_IMPORTED_MODULE_10__["map"])(imageSizes, function (size, slug) {
             return {
               value: size.source_url,
-              label: Object(lodash__WEBPACK_IMPORTED_MODULE_10__["startCase"])(name)
+              label: availableImageSizesBySlug[slug] ? availableImageSizesBySlug[slug].name : Object(lodash__WEBPACK_IMPORTED_MODULE_10__["startCase"])(slug)
             };
           }),
           onChange: _this3.updateImageURL
@@ -7750,12 +7991,14 @@ function (_Component) {
 
   var _getEditorSettings = getEditorSettings(),
       maxWidth = _getEditorSettings.maxWidth,
-      isRTL = _getEditorSettings.isRTL;
+      isRTL = _getEditorSettings.isRTL,
+      availableImageSizes = _getEditorSettings.availableImageSizes;
 
   return {
     image: id ? getMedia(id) : null,
     maxWidth: maxWidth,
-    isRTL: isRTL
+    isRTL: isRTL,
+    availableImageSizes: availableImageSizes
   };
 }), Object(_wordpress_viewport__WEBPACK_IMPORTED_MODULE_16__["withViewportMatch"])({
   isLargeViewport: 'medium'
@@ -8027,7 +8270,7 @@ var schema = {
 };
 var settings = {
   title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__["__"])('Image'),
-  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__["__"])('They’re worth 1,000 words! Insert a single image.'),
+  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__["__"])('Insert an image to make a visual statement.'),
   icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_3__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__["SVG"], {
     viewBox: "0 0 24 24",
     xmlns: "http://www.w3.org/2000/svg"
@@ -8601,7 +8844,7 @@ __webpack_require__.r(__webpack_exports__);
 var name = 'core/latest-comments';
 var settings = {
   title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Latest Comments'),
-  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Show a list of your site’s most recent comments.'),
+  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Display a list of your most recent comments.'),
   icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__["SVG"], {
     viewBox: "0 0 24 24",
     xmlns: "http://www.w3.org/2000/svg"
@@ -9071,7 +9314,7 @@ var schema = {
 var name = 'core/list';
 var settings = {
   title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_10__["__"])('List'),
-  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_10__["__"])('Numbers, bullets, up to you. Add a list of items.'),
+  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_10__["__"])('Create a bulleted or numbered list.'),
   icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_14__["SVG"], {
     viewBox: "0 0 24 24",
     xmlns: "http://www.w3.org/2000/svg"
@@ -9089,12 +9332,15 @@ var settings = {
       blocks: ['core/paragraph'],
       transform: function transform(blockAttributes) {
         return Object(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_11__["createBlock"])('core/list', {
-          values: Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_13__["toHTMLString"])(Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_13__["join"])(blockAttributes.map(function (_ref) {
-            var content = _ref.content;
-            return Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_13__["replace"])(Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_13__["create"])({
-              html: content
-            }), /\n/g, "\u2028");
-          }), "\u2028"), 'li')
+          values: Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_13__["toHTMLString"])({
+            value: Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_13__["join"])(blockAttributes.map(function (_ref) {
+              var content = _ref.content;
+              return Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_13__["replace"])(Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_13__["create"])({
+                html: content
+              }), /\n/g, _wordpress_rich_text__WEBPACK_IMPORTED_MODULE_13__["LINE_SEPARATOR"]);
+            }), _wordpress_rich_text__WEBPACK_IMPORTED_MODULE_13__["LINE_SEPARATOR"]),
+            multilineTag: 'li'
+          })
         });
       }
     }, {
@@ -9103,10 +9349,13 @@ var settings = {
       transform: function transform(_ref2) {
         var value = _ref2.value;
         return Object(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_11__["createBlock"])('core/list', {
-          values: Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_13__["toHTMLString"])(Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_13__["create"])({
-            html: value,
-            multilineTag: 'p'
-          }), 'li')
+          values: Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_13__["toHTMLString"])({
+            value: Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_13__["create"])({
+              html: value,
+              multilineTag: 'p'
+            }),
+            multilineTag: 'li'
+          })
         });
       }
     }, {
@@ -9148,10 +9397,13 @@ var settings = {
         var values = _ref5.values;
         return Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_13__["split"])(Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_13__["create"])({
           html: values,
-          multilineTag: 'li'
-        }), "\u2028").map(function (piece) {
+          multilineTag: 'li',
+          multilineWrapperTags: ['ul', 'ol']
+        }), _wordpress_rich_text__WEBPACK_IMPORTED_MODULE_13__["LINE_SEPARATOR"]).map(function (piece) {
           return Object(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_11__["createBlock"])('core/paragraph', {
-            content: Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_13__["toHTMLString"])(piece)
+            content: Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_13__["toHTMLString"])({
+              value: piece
+            })
           });
         });
       }
@@ -9161,10 +9413,14 @@ var settings = {
       transform: function transform(_ref6) {
         var values = _ref6.values;
         return Object(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_11__["createBlock"])('core/quote', {
-          value: Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_13__["toHTMLString"])(Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_13__["create"])({
-            html: values,
-            multilineTag: 'li'
-          }), 'p')
+          value: Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_13__["toHTMLString"])({
+            value: Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_13__["create"])({
+              html: values,
+              multilineTag: 'li',
+              multilineWrapperTags: ['ul', 'ol']
+            }),
+            multilineTag: 'p'
+          })
         });
       }
     }]
@@ -9556,6 +9812,8 @@ function (_Component) {
   }, {
     key: "render",
     value: function render() {
+      var _classnames;
+
       var _this$props = this.props,
           attributes = _this$props.attributes,
           className = _this$props.className,
@@ -9563,15 +9821,16 @@ function (_Component) {
           isSelected = _this$props.isSelected,
           setAttributes = _this$props.setAttributes,
           setBackgroundColor = _this$props.setBackgroundColor;
-      var mediaAlt = attributes.mediaAlt,
+      var isStackedOnMobile = attributes.isStackedOnMobile,
+          mediaAlt = attributes.mediaAlt,
           mediaPosition = attributes.mediaPosition,
           mediaType = attributes.mediaType,
           mediaWidth = attributes.mediaWidth;
       var temporaryMediaWidth = this.state.mediaWidth;
-      var classNames = classnames__WEBPACK_IMPORTED_MODULE_9___default()(className, Object(_babel_runtime_helpers_esm_defineProperty__WEBPACK_IMPORTED_MODULE_0__["default"])({
+      var classNames = classnames__WEBPACK_IMPORTED_MODULE_9___default()(className, (_classnames = {
         'has-media-on-the-right': 'right' === mediaPosition,
         'is-selected': isSelected
-      }, backgroundColor.class, backgroundColor.class));
+      }, Object(_babel_runtime_helpers_esm_defineProperty__WEBPACK_IMPORTED_MODULE_0__["default"])(_classnames, backgroundColor.class, backgroundColor.class), Object(_babel_runtime_helpers_esm_defineProperty__WEBPACK_IMPORTED_MODULE_0__["default"])(_classnames, 'is-stacked-on-mobile', isStackedOnMobile), _classnames));
       var widthString = "".concat(temporaryMediaWidth || mediaWidth, "%");
       var style = {
         gridTemplateColumns: 'right' === mediaPosition ? "auto ".concat(widthString) : "".concat(widthString, " auto"),
@@ -9608,9 +9867,17 @@ function (_Component) {
         });
       };
 
-      var mediaTextGeneralSettings = mediaType === 'image' && Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_12__["PanelBody"], {
+      var mediaTextGeneralSettings = Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_12__["PanelBody"], {
         title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_10__["__"])('Media & Text Settings')
-      }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_12__["TextareaControl"], {
+      }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_12__["ToggleControl"], {
+        label: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_10__["__"])('Stack on mobile'),
+        checked: isStackedOnMobile,
+        onChange: function onChange() {
+          return setAttributes({
+            isStackedOnMobile: !isStackedOnMobile
+          });
+        }
+      }), mediaType === 'image' && Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_8__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_12__["TextareaControl"], {
         label: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_10__["__"])('Alt Text (Alternative Text)'),
         value: mediaAlt,
         onChange: onMediaAltChange,
@@ -9689,6 +9956,7 @@ var DEFAULT_MEDIA_WIDTH = 50;
 var name = 'core/media-text';
 var settings = {
   title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__["__"])('Media & Text'),
+  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__["__"])('Set media and words side-by-side media for a richer layout.'),
   icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__["SVG"], {
     xmlns: "http://www.w3.org/2000/svg",
     viewBox: "0 0 24 24"
@@ -9734,6 +10002,10 @@ var settings = {
     mediaWidth: {
       type: 'number',
       default: 50
+    },
+    isStackedOnMobile: {
+      type: 'boolean',
+      default: false
     }
   },
   supports: {
@@ -9741,9 +10013,12 @@ var settings = {
   },
   edit: _edit__WEBPACK_IMPORTED_MODULE_7__["default"],
   save: function save(_ref) {
+    var _classnames;
+
     var attributes = _ref.attributes;
     var backgroundColor = attributes.backgroundColor,
         customBackgroundColor = attributes.customBackgroundColor,
+        isStackedOnMobile = attributes.isStackedOnMobile,
         mediaAlt = attributes.mediaAlt,
         mediaPosition = attributes.mediaPosition,
         mediaType = attributes.mediaType,
@@ -9764,9 +10039,9 @@ var settings = {
       }
     };
     var backgroundClass = Object(_wordpress_editor__WEBPACK_IMPORTED_MODULE_6__["getColorClassName"])('background-color', backgroundColor);
-    var className = classnames__WEBPACK_IMPORTED_MODULE_3___default()(Object(_babel_runtime_helpers_esm_defineProperty__WEBPACK_IMPORTED_MODULE_0__["default"])({
+    var className = classnames__WEBPACK_IMPORTED_MODULE_3___default()((_classnames = {
       'has-media-on-the-right': 'right' === mediaPosition
-    }, backgroundClass, backgroundClass));
+    }, Object(_babel_runtime_helpers_esm_defineProperty__WEBPACK_IMPORTED_MODULE_0__["default"])(_classnames, backgroundClass, backgroundClass), Object(_babel_runtime_helpers_esm_defineProperty__WEBPACK_IMPORTED_MODULE_0__["default"])(_classnames, 'is-stacked-on-mobile', isStackedOnMobile), _classnames));
     var gridTemplateColumns;
 
     if (mediaWidth !== DEFAULT_MEDIA_WIDTH) {
@@ -10255,7 +10530,7 @@ __webpack_require__.r(__webpack_exports__);
 var name = 'core/more';
 var settings = {
   title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__["_x"])('More', 'block name'),
-  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__["__"])('Want to show only part of this post on your blog’s home page? Insert a "More" block where you want the split.'),
+  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__["__"])('Want to show only an excerpt of this post on your home page? Use this block to define where you want the separation.'),
   icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__["SVG"], {
     viewBox: "0 0 24 24",
     xmlns: "http://www.w3.org/2000/svg"
@@ -10325,6 +10600,35 @@ var settings = {
 
 /***/ }),
 
+/***/ "./node_modules/@wordpress/block-library/build-module/nextpage/edit.js":
+/*!*****************************************************************************!*\
+  !*** ./node_modules/@wordpress/block-library/build-module/nextpage/edit.js ***!
+  \*****************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return NextPageEdit; });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__);
+
+
+/**
+ * WordPress dependencies
+ */
+
+function NextPageEdit() {
+  return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("div", {
+    className: "wp-block-nextpage"
+  }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("span", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Page break')));
+}
+
+
+/***/ }),
+
 /***/ "./node_modules/@wordpress/block-library/build-module/nextpage/index.js":
 /*!******************************************************************************!*\
   !*** ./node_modules/@wordpress/block-library/build-module/nextpage/index.js ***!
@@ -10344,6 +10648,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_blocks__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _edit__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./edit */ "./node_modules/@wordpress/block-library/build-module/nextpage/edit.js");
 
 
 /**
@@ -10353,10 +10658,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
 var name = 'core/nextpage';
 var settings = {
-  title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Page break'),
-  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('This block allows you to set break points on your post. Visitors of your blog are then presented with content split into multiple pages.'),
+  title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Page Break'),
+  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Separate your content into a multi-page experience.'),
   icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__["SVG"], {
     xmlns: "http://www.w3.org/2000/svg",
     viewBox: "0 0 24 24"
@@ -10387,11 +10693,7 @@ var settings = {
       }
     }]
   },
-  edit: function edit() {
-    return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("div", {
-      className: "wp-block-nextpage"
-    }, Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])("span", null, Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Page break')));
-  },
+  edit: _edit__WEBPACK_IMPORTED_MODULE_4__["default"],
   save: function save() {
     return Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["RawHTML"], null, '<!--nextpage-->');
   }
@@ -10798,7 +11100,7 @@ var schema = {
 var name = 'core/paragraph';
 var settings = {
   title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__["__"])('Paragraph'),
-  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__["__"])('Add some basic text.'),
+  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__["__"])('Start with the building block of all narrative.'),
   icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__["SVG"], {
     xmlns: "http://www.w3.org/2000/svg",
     viewBox: "0 0 24 24"
@@ -11358,7 +11660,7 @@ var blockAttributes = {
 var name = 'core/pullquote';
 var settings = {
   title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__["__"])('Pullquote'),
-  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__["__"])('Highlight a quote from your post or page by displaying it as a graphic element.'),
+  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__["__"])('Give special visual emphasis to a quote from your text.'),
   icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_2__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_8__["SVG"], {
     viewBox: "0 0 24 24",
     xmlns: "http://www.w3.org/2000/svg"
@@ -11554,7 +11856,7 @@ var blockAttributes = {
 var name = 'core/quote';
 var settings = {
   title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__["__"])('Quote'),
-  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__["__"])('Maybe someone else said it better -- add some quoted text.'),
+  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__["__"])('Give quoted text visual emphasis. "In quoting others, we cite ourselves." — Julio Cortázar'),
   icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_3__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__["SVG"], {
     viewBox: "0 0 24 24",
     xmlns: "http://www.w3.org/2000/svg"
@@ -11582,12 +11884,15 @@ var settings = {
       blocks: ['core/paragraph'],
       transform: function transform(attributes) {
         return Object(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_6__["createBlock"])('core/quote', {
-          value: Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_8__["toHTMLString"])(Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_8__["join"])(attributes.map(function (_ref) {
-            var content = _ref.content;
-            return Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_8__["create"])({
-              html: content
-            });
-          }), "\u2028"), 'p')
+          value: Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_8__["toHTMLString"])({
+            value: Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_8__["join"])(attributes.map(function (_ref) {
+              var content = _ref.content;
+              return Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_8__["create"])({
+                html: content
+              });
+            }), "\u2028"),
+            multilineTag: 'p'
+          })
         });
       }
     }, {
@@ -11640,18 +11945,20 @@ var settings = {
             citation = _ref5.citation;
         var paragraphs = [];
 
-        if (value) {
+        if (value && value !== '<p></p>') {
           paragraphs.push.apply(paragraphs, Object(_babel_runtime_helpers_esm_toConsumableArray__WEBPACK_IMPORTED_MODULE_2__["default"])(Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_8__["split"])(Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_8__["create"])({
             html: value,
             multilineTag: 'p'
           }), "\u2028").map(function (piece) {
             return Object(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_6__["createBlock"])('core/paragraph', {
-              content: Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_8__["toHTMLString"])(piece)
+              content: Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_8__["toHTMLString"])({
+                value: piece
+              })
             });
           })));
         }
 
-        if (citation) {
+        if (citation && citation !== '<p></p>') {
           paragraphs.push(Object(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_6__["createBlock"])('core/paragraph', {
             content: citation
           }));
@@ -11688,10 +11995,15 @@ var settings = {
         }), "\u2028");
         var quotePieces = pieces.slice(1);
         return [Object(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_6__["createBlock"])('core/heading', {
-          content: Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_8__["toHTMLString"])(pieces[0])
+          content: Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_8__["toHTMLString"])({
+            value: pieces[0]
+          })
         }), Object(_wordpress_blocks__WEBPACK_IMPORTED_MODULE_6__["createBlock"])('core/quote', Object(_babel_runtime_helpers_esm_objectSpread__WEBPACK_IMPORTED_MODULE_0__["default"])({}, attrs, {
           citation: citation,
-          value: Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_8__["toHTMLString"])(quotePieces.length ? Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_8__["join"])(pieces.slice(1), "\u2028") : Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_8__["create"])(), 'p')
+          value: Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_8__["toHTMLString"])({
+            value: quotePieces.length ? Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_8__["join"])(pieces.slice(1), "\u2028") : Object(_wordpress_rich_text__WEBPACK_IMPORTED_MODULE_8__["create"])(),
+            multilineTag: 'p'
+          })
         }))];
       }
     }, {
@@ -11896,7 +12208,7 @@ __webpack_require__.r(__webpack_exports__);
 var name = 'core/separator';
 var settings = {
   title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Separator'),
-  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Insert a horizontal line where you want to create a break between ideas.'),
+  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Create a break between ideas or sections with a horizontal separator.'),
   icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__["SVG"], {
     viewBox: "0 0 24 24",
     xmlns: "http://www.w3.org/2000/svg"
@@ -11986,7 +12298,7 @@ __webpack_require__.r(__webpack_exports__);
 var name = 'core/shortcode';
 var settings = {
   title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__["__"])('Shortcode'),
-  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__["__"])('Add a shortcode -- a WordPress-specific snippet of code written between square brackets.'),
+  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__["__"])('Insert additional custom elements with a WordPress shortcode.'),
   icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__["SVG"], {
     viewBox: "0 0 24 24",
     xmlns: "http://www.w3.org/2000/svg"
@@ -12101,7 +12413,7 @@ __webpack_require__.r(__webpack_exports__);
 var name = 'core/spacer';
 var settings = {
   title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__["__"])('Spacer'),
-  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__["__"])('Add an element with empty space and custom height.'),
+  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__["__"])('Add white space between blocks and customize its height.'),
   icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__["SVG"], {
     viewBox: "0 0 24 24",
     xmlns: "http://www.w3.org/2000/svg"
@@ -12926,7 +13238,7 @@ function getTableSectionAttributeSchema(section) {
 var name = 'core/table';
 var settings = {
   title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__["__"])('Table'),
-  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__["__"])('Insert a table -- perfect for sharing charts and data.'),
+  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_2__["__"])('Insert a table — perfect for sharing charts and data.'),
   icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__["SVG"], {
     viewBox: "0 0 24 24",
     xmlns: "http://www.w3.org/2000/svg"
@@ -13470,7 +13782,7 @@ __webpack_require__.r(__webpack_exports__);
 var name = 'core/verse';
 var settings = {
   title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Verse'),
-  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('A block for haiku? Why not? Blocks for all the things! (See what we did here?)'),
+  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Insert poetry. Use special spacing formats. Or quote song lyrics.'),
   icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_4__["SVG"], {
     viewBox: "0 0 24 24",
     xmlns: "http://www.w3.org/2000/svg"
@@ -13930,7 +14242,7 @@ __webpack_require__.r(__webpack_exports__);
 var name = 'core/video';
 var settings = {
   title: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Video'),
-  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed a video file and a simple video player.'),
+  description: Object(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_1__["__"])('Embed a video from your media library or upload a new one.'),
   icon: Object(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__["createElement"])(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__["SVG"], {
     viewBox: "0 0 24 24",
     xmlns: "http://www.w3.org/2000/svg"
