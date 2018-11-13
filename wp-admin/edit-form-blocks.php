@@ -19,8 +19,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @global WP_Post      $post
  * @global string       $title
  * @global array        $editor_styles
+ * @global array        $wp_meta_boxes
  */
-global $post_type, $post_type_object, $post, $title, $editor_styles;
+global $post_type, $post_type_object, $post, $title, $editor_styles, $wp_meta_boxes;
 
 if ( ! empty( $post_type_object ) ) {
 	$title = $post_type_object->labels->edit_item;
@@ -103,24 +104,11 @@ if ( 'auto-draft' === $post->post_status ) {
 	$is_new_post = true;
 	// Override "(Auto Draft)" new post default title with empty string, or filtered value.
 	$initial_edits = array(
-		'title'   => array(
-			'raw' => $post->post_title,
-		),
-		'content' => array(
-			'raw' => $post->post_content,
-		),
-		'excerpt' => array(
-			'raw' => $post->post_excerpt,
-		),
+		'title'   => $post->post_title,
+		'content' => $post->post_content,
+		'excerpt' => $post->post_excerpt,
 	);
 }
-
-// Prepare Jed locale data.
-$locale_data = wp_get_jed_locale_data( 'default' );
-wp_add_inline_script(
-	'wp-i18n',
-	'wp.i18n.setLocaleData( ' . wp_json_encode( $locale_data ) . ' );'
-);
 
 // Preload server-registered block schemas.
 wp_add_inline_script(
@@ -209,8 +197,6 @@ if ( $editor_styles && current_theme_supports( 'editor-styles' ) ) {
 }
 
 // Image sizes.
-$image_sizes   = get_intermediate_image_sizes();
-$image_sizes[] = 'full';
 
 /** This filter is documented in wp-admin/includes/media.php */
 $image_size_names = apply_filters(
@@ -224,10 +210,10 @@ $image_size_names = apply_filters(
 );
 
 $available_image_sizes = array();
-foreach ( $image_sizes as $image_size_slug ) {
+foreach ( $image_size_names as $image_size_slug => $image_size_name ) {
 	$available_image_sizes[] = array(
 		'slug' => $image_size_slug,
-		'name' => isset( $image_size_names[ $image_size_slug ] ) ? $image_size_names[ $image_size_slug ] : $image_size_slug,
+		'name' => $image_size_name,
 	);
 }
 
@@ -266,10 +252,10 @@ if ( $user_id ) {
  *
  * @since 5.0.0
  *
- * @param string  $text Placeholder text. Default 'Write your story'.
+ * @param string  $text Placeholder text. Default 'Start writing or type / to choose a block'.
  * @param WP_Post $post Post object.
  */
-$body_placeholder = apply_filters( 'write_your_story', __( 'Write your story' ), $post );
+$body_placeholder = apply_filters( 'write_your_story', __( 'Start writing or type / to choose a block' ), $post );
 
 $editor_settings = array(
 	'alignWide'              => $align_wide,
@@ -286,7 +272,7 @@ $editor_settings = array(
 	'maxUploadFileSize'      => $max_upload_size,
 	'allowedMimeTypes'       => get_allowed_mime_types(),
 	'styles'                 => $styles,
-	'availableImageSizes'    => $available_image_sizes,
+	'imageSizes'             => $available_image_sizes,
 	'postLock'               => $lock_details,
 	'postLockUtils'          => array(
 		'nonce'       => wp_create_nonce( 'lock-post_' . $post->ID ),
@@ -331,36 +317,6 @@ if ( $is_new_post && ! isset( $editor_settings['template'] ) && 'post' === $post
 	}
 }
 
-$init_script = <<<JS
-( function() {
-	window._wpLoadBlockEditor = new Promise( function( resolve ) {
-		wp.domReady( function() {
-			resolve( wp.editPost.initializeEditor( 'editor', "%s", %d, %s, %s ) );
-		} );
-	} );
-} )();
-JS;
-
-
-/**
- * Filters the settings to pass to the block editor.
- *
- * @since 5.0.0
- *
- * @param array   $editor_settings Default editor settings.
- * @param WP_Post $post            Post being edited.
- */
-$editor_settings = apply_filters( 'block_editor_settings', $editor_settings, $post );
-
-$script = sprintf(
-	$init_script,
-	$post->post_type,
-	$post->ID,
-	wp_json_encode( $editor_settings ),
-	wp_json_encode( $initial_edits )
-);
-wp_add_inline_script( 'wp-edit-post', $script );
-
 /**
  * Scripts
  */
@@ -393,9 +349,40 @@ do_action( 'enqueue_block_editor_assets' );
 require_once( ABSPATH . 'wp-admin/includes/meta-boxes.php' );
 register_and_do_post_meta_boxes( $post );
 
-// Some meta boxes hook into the 'edit_form_advanced' filter.
-/** This action is documented in wp-admin/edit-form-advanced.php */
-do_action( 'edit_form_advanced', $post );
+// Check if the Custom Fields meta box has been removed at some point.
+$core_meta_boxes = $wp_meta_boxes[ $current_screen->id ]['normal']['core'];
+if ( ! isset( $core_meta_boxes['postcustom'] ) || ! $core_meta_boxes['postcustom'] ) {
+	unset( $editor_settings['enableCustomFields'] );
+}
+
+/**
+ * Filters the settings to pass to the block editor.
+ *
+ * @since 5.0.0
+ *
+ * @param array   $editor_settings Default editor settings.
+ * @param WP_Post $post            Post being edited.
+ */
+$editor_settings = apply_filters( 'block_editor_settings', $editor_settings, $post );
+
+$init_script = <<<JS
+( function() {
+	window._wpLoadBlockEditor = new Promise( function( resolve ) {
+		wp.domReady( function() {
+			resolve( wp.editPost.initializeEditor( 'editor', "%s", %d, %s, %s ) );
+		} );
+	} );
+} )();
+JS;
+
+$script = sprintf(
+	$init_script,
+	$post->post_type,
+	$post->ID,
+	wp_json_encode( $editor_settings ),
+	wp_json_encode( $initial_edits )
+);
+wp_add_inline_script( 'wp-edit-post', $script );
 
 require_once( ABSPATH . 'wp-admin/admin-header.php' );
 ?>
