@@ -77,7 +77,7 @@ function wp_default_packages_vendor( &$scripts ) {
 	$dev_suffix = wp_scripts_get_suffix( 'dev' );
 
 	$vendor_scripts = array(
-		'react',
+		'react' => array( 'wp-polyfill' ),
 		'react-dom' => array( 'react' ),
 		'moment',
 		'lodash',
@@ -183,6 +183,7 @@ function wp_default_packages_scripts( &$scripts ) {
 			'wp-dom',
 			'wp-element',
 			'wp-hooks',
+			'wp-html-entities',
 			'wp-i18n',
 			'wp-is-shallow-equal',
 			'wp-polyfill',
@@ -234,7 +235,6 @@ function wp_default_packages_scripts( &$scripts ) {
 		),
 		'compose' => array(
 			'lodash',
-			'wp-deprecated',
 			'wp-element',
 			'wp-is-shallow-equal',
 			'wp-polyfill'
@@ -243,7 +243,6 @@ function wp_default_packages_scripts( &$scripts ) {
 		'data' => array(
 			'lodash',
 			'wp-compose',
-			'wp-deprecated',
 			'wp-element',
 			'wp-is-shallow-equal',
 			'wp-polyfill',
@@ -348,7 +347,6 @@ function wp_default_packages_scripts( &$scripts ) {
 			'wp-components',
 			'wp-compose',
 			'wp-data',
-			'wp-deprecated',
 			'wp-i18n',
 			'wp-polyfill',
 			'lodash',
@@ -359,7 +357,6 @@ function wp_default_packages_scripts( &$scripts ) {
 			'lodash',
 			'wp-blocks',
 			'wp-data',
-			'wp-deprecated',
 			'wp-escape-html',
 			'wp-polyfill',
 		),
@@ -484,8 +481,18 @@ function wp_default_packages_inline_scripts( &$scripts ) {
 		'window.wp.oldEditor = window.wp.editor;',
 		'after'
 	);
+}
 
-	// TinyMCE init.
+/**
+ * Adds inline scripts required for the TinyMCE in the block editor.
+ *
+ * @since 5.0.0
+ *
+ * @global WP_Scripts $wp_scripts
+ */
+function wp_tinymce_inline_scripts() {
+	global $wp_scripts;
+
 	$tinymce_plugins = array(
 		'charmap',
 		'colorpicker',
@@ -596,7 +603,7 @@ function wp_default_packages_inline_scripts( &$scripts ) {
 		}
 	}';
 
-	$scripts->add_inline_script( 'wp-block-library', $script, 'before' );
+	$wp_scripts->add_inline_script( 'wp-block-library', $script, 'before' );
 }
 
 /**
@@ -1668,12 +1675,12 @@ function wp_default_styles( &$styles ) {
 	}
 	$styles->add( 'wp-editor-font', $fonts_url );
 
-	$styles->add( 'wp-block-library-theme', '/wp-includes/css/dist/block-library/theme.css' );
+	$styles->add( 'wp-block-library-theme', "/wp-includes/css/dist/block-library/theme$suffix.css" );
 	$styles->add_data( 'wp-block-library-theme', 'rtl', 'replace' );
 
 	$styles->add(
 		'wp-edit-blocks',
-		'/wp-includes/css/dist/block-library/editor.css',
+		"/wp-includes/css/dist/block-library/editor$suffix.css",
 		array(
 			'wp-components',
 			'wp-editor',
@@ -1695,7 +1702,7 @@ function wp_default_styles( &$styles ) {
 
 	foreach ( $package_styles as $package => $dependencies ) {
 		$handle  = 'wp-' . $package;
-		$path     = '/wp-includes/css/dist/' . $package . '/style.css';
+		$path     = "/wp-includes/css/dist/$package/style$suffix.css";
 
 		$styles->add( $handle, $path, $dependencies );
 		$styles->add_data( $handle, 'rtl', 'replace' );
