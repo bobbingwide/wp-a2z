@@ -2,8 +2,6 @@
 *.loh
 .htaccess
 .idea/
-/license.txt
-/readme.html
 bwtrace*.ajax
 bwtrace*.loh
 bwtrace.vt.*
