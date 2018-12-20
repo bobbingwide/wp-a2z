@@ -20,7 +20,7 @@ The wp-a2z repository is much simpler.
 4.8, 4.8.1, 4.8.2, 4.8.3, 
 4.9, 4.9.1, 4.9.2, 4.9.3, 4.9.4, 4.9.5, 4.9.6, 4.9.7, 4.9.8,
 5.0-beta1, 5.0-beta2, 5.0-beta3, 5.0-beta4. 5.0-beta5, 5.0-RC1, 5.0-RC2, 5.0-RC3
-5.0, 5.0.1
+5.0, 5.0.1, 5.0.2
 
 - It doesn't contain backward compatible branches.
 - It does not contain any of the plugins or themes.
