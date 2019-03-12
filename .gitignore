@@ -2,7 +2,8 @@
 *.loh
 .htaccess
 .idea/
-bwtrace/
+/license.txt
+/readme.html
 bwtrace*.ajax
 bwtrace*.loh
 bwtrace.vt.*
@@ -22,3 +23,7 @@ wp-content/themes/
 wp-content/upgrade/
 wp-content/uploads/
 wp-content/wp-cache-config.php
+wp-content/sunrise.php
+.well-known/
+wp-content/languages
+wp-content/wflogs
