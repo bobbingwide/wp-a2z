@@ -2,6 +2,7 @@
 *.loh
 .htaccess
 .idea/
+bwtrace/
 bwtrace*.ajax
 bwtrace*.loh
 bwtrace.vt.*
