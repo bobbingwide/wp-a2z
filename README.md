@@ -22,10 +22,11 @@ The wp-a2z repository is much simpler.
 5.0-beta1, 5.0-beta2, 5.0-beta3, 5.0-beta4. 5.0-beta5, 5.0-RC1, 5.0-RC2, 5.0-RC3
 5.0, 5.0.1, 5.0.2, 5.0.3
 5.1-RC1
-5.1
+5.1, 5.1.1
 
 - It doesn't contain backward compatible branches.
 - It does not contain any of the plugins or themes.
+- It does contain wp-content/sunrise.php, used in WordPress Multi Site
 
 
 ### Purpose
