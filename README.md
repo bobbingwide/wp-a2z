@@ -23,6 +23,8 @@ The wp-a2z repository is much simpler.
 5.0, 5.0.1, 5.0.2, 5.0.3
 5.1-RC1
 5.1, 5.1.1
+5.2-beta1, 5.2-beta2, 5.2-beta3, 5.2-RC1, 5.2-RC2
+5.2
 
 - It doesn't contain backward compatible branches.
 - It does not contain any of the plugins or themes.
@@ -32,6 +34,9 @@ The wp-a2z repository is much simpler.
 ### Purpose
 - Primarily to help build the WP-a2z Dynamic API Reference.
 - It may also be used in sites where the source code is mostly under Git control.
+
+### References
+- https://wordpress.org/news/category/releases
 
 
 
