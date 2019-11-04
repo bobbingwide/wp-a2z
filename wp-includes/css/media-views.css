@@ -73,7 +73,7 @@
 
 .media-frame select,
 .wp-admin .media-frame select {
-	min-height: 30px;
+	min-height: 28px;
 	vertical-align: middle;
 }
 
@@ -2268,6 +2268,7 @@
 }
 
 /* Buttons group in IE 11. */
+.media-frame .setting-group .button-group,
 .image-details .embed-media-settings .setting .button-group {
 	width: auto;
 }
