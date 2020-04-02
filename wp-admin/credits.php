@@ -7,14 +7,14 @@
  */
 
 /** WordPress Administration Bootstrap */
-require_once( dirname( __FILE__ ) . '/admin.php' );
-require_once( dirname( __FILE__ ) . '/includes/credits.php' );
+require_once __DIR__ . '/admin.php';
+require_once __DIR__ . '/includes/credits.php';
 
 $title = __( 'Credits' );
 
 list( $display_version ) = explode( '-', get_bloginfo( 'version' ) );
 
-include( ABSPATH . 'wp-admin/admin-header.php' );
+require_once ABSPATH . 'wp-admin/admin-header.php';
 
 $credits = wp_credits();
 ?>
@@ -32,13 +32,7 @@ $credits = wp_credits();
 
 		<div class="about__header-text">
 			<p>
-				<?php
-				printf(
-					/* translators: %s: The current WordPress version number. */
-					__( 'Introducing our most refined user experience with the improved block editor in WordPress %s!' ),
-					$display_version
-				);
-				?>
+				<?php _e( 'Building more with blocks, faster and easier.' ); ?>
 			</p>
 		</div>
 
@@ -82,7 +76,7 @@ $credits = wp_credits();
 <?php
 if ( ! $credits ) {
 	echo '</div>';
-	include( ABSPATH . 'wp-admin/admin-footer.php' );
+	require_once ABSPATH . 'wp-admin/admin-footer.php';
 	exit;
 }
 ?>
@@ -129,11 +123,11 @@ if ( ! $credits ) {
 </div>
 <?php
 
-include( ABSPATH . 'wp-admin/admin-footer.php' );
+require_once ABSPATH . 'wp-admin/admin-footer.php';
 
 return;
 
-// These are strings returned by the API that we want to be translatable
+// These are strings returned by the API that we want to be translatable.
 __( 'Project Leaders' );
 /* translators: %s: The current WordPress version number. */
 __( 'Core Contributors to WordPress %s' );

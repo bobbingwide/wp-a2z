@@ -7,13 +7,13 @@
  */
 
 /** WordPress Administration Bootstrap */
-require_once( dirname( __FILE__ ) . '/admin.php' );
+require_once __DIR__ . '/admin.php';
 
 $title = __( 'Privacy' );
 
 list( $display_version ) = explode( '-', get_bloginfo( 'version' ) );
 
-include( ABSPATH . 'wp-admin/admin-header.php' );
+require_once ABSPATH . 'wp-admin/admin-header.php';
 ?>
 <div class="wrap about__container">
 
@@ -29,13 +29,7 @@ include( ABSPATH . 'wp-admin/admin-header.php' );
 
 		<div class="about__header-text">
 			<p>
-				<?php
-				printf(
-					/* translators: %s: The current WordPress version number. */
-					__( 'Introducing our most refined user experience with the improved block editor in WordPress %s!' ),
-					$display_version
-				);
-				?>
+				<?php _e( 'Building more with blocks, faster and easier.' ); ?>
 			</p>
 		</div>
 
@@ -76,4 +70,4 @@ include( ABSPATH . 'wp-admin/admin-header.php' );
 	</div>
 
 </div>
-<?php include( ABSPATH . 'wp-admin/admin-footer.php' ); ?>
+<?php require_once ABSPATH . 'wp-admin/admin-footer.php'; ?>
