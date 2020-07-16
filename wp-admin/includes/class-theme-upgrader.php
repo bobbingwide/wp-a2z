@@ -273,9 +273,9 @@ class Theme_Upgrader extends WP_Upgrader {
 			 *
 			 * @since 5.5.0
 			 *
-			 * @param string  $package          The package file.
-			 * @param array   $new_plugin_data  The new theme data.
-			 * @param string  $package_type     The package type (plugin or theme).
+			 * @param string  $package        The package file.
+			 * @param array   $new_theme_data The new theme data.
+			 * @param string  $package_type   The package type (plugin or theme).
 			 */
 			do_action( 'upgrader_overwrote_package', $package, $this->new_theme_data, 'theme' );
 		}
@@ -352,8 +352,8 @@ class Theme_Upgrader extends WP_Upgrader {
 
 		wp_clean_themes_cache( $parsed_args['clear_update_cache'] );
 
-		// Ensure any future auto-update failures trigger a failure email by removing the last
-		// failure notification from the list when themes update successfully.
+		// Ensure any future auto-update failures trigger a failure email by removing
+		// the last failure notification from the list when themes update successfully.
 		$past_failure_emails = get_option( 'auto_plugin_theme_update_emails', array() );
 
 		if ( isset( $past_failure_emails[ $theme ] ) ) {
@@ -488,8 +488,8 @@ class Theme_Upgrader extends WP_Upgrader {
 		remove_filter( 'upgrader_post_install', array( $this, 'current_after' ) );
 		remove_filter( 'upgrader_clear_destination', array( $this, 'delete_old_theme' ) );
 
-		// Ensure any future auto-update failures trigger a failure email by removing the last
-		// failure notification from the list when themes update successfully.
+		// Ensure any future auto-update failures trigger a failure email by removing
+		// the last failure notification from the list when themes update successfully.
 		$past_failure_emails = get_option( 'auto_plugin_theme_update_emails', array() );
 
 		foreach ( $results as $theme => $result ) {
@@ -500,8 +500,8 @@ class Theme_Upgrader extends WP_Upgrader {
 
 			unset( $past_failure_emails[ $theme ] );
 		}
+
 		update_option( 'auto_plugin_theme_update_emails', $past_failure_emails );
-		reset( $results );
 
 		return $results;
 	}

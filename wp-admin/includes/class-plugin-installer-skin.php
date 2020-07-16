@@ -186,7 +186,9 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 		$folder = ltrim( substr( $folder, strlen( WP_PLUGIN_DIR ) ), '/' );
 
 		$current_plugin_data = false;
-		foreach ( get_plugins() as $plugin => $plugin_data ) {
+		$all_plugins         = get_plugins();
+
+		foreach ( $all_plugins as $plugin => $plugin_data ) {
 			if ( strrpos( $plugin, $folder ) !== 0 ) {
 				continue;
 			}
@@ -194,13 +196,15 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 			$current_plugin_data = $plugin_data;
 		}
 
-		if ( empty( $current_plugin_data ) || empty( $this->upgrader->new_plugin_data ) ) {
+		$new_plugin_data = $this->upgrader->new_plugin_data;
+
+		if ( ! $current_plugin_data || ! $new_plugin_data ) {
 			return false;
 		}
 
 		echo '<h2 class="update-from-upload-heading">' . esc_html( __( 'This plugin is already installed.' ) ) . '</h2>';
 
-		$this->is_downgrading = version_compare( $current_plugin_data['Version'], $this->upgrader->new_plugin_data['Version'], '>' );
+		$this->is_downgrading = version_compare( $current_plugin_data['Version'], $new_plugin_data['Version'], '>' );
 
 		$rows = array(
 			'Name'        => __( 'Plugin name' ),
@@ -214,33 +218,34 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 		$table .= '<tr><th></th><th>' . esc_html( __( 'Current' ) ) . '</th>';
 		$table .= '<th>' . esc_html( __( 'Uploaded' ) ) . '</th></tr>';
 
-		$is_same_plugin = true; // Let's consider only these rows
+		$is_same_plugin = true; // Let's consider only these rows.
+
 		foreach ( $rows as $field => $label ) {
-			$old_value = ! empty( $current_plugin_data[ $field ] ) ? $current_plugin_data[ $field ] : '-';
-			$new_value = ! empty( $this->upgrader->new_plugin_data[ $field ] ) ? $this->upgrader->new_plugin_data[ $field ] : '-';
+			$old_value = ! empty( $current_plugin_data[ $field ] ) ? (string) $current_plugin_data[ $field ] : '-';
+			$new_value = ! empty( $new_plugin_data[ $field ] ) ? (string) $new_plugin_data[ $field ] : '-';
 
 			$is_same_plugin = $is_same_plugin && ( $old_value === $new_value );
 
 			$diff_field   = ( 'Version' !== $field && $new_value !== $old_value );
 			$diff_version = ( 'Version' === $field && $this->is_downgrading );
 
-			$table .= '<tr><td class="name-label">' . $label . '</td><td>' . esc_html( $old_value ) . '</td>';
+			$table .= '<tr><td class="name-label">' . $label . '</td><td>' . wp_strip_all_tags( $old_value ) . '</td>';
 			$table .= ( $diff_field || $diff_version ) ? '<td class="warning">' : '<td>';
-			$table .= esc_html( $new_value ) . '</td></tr>';
+			$table .= wp_strip_all_tags( $new_value ) . '</td></tr>';
 		}
 
 		$table .= '</tbody></table>';
 
 		/**
-		 * Filters the compare table output for overwrite a plugin package on upload.
+		 * Filters the compare table output for overwriting a plugin package on upload.
 		 *
 		 * @since 5.5.0
 		 *
-		 * @param string   $table                The output table with Name, Version, Author, RequiresWP and RequiresPHP info.
-		 * @param array    $current_plugin_data  Array with current plugin data.
-		 * @param array    $new_plugin_data      Array with uploaded plugin data.
+		 * @param string $table               The output table with Name, Version, Author, RequiresWP, and RequiresPHP info.
+		 * @param array  $current_plugin_data Array with current plugin data.
+		 * @param array  $new_plugin_data     Array with uploaded plugin data.
 		 */
-		echo apply_filters( 'install_plugin_ovewrite_comparison', $table, $current_plugin_data, $this->upgrader->new_plugin_data );
+		echo apply_filters( 'install_plugin_ovewrite_comparison', $table, $current_plugin_data, $new_plugin_data );
 
 		$install_actions = array();
 		$can_update      = true;
@@ -248,30 +253,27 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 		$blocked_message  = '<p>' . esc_html( __( 'The plugin cannot be updated due to the following:' ) ) . '</p>';
 		$blocked_message .= '<ul class="ul-disc">';
 
-		if (
-			! empty( $this->upgrader->new_plugin_data['RequiresPHP'] ) &&
-			version_compare( phpversion(), $this->upgrader->new_plugin_data['RequiresPHP'], '<' )
-		) {
+		$requires_php = isset( $new_plugin_data['RequiresPHP'] ) ? $new_plugin_data['RequiresPHP'] : null;
+		$requires_wp  = isset( $new_plugin_data['RequiresWP'] ) ? $new_plugin_data['RequiresWP'] : null;
+
+		if ( ! is_php_version_compatible( $requires_php ) ) {
 			$error = sprintf(
 				/* translators: 1: Current PHP version, 2: Version required by the uploaded plugin. */
 				__( 'The PHP version on your server is %1$s, however the uploaded plugin requires %2$s.' ),
 				phpversion(),
-				$this->upgrader->new_plugin_data['RequiresPHP']
+				$requires_php
 			);
 
 			$blocked_message .= '<li>' . esc_html( $error ) . '</li>';
 			$can_update       = false;
 		}
 
-		if (
-			! empty( $this->upgrader->new_plugin_data['RequiresWP'] ) &&
-			version_compare( $GLOBALS['wp_version'], $this->upgrader->new_plugin_data['RequiresWP'], '<' )
-		) {
+		if ( ! is_wp_version_compatible( $requires_wp ) ) {
 			$error = sprintf(
 				/* translators: 1: Current WordPress version, 2: Version required by the uploaded plugin. */
 				__( 'Your WordPress version is %1$s, however the uploaded plugin requires %2$s.' ),
-				$GLOBALS['wp_version'],
-				$this->upgrader->new_plugin_data['RequiresWP']
+				get_bloginfo( 'version' ),
+				$requires_wp
 			);
 
 			$blocked_message .= '<li>' . esc_html( $error ) . '</li>';
@@ -282,9 +284,17 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 
 		if ( $can_update ) {
 			if ( $this->is_downgrading ) {
-				$warning = __( 'You are uploading an older version of a current plugin. You can continue to install the older version, but be sure to <a href="https://wordpress.org/support/article/wordpress-backups/">backup your database and files</a> first.' );
+				$warning = sprintf(
+					/* translators: %s: Documentation URL. */
+					__( 'You are uploading an older version of a current plugin. You can continue to install the older version, but be sure to <a href="%s">back up your database and files</a> first.' ),
+					__( 'https://wordpress.org/support/article/wordpress-backups/' )
+				);
 			} else {
-				$warning = __( 'You are updating a plugin. Be sure to <a href="https://wordpress.org/support/article/wordpress-backups/">backup your database and files</a> first.' );
+				$warning = sprintf(
+					/* translators: %s: Documentation URL. */
+					__( 'You are updating a plugin. Be sure to <a href="%s">back up your database and files</a> first.' ),
+					__( 'https://wordpress.org/support/article/wordpress-backups/' )
+				);
 			}
 
 			echo '<p class="update-from-upload-notice">' . $warning . '</p>';
@@ -292,17 +302,19 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 			$overwrite = $this->is_downgrading ? 'downgrade-plugin' : 'update-plugin';
 
 			$install_actions['ovewrite_plugin'] = sprintf(
-				'<a class="button button-primary" href="%s" target="_parent">%s</a>',
+				'<a class="button button-primary update-from-upload-overwrite" href="%s" target="_parent">%s</a>',
 				wp_nonce_url( add_query_arg( 'overwrite', $overwrite, $this->url ), 'plugin-upload' ),
-				esc_html( __( 'Replace current with uploaded' ) )
+				__( 'Replace current with uploaded' )
 			);
 		} else {
 			echo $blocked_message;
 		}
 
+		$cancel_url = add_query_arg( 'action', 'upload-plugin-cancel-overwrite', $this->url );
+
 		$install_actions['plugins_page'] = sprintf(
 			'<a class="button" href="%s">%s</a>',
-			self_admin_url( 'plugin-install.php' ),
+			wp_nonce_url( $cancel_url, 'plugin-upload-cancel-overwrite' ),
 			__( 'Cancel and go back' )
 		);
 
@@ -315,9 +327,13 @@ class Plugin_Installer_Skin extends WP_Upgrader_Skin {
 		 * @param object   $api             Object containing WordPress.org API plugin data.
 		 * @param array    $new_plugin_data Array with uploaded plugin data.
 		 */
-		$install_actions = apply_filters( 'install_plugin_ovewrite_actions', $install_actions, $this->api, $this->upgrader->new_plugin_data );
+		$install_actions = apply_filters( 'install_plugin_ovewrite_actions', $install_actions, $this->api, $new_plugin_data );
 
 		if ( ! empty( $install_actions ) ) {
+			printf(
+				'<p class="update-from-upload-expired hidden">%s</p>',
+				__( 'The uploaded file has expired. Please go back and upload it again.' )
+			);
 			echo '<p class="update-from-upload-actions">' . implode( ' ', (array) $install_actions ) . '</p>';
 		}
 

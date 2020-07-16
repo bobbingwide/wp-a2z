@@ -620,12 +620,12 @@ final class WP_Screen {
 	 * @param array $args {
 	 *     Array of arguments used to display the help tab.
 	 *
-	 *     @type string $title    Title for the tab. Default false.
-	 *     @type string $id       Tab ID. Must be HTML-safe and should be unique for this menu.
-	 *                            It is NOT allowed to contain any empty spaces. Default false.
-	 *     @type string $content  Optional. Help tab content in plain text or HTML. Default empty string.
-	 *     @type string $callback Optional. A callback to generate the tab content. Default false.
-	 *     @type int    $priority Optional. The priority of the tab, used for ordering. Default 10.
+	 *     @type string   $title    Title for the tab. Default false.
+	 *     @type string   $id       Tab ID. Must be HTML-safe and should be unique for this menu.
+	 *                              It is NOT allowed to contain any empty spaces. Default false.
+	 *     @type string   $content  Optional. Help tab content in plain text or HTML. Default empty string.
+	 *     @type callable $callback Optional. A callback to generate the tab content. Default false.
+	 *     @type int      $priority Optional. The priority of the tab, used for ordering. Default 10.
 	 * }
 	 */
 	public function add_help_tab( $args ) {
@@ -1286,6 +1286,8 @@ final class WP_Screen {
 	 * @global string $mode List table view mode.
 	 */
 	public function render_view_mode() {
+		global $mode;
+
 		$screen = get_current_screen();
 
 		// Currently only enabled for posts and comments lists.
@@ -1311,16 +1313,13 @@ final class WP_Screen {
 
 		$mode = get_user_setting( 'posts_list_mode', 'list' );
 
-		// Set 'list' as default value if $mode is not set.
-		$mode = ( isset( $mode ) && 'extended' === $mode ) ? 'extended' : 'list';
-
 		/**
 		 * Filters the current view mode.
 		 *
 		 * @since 5.5.0
 		 *
-		 * @param string $mode The current selected mode. Default value of
-		 *                     posts_list_mode user setting.
+		 * @param string $mode The current selected mode. Defaults to the value
+		 *                     of 'posts_list_mode' user setting.
 		 */
 		$mode = apply_filters( 'table_view_mode', $mode );
 
@@ -1328,14 +1327,14 @@ final class WP_Screen {
 		add_filter( 'screen_options_show_submit', '__return_true' );
 		?>
 		<fieldset class="metabox-prefs view-mode">
-		<legend><?php _e( 'View Mode' ); ?></legend>
+		<legend><?php _e( 'View mode' ); ?></legend>
 				<label for="list-view-mode">
 					<input id="list-view-mode" type="radio" name="mode" value="list" <?php checked( 'list', $mode ); ?> />
 					<?php _e( 'Compact view' ); ?>
 				</label>
 				<label for="excerpt-view-mode">
-					<input id="excerpt-view-mode" type="radio" name="mode" value="extended" <?php checked( 'extended', $mode ); ?> />
-					<?php _e( 'Extended View' ); ?>
+					<input id="excerpt-view-mode" type="radio" name="mode" value="excerpt" <?php checked( 'excerpt', $mode ); ?> />
+					<?php _e( 'Extended view' ); ?>
 				</label>
 				<?php
 				/**

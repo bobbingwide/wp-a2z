@@ -1230,10 +1230,10 @@ function add_magic_quotes( $array ) {
 	foreach ( (array) $array as $k => $v ) {
 		if ( is_array( $v ) ) {
 			$array[ $k ] = add_magic_quotes( $v );
-		} elseif ( ! is_string( $v ) ) {
-			continue;
-		} else {
+		} elseif ( is_string( $v ) ) {
 			$array[ $k ] = addslashes( $v );
+		} else {
+			continue;
 		}
 	}
 
@@ -4149,7 +4149,7 @@ function wp_send_json_error( $data = null, $status_code = null ) {
 }
 
 /**
- * Checks that a JSONP callback is a valid JavaScript callback.
+ * Checks that a JSONP callback is a valid JavaScript callback name.
  *
  * Only allows alphanumeric characters and the dot character in callback
  * function names. This helps to mitigate XSS attacks caused by directly
@@ -4157,8 +4157,8 @@ function wp_send_json_error( $data = null, $status_code = null ) {
  *
  * @since 4.6.0
  *
- * @param string $callback Supplied JSONP callback function.
- * @return bool True if valid callback, otherwise false.
+ * @param string $callback Supplied JSONP callback function name.
+ * @return bool Whether the callback function name is valid.
  */
 function wp_check_jsonp_callback( $callback ) {
 	if ( ! is_string( $callback ) ) {

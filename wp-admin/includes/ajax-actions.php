@@ -4462,18 +4462,18 @@ function wp_ajax_update_plugin() {
 		$status['errorMessage'] = $skin->get_error_messages();
 		wp_send_json_error( $status );
 	} elseif ( is_array( $result ) && ! empty( $result[ $plugin ] ) ) {
-		$plugin_update_data = current( $result );
 
 		/*
-		 * If the `update_plugins` site transient is empty (e.g. when you update
-		 * two plugins in quick succession before the transient repopulates),
-		 * this may be the return.
+		 * Plugin is already at the latest version.
+		 *
+		 * This may also be the return value if the `update_plugins` site transient is empty,
+		 * e.g. when you update two plugins in quick succession before the transient repopulates.
 		 *
 		 * Preferably something can be done to ensure `update_plugins` isn't empty.
 		 * For now, surface some sort of error here.
 		 */
-		if ( true === $plugin_update_data ) {
-			$status['errorMessage'] = __( 'Plugin update failed.' );
+		if ( true === $result[ $plugin ] ) {
+			$status['errorMessage'] = $upgrader->strings['up_to_date'];
 			wp_send_json_error( $status );
 		}
 
@@ -4484,6 +4484,7 @@ function wp_ajax_update_plugin() {
 			/* translators: %s: Plugin version. */
 			$status['newVersion'] = sprintf( __( 'Version %s' ), $plugin_data['Version'] );
 		}
+
 		wp_send_json_success( $status );
 	} elseif ( false === $result ) {
 		global $wp_filesystem;
@@ -4774,14 +4775,14 @@ function wp_ajax_wp_privacy_export_personal_data() {
 	 * @param array $args {
 	 *     An array of callable exporters of personal data. Default empty array.
 	 *
-	 *     @type array {
+	 *     @type array ...$0 {
 	 *         Array of personal data exporters.
 	 *
-	 *         @type string $callback               Callable exporter function that accepts an
-	 *                                              email address and a page and returns an array
-	 *                                              of name => value pairs of personal data.
-	 *         @type string $exporter_friendly_name Translated user facing friendly name for the
-	 *                                              exporter.
+	 *         @type callable $callback               Callable exporter function that accepts an
+	 *                                                email address and a page and returns an array
+	 *                                                of name => value pairs of personal data.
+	 *         @type string   $exporter_friendly_name Translated user facing friendly name for the
+	 *                                                exporter.
 	 *     }
 	 * }
 	 */
@@ -4964,15 +4965,15 @@ function wp_ajax_wp_privacy_erase_personal_data() {
 	 * @param array $args {
 	 *     An array of callable erasers of personal data. Default empty array.
 	 *
-	 *     @type array {
+	 *     @type array ...$0 {
 	 *         Array of personal data exporters.
 	 *
-	 *         @type string $callback               Callable eraser that accepts an email address and
-	 *                                              a page and returns an array with boolean values for
-	 *                                              whether items were removed or retained and any messages
-	 *                                              from the eraser, as well as if additional pages are
-	 *                                              available.
-	 *         @type string $exporter_friendly_name Translated user facing friendly name for the eraser.
+	 *         @type callable $callback               Callable eraser that accepts an email address and
+	 *                                                a page and returns an array with boolean values for
+	 *                                                whether items were removed or retained and any messages
+	 *                                                from the eraser, as well as if additional pages are
+	 *                                                available.
+	 *         @type string   $exporter_friendly_name Translated user facing friendly name for the eraser.
 	 *     }
 	 * }
 	 */

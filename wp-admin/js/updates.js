@@ -453,7 +453,7 @@
 			)
 			.text( _x( 'Updated!', 'plugin' ) );
 
-		wp.a11y.speak( __( 'Update completed successfully.' ), 'polite' );
+		wp.a11y.speak( __( 'Update completed successfully.' ) );
 
 		wp.updates.decrementCount( 'plugin' );
 
@@ -598,7 +598,7 @@
 			)
 			.text( __( 'Installing...' ) );
 
-		wp.a11y.speak( __( 'Installing... please wait.' ), 'polite' );
+		wp.a11y.speak( __( 'Installing... please wait.' ) );
 
 		// Remove previous error messages, if any.
 		$card.removeClass( 'plugin-card-install-failed' ).find( '.notice.notice-error' ).remove();
@@ -634,7 +634,7 @@
 			)
 			.text( _x( 'Installed!', 'plugin' ) );
 
-		wp.a11y.speak( __( 'Installation completed successfully.' ), 'polite' );
+		wp.a11y.speak( __( 'Installation completed successfully.' ) );
 
 		$document.trigger( 'wp-plugin-install-success', response );
 
@@ -768,7 +768,7 @@
 			})
 			.text( __( 'Run Importer' ) );
 
-		wp.a11y.speak( __( 'Installation completed successfully.' ), 'polite' );
+		wp.a11y.speak( __( 'Installation completed successfully.' ) );
 
 		$document.trigger( 'wp-importer-install-success', response );
 	};
@@ -851,7 +851,7 @@
 				.text( __( 'Deleting...' ) );
 		}
 
-		wp.a11y.speak( __( 'Deleting...' ), 'polite' );
+		wp.a11y.speak( __( 'Deleting...' ) );
 
 		$document.trigger( 'wp-plugin-deleting', args );
 
@@ -946,7 +946,7 @@
 			}
 		} );
 
-		wp.a11y.speak( _x( 'Deleted!', 'plugin' ), 'polite' );
+		wp.a11y.speak( _x( 'Deleted!', 'plugin' ) );
 
 		$document.trigger( 'wp-plugin-delete-success', response );
 	};
@@ -1055,7 +1055,7 @@
 			$notice.data( 'originaltext', $notice.html() );
 		}
 
-		wp.a11y.speak( __( 'Updating... please wait.' ), 'polite' );
+		wp.a11y.speak( __( 'Updating... please wait.' ) );
 		$notice.text( __( 'Updating...' ) );
 
 		$document.trigger( 'wp-theme-updating', args );
@@ -1117,7 +1117,7 @@
 		}
 
 		wp.updates.addAdminNotice( _.extend( { selector: $notice }, updatedMessage ) );
-		wp.a11y.speak( __( 'Update completed successfully.' ), 'polite' );
+		wp.a11y.speak( __( 'Update completed successfully.' ) );
 
 		wp.updates.decrementCount( 'theme' );
 
@@ -1174,7 +1174,7 @@
 			message:   errorMessage
 		} );
 
-		wp.a11y.speak( errorMessage, 'polite' );
+		wp.a11y.speak( errorMessage );
 
 		$document.trigger( 'wp-theme-update-error', response );
 	};
@@ -1216,7 +1216,7 @@
 			)
 			.text( __( 'Installing...' ) );
 
-		wp.a11y.speak( __( 'Installing... please wait.' ), 'polite' );
+		wp.a11y.speak( __( 'Installing... please wait.' ) );
 
 		// Remove previous error messages, if any.
 		$( '.install-theme-info, [data-slug="' + args.slug + '"]' ).removeClass( 'theme-install-failed' ).find( '.notice.notice-error' ).remove();
@@ -1255,7 +1255,7 @@
 			)
 			.text( _x( 'Installed!', 'theme' ) );
 
-		wp.a11y.speak( __( 'Installation completed successfully.' ), 'polite' );
+		wp.a11y.speak( __( 'Installation completed successfully.' ) );
 
 		setTimeout( function() {
 
@@ -1403,7 +1403,7 @@
 				.text( __( 'Deleting...' ) );
 		}
 
-		wp.a11y.speak( __( 'Deleting...' ), 'polite' );
+		wp.a11y.speak( __( 'Deleting...' ) );
 
 		// Remove previous error messages, if any.
 		$( '.theme-info .update-message' ).remove();
@@ -1466,7 +1466,7 @@
 			} );
 		}
 
-		wp.a11y.speak( _x( 'Deleted!', 'theme' ), 'polite' );
+		wp.a11y.speak( _x( 'Deleted!', 'theme' ) );
 
 		$document.trigger( 'wp-theme-delete-success', response );
 	};
@@ -1996,7 +1996,7 @@
 				}
 			}
 
-			wp.a11y.speak( __( 'Update canceled.' ), 'polite' );
+			wp.a11y.speak( __( 'Update canceled.' ) );
 		} );
 
 		/**
@@ -2074,7 +2074,7 @@
 						.removeClass( 'updating-message' )
 						.text( __( 'Install Now' ) );
 
-					wp.a11y.speak( __( 'Update canceled.' ), 'polite' );
+					wp.a11y.speak( __( 'Update canceled.' ) );
 				} );
 			}
 
@@ -2117,7 +2117,7 @@
 						)
 						.text( __( 'Install Now' ) );
 
-					wp.a11y.speak( __( 'Update canceled.' ), 'polite' );
+					wp.a11y.speak( __( 'Update canceled.' ) );
 				} );
 			}
 
@@ -2138,11 +2138,21 @@
 		 */
 		$bulkActionForm.on( 'click', '[data-plugin] a.delete', function( event ) {
 			var $pluginRow = $( event.target ).parents( 'tr' ),
+				confirmMessage;
+
+			if ( $pluginRow.hasClass( 'is-uninstallable' ) ) {
 				confirmMessage = sprintf(
 					/* translators: %s: Plugin name. */
 					__( 'Are you sure you want to delete %s and its data?' ),
 					$pluginRow.find( '.plugin-title strong' ).text()
 				);
+			} else {
+				confirmMessage = sprintf(
+					/* translators: %s: Plugin name. */
+					__( 'Are you sure you want to delete %s?' ),
+					$pluginRow.find( '.plugin-title strong' ).text()
+				);
+			}
 
 			event.preventDefault();
 
@@ -2677,44 +2687,63 @@
 		$( window ).on( 'beforeunload', wp.updates.beforeunload );
 
 		/**
-		 * Click handler for enabling and disabling plugin and theme auto-updates.
+		 * Prevents the page form scrolling when activating auto-updates with the Spacebar key.
 		 *
 		 * @since 5.5.0
 		 */
-		$document.on( 'click', '.column-auto-updates a.toggle-auto-update, .theme-overlay a.toggle-auto-update', function( event ) {
-			var data, asset, type, $parent;
-			var $anchor = $( this ),
-				action = $anchor.attr( 'data-wp-action' ),
-				$label = $anchor.find( '.label' );
+		$document.on( 'keydown', '.column-auto-updates .toggle-auto-update, .theme-overlay .toggle-auto-update', function( event ) {
+			if ( 32 === event.which ) {
+				event.preventDefault();
+			}
+		} );
+
+		/**
+		 * Click and keyup handler for enabling and disabling plugin and theme auto-updates.
+		 *
+		 * These controls can be either links or buttons. When JavaScript is enabled,
+		 * we want them to behave like buttons. An ARIA role `button` is added via
+		 * the JavaScript that targets elements with the CSS class `aria-button-if-js`.
+		 *
+		 * @since 5.5.0
+		 */
+		$document.on( 'click keyup', '.column-auto-updates .toggle-auto-update, .theme-overlay .toggle-auto-update', function( event ) {
+			var data, asset, type, $parent,
+				$toggler = $( this ),
+				action = $toggler.attr( 'data-wp-action' ),
+				$label = $toggler.find( '.label' );
+
+			if ( 'keyup' === event.type && 32 !== event.which ) {
+				return;
+			}
 
 			if ( 'themes' !== pagenow ) {
-				$parent = $anchor.closest( '.column-auto-updates' );
+				$parent = $toggler.closest( '.column-auto-updates' );
 			} else {
-				$parent = $anchor.closest( '.theme-autoupdate' );
+				$parent = $toggler.closest( '.theme-autoupdate' );
 			}
 
 			event.preventDefault();
 
 			// Prevent multiple simultaneous requests.
-			if ( $anchor.attr( 'data-doing-ajax' ) === 'yes' ) {
+			if ( $toggler.attr( 'data-doing-ajax' ) === 'yes' ) {
 				return;
 			}
 
-			$anchor.attr( 'data-doing-ajax', 'yes' );
+			$toggler.attr( 'data-doing-ajax', 'yes' );
 
 			switch ( pagenow ) {
 				case 'plugins':
 				case 'plugins-network':
 					type = 'plugin';
-					asset = $anchor.closest( 'tr' ).attr( 'data-plugin' );
+					asset = $toggler.closest( 'tr' ).attr( 'data-plugin' );
 					break;
 				case 'themes-network':
 					type = 'theme';
-					asset = $anchor.closest( 'tr' ).attr( 'data-slug' );
+					asset = $toggler.closest( 'tr' ).attr( 'data-slug' );
 					break;
 				case 'themes':
 					type = 'theme';
-					asset = $anchor.attr( 'data-slug' );
+					asset = $toggler.attr( 'data-slug' );
 					break;
 			}
 
@@ -2728,7 +2757,7 @@
 				$label.text( __( 'Disabling...' ) );
 			}
 
-			$anchor.find( '.dashicons-update' ).removeClass( 'hidden' );
+			$toggler.find( '.dashicons-update' ).removeClass( 'hidden' );
 
 			data = {
 				action: 'toggle-auto-updates',
@@ -2740,8 +2769,8 @@
 
 			$.post( window.ajaxurl, data )
 				.done( function( response ) {
-					var $enabled, $disabled, enabledNumber, disabledNumber, errorMessage;
-					var href = $anchor.attr( 'href' );
+					var $enabled, $disabled, enabledNumber, disabledNumber, errorMessage,
+						href = $toggler.attr( 'href' );
 
 					if ( ! response.success ) {
 						// if WP returns 0 for response (which can happen in a few cases),
@@ -2753,7 +2782,7 @@
 						}
 
 						$parent.find( '.notice.notice-error' ).removeClass( 'hidden' ).find( 'p' ).text( errorMessage );
-						wp.a11y.speak( errorMessage, 'polite' );
+						wp.a11y.speak( errorMessage, 'assertive' );
 						return;
 					}
 
@@ -2784,25 +2813,27 @@
 					}
 
 					if ( 'enable' === action ) {
-						href = href.replace( 'action=enable-auto-update', 'action=disable-auto-update' );
-						$anchor.attr( {
-							'data-wp-action': 'disable',
-							href: href
-						} );
+						// The toggler control can be either a link or a button.
+						if ( $toggler[ 0 ].hasAttribute( 'href' ) ) {
+							href = href.replace( 'action=enable-auto-update', 'action=disable-auto-update' );
+							$toggler.attr( 'href', href );
+						}
+						$toggler.attr( 'data-wp-action', 'disable' );
 
 						$label.text( __( 'Disable auto-updates' ) );
 						$parent.find( '.auto-update-time' ).removeClass( 'hidden' );
-						wp.a11y.speak( __( 'Enable auto-updates' ), 'polite' );
+						wp.a11y.speak( __( 'Auto-updates enabled' ) );
 					} else {
-						href = href.replace( 'action=disable-auto-update', 'action=enable-auto-update' );
-						$anchor.attr( {
-							'data-wp-action': 'enable',
-							href: href
-						} );
+						// The toggler control can be either a link or a button.
+						if ( $toggler[ 0 ].hasAttribute( 'href' ) ) {
+							href = href.replace( 'action=disable-auto-update', 'action=enable-auto-update' );
+							$toggler.attr( 'href', href );
+						}
+						$toggler.attr( 'data-wp-action', 'enable' );
 
 						$label.text( __( 'Enable auto-updates' ) );
 						$parent.find( '.auto-update-time' ).addClass( 'hidden' );
-						wp.a11y.speak( __( 'Auto-updates disabled' ), 'polite' );
+						wp.a11y.speak( __( 'Auto-updates disabled' ) );
 					}
 
 					$document.trigger( 'wp-auto-update-setting-changed', { state: action, type: type, asset: asset } );
@@ -2813,10 +2844,10 @@
 						.find( 'p' )
 						.text( __( 'The request could not be completed.' ) );
 
-					wp.a11y.speak( __( 'The request could not be completed.' ), 'polite' );
+					wp.a11y.speak( __( 'The request could not be completed.' ), 'assertive' );
 				} )
 				.always( function() {
-					$anchor.removeAttr( 'data-doing-ajax' ).find( '.dashicons-update' ).addClass( 'hidden' );
+					$toggler.removeAttr( 'data-doing-ajax' ).find( '.dashicons-update' ).addClass( 'hidden' );
 				} );
 			}
 		);
