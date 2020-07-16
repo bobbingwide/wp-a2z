@@ -18,6 +18,8 @@ class WP_Site_Health {
 	private $health_check_mysql_required_version = '5.5';
 	private $health_check_mysql_rec_version      = '';
 
+	public $php_memory_limit;
+
 	public $schedules;
 	public $crons;
 	public $last_missed_cron     = null;
@@ -32,6 +34,9 @@ class WP_Site_Health {
 	 */
 	public function __construct() {
 		$this->maybe_create_scheduled_event();
+
+		// Save memory limit before it's affected by wp_raise_memory_limit( 'admin' ).
+		$this->php_memory_limit = ini_get( 'memory_limit' );
 
 		$this->timeout_late_cron   = 0;
 		$this->timeout_missed_cron = - 5 * MINUTE_IN_SECONDS;
@@ -143,7 +148,6 @@ class WP_Site_Health {
 	 * @since 5.4.0
 	 *
 	 * @param $callback
-	 *
 	 * @return mixed|void
 	 */
 	private function perform_test( $callback ) {
@@ -174,8 +178,8 @@ class WP_Site_Health {
 	/**
 	 * Run the SQL version checks.
 	 *
-	 * These values are used in later tests, but the part of preparing them is more easily managed early
-	 * in the class for ease of access and discovery.
+	 * These values are used in later tests, but the part of preparing them is more easily managed
+	 * early in the class for ease of access and discovery.
 	 *
 	 * @since 5.2.0
 	 *
@@ -208,11 +212,11 @@ class WP_Site_Health {
 	/**
 	 * Test if `wp_version_check` is blocked.
 	 *
-	 * It's possible to block updates with the `wp_version_check` filter, but this can't be checked during an
-	 * AJAX call, as the filter is never introduced then.
+	 * It's possible to block updates with the `wp_version_check` filter, but this can't be checked
+	 * during an Ajax call, as the filter is never introduced then.
 	 *
-	 * This filter overrides a normal page request if it's made by an admin through the AJAX call with the
-	 * right query argument to check for this.
+	 * This filter overrides a standard page request if it's made by an admin through the Ajax call
+	 * with the right query argument to check for this.
 	 *
 	 * @since 5.2.0
 	 */
@@ -229,8 +233,8 @@ class WP_Site_Health {
 	/**
 	 * Tests for WordPress version and outputs it.
 	 *
-	 * Gives various results depending on what kind of updates are available, if any, to encourage the
-	 * user to install security updates as a priority.
+	 * Gives various results depending on what kind of updates are available, if any, to encourage
+	 * the user to install security updates as a priority.
 	 *
 	 * @since 5.2.0
 	 *
@@ -330,7 +334,8 @@ class WP_Site_Health {
 	/**
 	 * Test if plugins are outdated, or unnecessary.
 	 *
-	 * The tests checks if your plugins are up to date, and encourages you to remove any that are not in use.
+	 * The tests checks if your plugins are up to date, and encourages you to remove any
+	 * that are not in use.
 	 *
 	 * @since 5.2.0
 	 *
@@ -461,8 +466,9 @@ class WP_Site_Health {
 	/**
 	 * Test if themes are outdated, or unnecessary.
 	 *
-	 * The tests checks if your site has a default theme (to fall back on if there is a need), if your themes
-	 * are up to date and, finally, encourages you to remove any themes that are not needed.
+	 * Сhecks if your site has a default theme (to fall back on if there is a need),
+	 * if your themes are up to date and, finally, encourages you to remove any themes
+	 * that are not needed.
 	 *
 	 * @since 5.2.0
 	 *
@@ -591,7 +597,7 @@ class WP_Site_Health {
 		if ( $has_unused_themes && $show_unused_themes && ! is_multisite() ) {
 
 			// This is a child theme, so we want to be a bit more explicit in our messages.
-			if ( is_child_theme() ) {
+			if ( $active_theme->parent() ) {
 				// Recommend removing inactive themes, except a default theme, your current one, and the parent theme.
 				$result['status'] = 'recommended';
 
@@ -686,7 +692,7 @@ class WP_Site_Health {
 
 			$result['description'] .= sprintf(
 				'<p>%s</p>',
-				__( 'Your site does not have any default theme. Default themes are used by WordPress automatically if anything is wrong with your normal theme.' )
+				__( 'Your site does not have any default theme. Default themes are used by WordPress automatically if anything is wrong with your chosen theme.' )
 			);
 		}
 
@@ -785,7 +791,6 @@ class WP_Site_Health {
 	 * @param string $function  Optional. The function name to test. Default null.
 	 * @param string $constant  Optional. The constant name to test for. Default null.
 	 * @param string $class     Optional. The class name to test for. Default null.
-	 *
 	 * @return bool Whether or not the extension and function are available.
 	 */
 	private function test_php_extension_availability( $extension = null, $function = null, $constant = null, $class = null ) {
@@ -976,7 +981,7 @@ class WP_Site_Health {
 			// If this module is a fallback for another function, check if that other function passed.
 			if ( isset( $module['fallback_for'] ) ) {
 				/*
-				 * If that other function has a failure, mark this module as required for normal operations.
+				 * If that other function has a failure, mark this module as required for usual operations.
 				 * If that other function hasn't failed, skip this test as it's only a fallback.
 				 */
 				if ( isset( $failures[ $module['fallback_for'] ] ) ) {
@@ -1036,10 +1041,7 @@ class WP_Site_Health {
 				$result['label'] = __( 'One or more required modules are missing' );
 			}
 
-			$result['description'] .= sprintf(
-				'<p>%s</p>',
-				$output
-			);
+			$result['description'] .= $output;
 		}
 
 		return $result;
@@ -1064,6 +1066,7 @@ class WP_Site_Health {
 				'<p>%s</p>',
 				__( 'PHP default timezone was configured by WordPress on loading. This is necessary for correct calculations of dates and times.' )
 			),
+			'actions'     => '',
 			'test'        => 'php_default_timezone',
 		);
 
@@ -1078,6 +1081,52 @@ class WP_Site_Health {
 					/* translators: %s: date_default_timezone_set() */
 					__( 'PHP default timezone was changed after WordPress loading by a %s function call. This interferes with correct calculations of dates and times.' ),
 					'<code>date_default_timezone_set()</code>'
+				)
+			);
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Test if there's an active PHP session that can affect loopback requests.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @return array The test results.
+	 */
+	public function get_test_php_sessions() {
+		$result = array(
+			'label'       => __( 'No PHP sessions detected' ),
+			'status'      => 'good',
+			'badge'       => array(
+				'label' => __( 'Performance' ),
+				'color' => 'blue',
+			),
+			'description' => sprintf(
+				'<p>%s</p>',
+				sprintf(
+					/* translators: 1: session_start(), 2: session_write_close() */
+					__( 'PHP sessions created by a %1$s function call may interfere with REST API and loopback requests. An active session should be closed by %2$s before making any HTTP requests.' ),
+					'<code>session_start()</code>',
+					'<code>session_write_close()</code>'
+				)
+			),
+			'test'        => 'php_sessions',
+		);
+
+		if ( PHP_SESSION_ACTIVE === session_status() ) {
+			$result['status'] = 'critical';
+
+			$result['label'] = __( 'An active PHP session was detected' );
+
+			$result['description'] = sprintf(
+				'<p>%s</p>',
+				sprintf(
+					/* translators: 1: session_start(), 2: session_write_close() */
+					__( 'A PHP session was created by a %1$s function call. This interferes with REST API and loopback requests. The session should be closed by %2$s before making any HTTP requests.' ),
+					'<code>session_start()</code>',
+					'<code>session_write_close()</code>'
 				)
 			);
 		}
@@ -1361,11 +1410,11 @@ class WP_Site_Health {
 	/**
 	 * Test if debug information is enabled.
 	 *
-	 * When WP_DEBUG is enabled, errors and information may be disclosed to site visitors, or it may be
-	 * logged to a publicly accessible file.
+	 * When WP_DEBUG is enabled, errors and information may be disclosed to site visitors,
+	 * or logged to a publicly accessible file.
 	 *
-	 * Debugging is also frequently left enabled after looking for errors on a site, as site owners do
-	 * not understand the implications of this.
+	 * Debugging is also frequently left enabled after looking for errors on a site,
+	 * as site owners do not understand the implications of this.
 	 *
 	 * @since 5.2.0
 	 *
@@ -1404,7 +1453,7 @@ class WP_Site_Health {
 					'<p>%s</p>',
 					sprintf(
 						/* translators: %s: WP_DEBUG_LOG */
-						__( 'The value, %s, has been added to this website&#8217;s configuration file. This means any errors on the site will be written to a file which is potentially available to normal users.' ),
+						__( 'The value, %s, has been added to this website&#8217;s configuration file. This means any errors on the site will be written to a file which is potentially available to all users.' ),
 						'<code>WP_DEBUG_LOG</code>'
 					)
 				);
@@ -1542,8 +1591,8 @@ class WP_Site_Health {
 	/**
 	 * Test if scheduled events run as intended.
 	 *
-	 * If scheduled events are not running, this may indicate something with WP_Cron is not working as intended,
-	 * or that there are orphaned events hanging around from older code.
+	 * If scheduled events are not running, this may indicate something with WP_Cron is not working
+	 * as intended, or that there are orphaned events hanging around from older code.
 	 *
 	 * @since 5.2.0
 	 *
@@ -1614,8 +1663,9 @@ class WP_Site_Health {
 	/**
 	 * Test if WordPress can run automated background updates.
 	 *
-	 * Background updates in WordPress are primarily used for minor releases and security updates. It's important
-	 * to either have these working, or be aware that they are intentionally disabled for whatever reason.
+	 * Background updates in WordPress are primarily used for minor releases and security updates.
+	 * It's important to either have these working, or be aware that they are intentionally disabled
+	 * for whatever reason.
 	 *
 	 * @since 5.2.0
 	 *
@@ -1678,10 +1728,7 @@ class WP_Site_Health {
 		$output .= '</ul>';
 
 		if ( 'good' !== $result['status'] ) {
-			$result['description'] .= sprintf(
-				'<p>%s</p>',
-				$output
-			);
+			$result['description'] .= $output;
 		}
 
 		return $result;
@@ -1690,8 +1737,9 @@ class WP_Site_Health {
 	/**
 	 * Test if loopbacks work as expected.
 	 *
-	 * A loopback is when WordPress queries itself, for example to start a new WP_Cron instance, or when editing a
-	 * plugin or theme. This has shown itself to be a recurring issue as code can very easily break this interaction.
+	 * A loopback is when WordPress queries itself, for example to start a new WP_Cron instance,
+	 * or when editing a plugin or theme. This has shown itself to be a recurring issue,
+	 * as code can very easily break this interaction.
 	 *
 	 * @since 5.2.0
 	 *
@@ -1732,8 +1780,9 @@ class WP_Site_Health {
 	/**
 	 * Test if HTTP requests are blocked.
 	 *
-	 * It's possible to block all outgoing communication (with the possibility of whitelisting hosts) via the
-	 * HTTP API. This may create problems for users as many features are running as services these days.
+	 * It's possible to block all outgoing communication (with the possibility of allowing certain
+	 * hosts) via the HTTP API. This may create problems for users as many features are running as
+	 * services these days.
 	 *
 	 * @since 5.2.0
 	 *
@@ -1789,8 +1838,8 @@ class WP_Site_Health {
 			$result['description'] .= sprintf(
 				'<p>%s</p>',
 				sprintf(
-					/* translators: 1: Name of the constant used. 2: List of hostnames whitelisted. */
-					__( 'HTTP requests have been blocked by the %1$s constant, with some hosts whitelisted: %2$s.' ),
+					/* translators: 1: Name of the constant used. 2: List of allowed hostnames. */
+					__( 'HTTP requests have been blocked by the %1$s constant, with some allowed hosts: %2$s.' ),
 					'<code>WP_HTTP_BLOCK_EXTERNAL</code>',
 					implode( ',', $hosts )
 				)
@@ -1944,6 +1993,10 @@ class WP_Site_Health {
 					'label' => __( 'PHP Default Timezone' ),
 					'test'  => 'php_default_timezone',
 				),
+				'php_sessions'         => array(
+					'label' => __( 'PHP Sessions' ),
+					'test'  => 'php_sessions',
+				),
 				'sql_server'           => array(
 					'label' => __( 'Database Server version' ),
 					'test'  => 'sql_server',
@@ -2014,7 +2067,7 @@ class WP_Site_Health {
 		 *
 		 * @param array $test_type {
 		 *     An associative array, where the `$test_type` is either `direct` or
-		 *     `async`, to declare if the test should run via AJAX calls after page load.
+		 *     `async`, to declare if the test should run via Ajax calls after page load.
 		 *
 		 *     @type array $identifier {
 		 *         `$identifier` should be a unique identifier for the test that should run.
@@ -2022,7 +2075,7 @@ class WP_Site_Health {
 		 *         to avoid any collisions between tests.
 		 *
 		 *         @type string $label A friendly label for your test to identify it by.
-		 *         @type mixed  $test  A callable to perform a direct test, or a string AJAX action to be called
+		 *         @type mixed  $test  A callable to perform a direct test, or a string Ajax action to be called
 		 *                             to perform an async test.
 		 *     }
 		 * }
@@ -2099,8 +2152,9 @@ class WP_Site_Health {
 	/**
 	 * Check if any scheduled tasks have been missed.
 	 *
-	 * Returns a boolean value of `true` if a scheduled task has been missed and ends processing. If the list of
-	 * crons is an instance of WP_Error, return the instance instead of a boolean value.
+	 * Returns a boolean value of `true` if a scheduled task has been missed and ends processing.
+	 *
+	 * If the list of crons is an instance of WP_Error, returns the instance instead of a boolean value.
 	 *
 	 * @since 5.2.0
 	 *
@@ -2124,8 +2178,9 @@ class WP_Site_Health {
 	/**
 	 * Check if any scheduled tasks are late.
 	 *
-	 * Returns a boolean value of `true` if a scheduled task is late and ends processing. If the list of
-	 * crons is an instance of WP_Error, return the instance instead of a boolean value.
+	 * Returns a boolean value of `true` if a scheduled task is late and ends processing.
+	 *
+	 * If the list of crons is an instance of WP_Error, returns the instance instead of a boolean value.
 	 *
 	 * @since 5.3.0
 	 *

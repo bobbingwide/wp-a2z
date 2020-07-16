@@ -116,7 +116,7 @@ class WP_Upgrader {
 	 *
 	 * @since 2.8.0
 	 *
-	 * @param WP_Upgrader_Skin $skin The upgrader skin to use. Default is a WP_Upgrader_Skin.
+	 * @param WP_Upgrader_Skin $skin The upgrader skin to use. Default is a WP_Upgrader_Skin
 	 *                               instance.
 	 */
 	public function __construct( $skin = null ) {
@@ -248,21 +248,22 @@ class WP_Upgrader {
 	 * @param string $package          The URI of the package. If this is the full path to an
 	 *                                 existing local file, it will be returned untouched.
 	 * @param bool   $check_signatures Whether to validate file signatures. Default false.
+	 * @param array  $hook_extra       Extra arguments to pass to the filter hooks. Default empty array.
 	 * @return string|WP_Error The full path to the downloaded package file, or a WP_Error object.
 	 */
-	public function download_package( $package, $check_signatures = false ) {
-
+	public function download_package( $package, $check_signatures = false, $hook_extra = array() ) {
 		/**
 		 * Filters whether to return the package.
 		 *
 		 * @since 3.7.0
 		 *
-		 * @param bool        $reply   Whether to bail without returning the package.
-		 *                             Default false.
-		 * @param string      $package The package file name.
-		 * @param WP_Upgrader $this    The WP_Upgrader instance.
+		 * @param bool        $reply      Whether to bail without returning the package.
+		 *                                Default false.
+		 * @param string      $package    The package file name.
+		 * @param WP_Upgrader $this       The WP_Upgrader instance.
+		 * @param array       $hook_extra Extra arguments passed to hooked filters.
 		 */
-		$reply = apply_filters( 'upgrader_pre_download', false, $package, $this );
+		$reply = apply_filters( 'upgrader_pre_download', false, $package, $this, $hook_extra );
 		if ( false !== $reply ) {
 			return $reply;
 		}
@@ -331,7 +332,7 @@ class WP_Upgrader {
 
 		if ( is_wp_error( $result ) ) {
 			$wp_filesystem->delete( $working_dir, true );
-			if ( 'incompatible_archive' == $result->get_error_code() ) {
+			if ( 'incompatible_archive' === $result->get_error_code() ) {
 				return new WP_Error( 'incompatible_archive', $this->strings['incompatible_archive'], $result->get_error_data() );
 			}
 			return $result;
@@ -346,8 +347,8 @@ class WP_Upgrader {
 	 * @since 4.9.0
 	 * @access protected
 	 *
-	 * @param  array  $nested_files  Array of files as returned by WP_Filesystem::dirlist()
-	 * @param  string $path          Relative path to prepend to child nodes. Optional.
+	 * @param array  $nested_files Array of files as returned by WP_Filesystem::dirlist().
+	 * @param string $path         Relative path to prepend to child nodes. Optional.
 	 * @return array A flattened array of the $nested_files specified.
 	 */
 	protected function flatten_dirlist( $nested_files, $path = '' ) {
@@ -398,7 +399,7 @@ class WP_Upgrader {
 		foreach ( $files as $filename => $file_details ) {
 			if ( ! $wp_filesystem->is_writable( $remote_destination . $filename ) ) {
 				// Attempt to alter permissions to allow writes and try again.
-				$wp_filesystem->chmod( $remote_destination . $filename, ( 'd' == $file_details['type'] ? FS_CHMOD_DIR : FS_CHMOD_FILE ) );
+				$wp_filesystem->chmod( $remote_destination . $filename, ( 'd' === $file_details['type'] ? FS_CHMOD_DIR : FS_CHMOD_FILE ) );
 				if ( ! $wp_filesystem->is_writable( $remote_destination . $filename ) ) {
 					$unwritable_files[] = $filename;
 				}
@@ -498,7 +499,7 @@ class WP_Upgrader {
 		$remote_destination = $wp_filesystem->find_folder( $local_destination );
 
 		// Locate which directory to copy to the new folder. This is based on the actual folder holding the files.
-		if ( 1 == count( $source_files ) && $wp_filesystem->is_dir( trailingslashit( $args['source'] ) . $source_files[0] . '/' ) ) {
+		if ( 1 === count( $source_files ) && $wp_filesystem->is_dir( trailingslashit( $args['source'] ) . $source_files[0] . '/' ) ) {
 			// Only one folder? Then we want its contents.
 			$source = trailingslashit( $args['source'] ) . trailingslashit( $source_files[0] );
 		} elseif ( count( $source_files ) == 0 ) {
@@ -545,7 +546,7 @@ class WP_Upgrader {
 			$protected_directories = array_merge( $protected_directories, $wp_theme_directories );
 		}
 
-		if ( in_array( $destination, $protected_directories ) ) {
+		if ( in_array( $destination, $protected_directories, true ) ) {
 			$remote_destination = trailingslashit( $remote_destination ) . trailingslashit( basename( $source ) );
 			$destination        = trailingslashit( $destination ) . trailingslashit( basename( $source ) );
 		}
@@ -603,7 +604,7 @@ class WP_Upgrader {
 		}
 
 		$destination_name = basename( str_replace( $local_destination, '', $destination ) );
-		if ( '.' == $destination_name ) {
+		if ( '.' === $destination_name ) {
 			$destination_name = '';
 		}
 
@@ -737,14 +738,14 @@ class WP_Upgrader {
 		 * Download the package (Note, This just returns the filename
 		 * of the file if the package is a local file)
 		 */
-		$download = $this->download_package( $options['package'], true );
+		$download = $this->download_package( $options['package'], true, $options['hook_extra'] );
 
 		// Allow for signature soft-fail.
 		// WARNING: This may be removed in the future.
 		if ( is_wp_error( $download ) && $download->get_error_data( 'softfail-filename' ) ) {
 
 			// Don't output the 'no signature could be found' failure message for now.
-			if ( 'signature_verification_no_signature' != $download->get_error_code() || WP_DEBUG ) {
+			if ( 'signature_verification_no_signature' !== $download->get_error_code() || WP_DEBUG ) {
 				// Output the failure error as a normal feedback, and not as an error.
 				$this->skin->feedback( $download->get_error_message() );
 
@@ -798,7 +799,10 @@ class WP_Upgrader {
 		$this->skin->set_result( $result );
 		if ( is_wp_error( $result ) ) {
 			$this->skin->error( $result );
-			$this->skin->feedback( 'process_failed' );
+
+			if ( ! method_exists( $this->skin, 'hide_process_failed' ) || ! $this->skin->hide_process_failed( $result ) ) {
+				$this->skin->feedback( 'process_failed' );
+			}
 		} else {
 			// Installation succeeded.
 			$this->skin->feedback( 'process_success' );

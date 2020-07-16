@@ -2890,7 +2890,7 @@ var Frame = wp.media.View.extend(/** @lends wp.media.view.Frame.prototype */{
 	/**
 	 * Check if a mode is enabled on the frame.
 	 *
-	 * @param  string mode Mode ID.
+	 * @param string mode Mode ID.
 	 * @return bool
 	 */
 	isModeActive: function( mode ) {
@@ -5236,7 +5236,7 @@ EditorUploader = View.extend(/** @lends wp.media.view.EditorUploader.prototype *
 	 * When a file is dropped on the editor uploader, open up an editor media workflow
 	 * and upload the file immediately.
 	 *
-	 * @param  {jQuery.Event} event The 'drop' event.
+	 * @param {jQuery.Event} event The 'drop' event.
 	 */
 	drop: function( event ) {
 		var $wrap, uploadView;
@@ -7008,8 +7008,8 @@ Attachment = View.extend(/** @lends wp.media.view.Attachment.prototype */{
 	 * Add the model if it isn't in the selection, if it is in the selection,
 	 * remove it.
 	 *
-	 * @param  {[type]} event [description]
-	 * @return {[type]}       [description]
+	 * @param {[type]} event [description]
+	 * @return {[type]} [description]
 	 */
 	checkClickHandler: function ( event ) {
 		var selection = this.options.selection;
@@ -8994,10 +8994,12 @@ module.exports = Playlist;
 /* 91 */
 /***/ (function(module, exports) {
 
+/* global ClipboardJS */
 var Attachment = wp.media.view.Attachment,
 	l10n = wp.media.view.l10n,
 	$ = jQuery,
-	Details;
+	Details,
+	__ = wp.i18n.__;
 
 Details = Attachment.extend(/** @lends wp.media.view.Attachment.Details.prototype */{
 	tagName:   'div',
@@ -9023,6 +9025,42 @@ Details = Attachment.extend(/** @lends wp.media.view.Attachment.Details.prototyp
 	},
 
 	/**
+	 * Copies the attachment URL to the clipboard.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @param {MouseEvent} event A click event.
+	 *
+	 * @return {void}
+	 */
+	 copyAttachmentDetailsURLClipboard: function() {
+		var clipboard = new ClipboardJS( '.copy-attachment-url' ),
+			successTimeout;
+
+		clipboard.on( 'success', function( event ) {
+			var triggerElement = $( event.trigger ),
+				successElement = $( '.success', triggerElement.closest( '.copy-to-clipboard-container' ) );
+
+			// Clear the selection and move focus back to the trigger.
+			event.clearSelection();
+			// Handle ClipboardJS focus bug, see https://github.com/zenorocha/clipboard.js/issues/680
+			triggerElement.focus();
+
+			// Show success visual feedback.
+			clearTimeout( successTimeout );
+			successElement.removeClass( 'hidden' );
+
+			// Hide success visual feedback after 3 seconds since last success.
+			successTimeout = setTimeout( function() {
+				successElement.addClass( 'hidden' );
+			}, 3000 );
+
+			// Handle success audible feedback.
+			wp.a11y.speak( __( 'The file URL has been copied to your clipboard' ) );
+		} );
+	 },
+
+	/**
 	 * Shows the details of an attachment.
 	 *
 	 * @since 3.5.0
@@ -9039,6 +9077,8 @@ Details = Attachment.extend(/** @lends wp.media.view.Attachment.Details.prototyp
 
 		// Call 'initialize' directly on the parent class.
 		Attachment.prototype.initialize.apply( this, arguments );
+
+		this.copyAttachmentDetailsURLClipboard();
 	},
 
 	/**

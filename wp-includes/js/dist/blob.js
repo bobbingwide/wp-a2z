@@ -103,7 +103,7 @@ var _window$URL = window.URL,
     createObjectURL = _window$URL.createObjectURL,
     revokeObjectURL = _window$URL.revokeObjectURL;
 /**
- * @type {{[key: string]: File|undefined}}
+ * @type {Record<string, File|undefined>}
  */
 
 var cache = {};

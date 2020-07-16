@@ -228,27 +228,27 @@ final class WP_Screen {
 			$post_type = $id;
 			$id        = 'post'; // Changes later. Ends up being $base.
 		} else {
-			if ( '.php' == substr( $id, -4 ) ) {
+			if ( '.php' === substr( $id, -4 ) ) {
 				$id = substr( $id, 0, -4 );
 			}
 
-			if ( 'post-new' == $id || 'link-add' == $id || 'media-new' == $id || 'user-new' == $id ) {
+			if ( in_array( $id, array( 'post-new', 'link-add', 'media-new', 'user-new' ), true ) ) {
 				$id     = substr( $id, 0, -4 );
 				$action = 'add';
 			}
 		}
 
 		if ( ! $post_type && $hook_name ) {
-			if ( '-network' == substr( $id, -8 ) ) {
+			if ( '-network' === substr( $id, -8 ) ) {
 				$id       = substr( $id, 0, -8 );
 				$in_admin = 'network';
-			} elseif ( '-user' == substr( $id, -5 ) ) {
+			} elseif ( '-user' === substr( $id, -5 ) ) {
 				$id       = substr( $id, 0, -5 );
 				$in_admin = 'user';
 			}
 
 			$id = sanitize_key( $id );
-			if ( 'edit-comments' != $id && 'edit-tags' != $id && 'edit-' == substr( $id, 0, 5 ) ) {
+			if ( 'edit-comments' !== $id && 'edit-tags' !== $id && 'edit-' === substr( $id, 0, 5 ) ) {
 				$maybe = substr( $id, 5 );
 				if ( taxonomy_exists( $maybe ) ) {
 					$id       = 'edit-tags';
@@ -272,9 +272,9 @@ final class WP_Screen {
 			}
 		}
 
-		if ( 'index' == $id ) {
+		if ( 'index' === $id ) {
 			$id = 'dashboard';
-		} elseif ( 'front' == $id ) {
+		} elseif ( 'front' === $id ) {
 			$in_admin = false;
 		}
 
@@ -363,10 +363,10 @@ final class WP_Screen {
 				break;
 		}
 
-		if ( 'network' == $in_admin ) {
+		if ( 'network' === $in_admin ) {
 			$id   .= '-network';
 			$base .= '-network';
-		} elseif ( 'user' == $in_admin ) {
+		} elseif ( 'user' === $in_admin ) {
 			$id   .= '-user';
 			$base .= '-user';
 		}
@@ -385,8 +385,8 @@ final class WP_Screen {
 		$screen->action          = $action;
 		$screen->post_type       = (string) $post_type;
 		$screen->taxonomy        = (string) $taxonomy;
-		$screen->is_user         = ( 'user' == $in_admin );
-		$screen->is_network      = ( 'network' == $in_admin );
+		$screen->is_user         = ( 'user' === $in_admin );
+		$screen->is_network      = ( 'network' === $in_admin );
 		$screen->in_admin        = $in_admin;
 		$screen->is_block_editor = $is_block_editor;
 
@@ -442,7 +442,7 @@ final class WP_Screen {
 			return (bool) $this->in_admin;
 		}
 
-		return ( $admin == $this->in_admin );
+		return ( $admin === $this->in_admin );
 	}
 
 	/**
@@ -1120,8 +1120,8 @@ final class WP_Screen {
 				$welcome_checked = empty( $_GET['welcome'] ) ? 0 : 1;
 				update_user_meta( get_current_user_id(), 'show_welcome_panel', $welcome_checked );
 			} else {
-				$welcome_checked = get_user_meta( get_current_user_id(), 'show_welcome_panel', true );
-				if ( 2 == $welcome_checked && wp_get_current_user()->user_email != get_option( 'admin_email' ) ) {
+				$welcome_checked = (int) get_user_meta( get_current_user_id(), 'show_welcome_panel', true );
+				if ( 2 === $welcome_checked && wp_get_current_user()->user_email !== get_option( 'admin_email' ) ) {
 					$welcome_checked = false;
 				}
 			}
@@ -1157,7 +1157,7 @@ final class WP_Screen {
 
 		foreach ( $columns as $column => $title ) {
 			// Can't hide these for they are special.
-			if ( in_array( $column, $special ) ) {
+			if ( in_array( $column, $special, true ) ) {
 				continue;
 			}
 
@@ -1174,7 +1174,7 @@ final class WP_Screen {
 
 			$id = "$column-hide";
 			echo '<label>';
-			echo '<input class="hide-column-tog" name="' . $id . '" type="checkbox" id="' . $id . '" value="' . $column . '"' . checked( ! in_array( $column, $hidden ), true, false ) . ' />';
+			echo '<input class="hide-column-tog" name="' . $id . '" type="checkbox" id="' . $id . '" value="' . $column . '"' . checked( ! in_array( $column, $hidden, true ), true, false ) . ' />';
 			echo "$title</label>\n";
 		}
 		?>
@@ -1242,12 +1242,12 @@ final class WP_Screen {
 			}
 		}
 
-		if ( 'edit_comments_per_page' == $option ) {
+		if ( 'edit_comments_per_page' === $option ) {
 			$comment_status = isset( $_REQUEST['comment_status'] ) ? $_REQUEST['comment_status'] : 'all';
 
 			/** This filter is documented in wp-admin/includes/class-wp-comments-list-table.php */
 			$per_page = apply_filters( 'comments_per_page', $per_page, $comment_status );
-		} elseif ( 'categories_per_page' == $option ) {
+		} elseif ( 'categories_per_page' === $option ) {
 			/** This filter is documented in wp-admin/includes/class-wp-terms-list-table.php */
 			$per_page = apply_filters( 'edit_categories_per_page', $per_page );
 		} else {
@@ -1288,17 +1288,12 @@ final class WP_Screen {
 	public function render_view_mode() {
 		$screen = get_current_screen();
 
-		// Currently only enabled for posts lists.
-		if ( 'edit' !== $screen->base ) {
+		// Currently only enabled for posts and comments lists.
+		if ( 'edit' !== $screen->base && 'edit-comments' !== $screen->base ) {
 			return;
 		}
 
-		$view_mode_post_types = get_post_types(
-			array(
-				'hierarchical' => false,
-				'show_ui'      => true,
-			)
-		);
+		$view_mode_post_types = get_post_types( array( 'show_ui' => true ) );
 
 		/**
 		 * Filters the post types that have different view mode options.
@@ -1306,15 +1301,28 @@ final class WP_Screen {
 		 * @since 4.4.0
 		 *
 		 * @param string[] $view_mode_post_types Array of post types that can change view modes.
-		 *                                       Default non-hierarchical post types with show_ui on.
+		 *                                       Default post types with show_ui on.
 		 */
 		$view_mode_post_types = apply_filters( 'view_mode_post_types', $view_mode_post_types );
 
-		if ( ! in_array( $this->post_type, $view_mode_post_types ) ) {
+		if ( 'edit' === $screen->base && ! in_array( $this->post_type, $view_mode_post_types, true ) ) {
 			return;
 		}
 
-		global $mode;
+		$mode = get_user_setting( 'posts_list_mode', 'list' );
+
+		// Set 'list' as default value if $mode is not set.
+		$mode = ( isset( $mode ) && 'extended' === $mode ) ? 'extended' : 'list';
+
+		/**
+		 * Filters the current view mode.
+		 *
+		 * @since 5.5.0
+		 *
+		 * @param string $mode The current selected mode. Default value of
+		 *                     posts_list_mode user setting.
+		 */
+		$mode = apply_filters( 'table_view_mode', $mode );
 
 		// This needs a submit button.
 		add_filter( 'screen_options_show_submit', '__return_true' );
@@ -1323,12 +1331,22 @@ final class WP_Screen {
 		<legend><?php _e( 'View Mode' ); ?></legend>
 				<label for="list-view-mode">
 					<input id="list-view-mode" type="radio" name="mode" value="list" <?php checked( 'list', $mode ); ?> />
-					<?php _e( 'List View' ); ?>
+					<?php _e( 'Compact view' ); ?>
 				</label>
 				<label for="excerpt-view-mode">
-					<input id="excerpt-view-mode" type="radio" name="mode" value="excerpt" <?php checked( 'excerpt', $mode ); ?> />
-					<?php _e( 'Excerpt View' ); ?>
+					<input id="excerpt-view-mode" type="radio" name="mode" value="extended" <?php checked( 'extended', $mode ); ?> />
+					<?php _e( 'Extended View' ); ?>
 				</label>
+				<?php
+				/**
+				 * Fires at the end of the table view modes screen option.
+				 *
+				 * @since 5.5.0
+				 *
+				 * @param string $mode The currently selected mode.
+				 */
+				do_action( 'wp_table_view_modes', $mode );
+				?>
 		</fieldset>
 		<?php
 	}

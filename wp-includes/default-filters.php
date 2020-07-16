@@ -96,7 +96,7 @@ add_filter( 'pre_post_mime_type', 'sanitize_mime_type' );
 add_filter( 'post_mime_type', 'sanitize_mime_type' );
 
 // Meta.
-add_filter( 'register_meta_args', '_wp_register_meta_args_whitelist', 10, 2 );
+add_filter( 'register_meta_args', '_wp_register_meta_args_allowed_list', 10, 2 );
 
 // Post meta.
 add_action( 'added_post_meta', 'wp_cache_set_posts_last_changed' );
@@ -175,13 +175,14 @@ add_filter( 'the_content', 'convert_smilies', 20 );
 add_filter( 'the_content', 'wpautop' );
 add_filter( 'the_content', 'shortcode_unautop' );
 add_filter( 'the_content', 'prepend_attachment' );
-add_filter( 'the_content', 'wp_make_content_images_responsive' );
+add_filter( 'the_content', 'wp_filter_content_tags' );
 
 add_filter( 'the_excerpt', 'wptexturize' );
 add_filter( 'the_excerpt', 'convert_smilies' );
 add_filter( 'the_excerpt', 'convert_chars' );
 add_filter( 'the_excerpt', 'wpautop' );
 add_filter( 'the_excerpt', 'shortcode_unautop' );
+add_filter( 'the_excerpt', 'wp_filter_content_tags' );
 add_filter( 'get_the_excerpt', 'wp_trim_excerpt', 10, 2 );
 
 add_filter( 'the_post_thumbnail_caption', 'wptexturize' );
@@ -207,6 +208,7 @@ add_filter( 'widget_text_content', 'wptexturize' );
 add_filter( 'widget_text_content', 'convert_smilies', 20 );
 add_filter( 'widget_text_content', 'wpautop' );
 add_filter( 'widget_text_content', 'shortcode_unautop' );
+add_filter( 'widget_text_content', 'wp_filter_content_tags' );
 add_filter( 'widget_text_content', 'do_shortcode', 11 ); // Runs after wpautop(); note that $post global will be null when shortcodes run.
 
 // RSS filters.
@@ -436,6 +438,10 @@ add_action( 'split_shared_term', '_wp_check_split_terms_in_menus', 10, 4 );
 add_action( 'split_shared_term', '_wp_check_split_nav_menu_terms', 10, 4 );
 add_action( 'wp_split_shared_term_batch', '_wp_batch_split_terms' );
 
+// Comment type updates.
+add_action( 'admin_init', '_wp_check_for_scheduled_update_comment_type' );
+add_action( 'wp_update_comment_type_batch', '_wp_batch_update_comment_type' );
+
 // Email notifications.
 add_action( 'comment_post', 'wp_new_comment_notify_moderator' );
 add_action( 'comment_post', 'wp_new_comment_notify_postauthor' );
@@ -450,10 +456,14 @@ add_action( 'rest_api_init', 'register_initial_settings', 10 );
 add_action( 'rest_api_init', 'create_initial_rest_routes', 99 );
 add_action( 'parse_request', 'rest_api_loaded' );
 
+// Sitemaps actions.
+add_action( 'init', 'wp_sitemaps_get_server' );
+
 /**
  * Filters formerly mixed into wp-includes.
  */
 // Theme.
+add_action( 'setup_theme', 'create_initial_theme_features', 0 );
 add_action( 'wp_loaded', '_custom_header_background_just_in_time' );
 add_action( 'wp_head', '_custom_logo_header_styles' );
 add_action( 'plugins_loaded', '_wp_customize_include' );
@@ -524,6 +534,7 @@ add_filter( 'the_content', 'do_shortcode', 11 ); // AFTER wpautop().
 add_action( 'wp_playlist_scripts', 'wp_playlist_scripts' );
 add_action( 'customize_controls_enqueue_scripts', 'wp_plupload_default_settings' );
 add_action( 'plugins_loaded', '_wp_add_additional_image_sizes', 0 );
+add_filter( 'plupload_default_settings', 'wp_show_heic_upload_error' );
 
 // Nav menu.
 add_filter( 'nav_menu_item_id', '_nav_menu_item_id_use_once', 10, 2 );
