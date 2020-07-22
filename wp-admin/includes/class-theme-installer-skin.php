@@ -62,7 +62,7 @@ class Theme_Installer_Skin extends WP_Upgrader_Skin {
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param $wp_error WP_Error.
+	 * @param WP_Error $wp_error WP_Error.
 	 * @return bool
 	 */
 	public function hide_process_failed( $wp_error ) {
@@ -134,7 +134,7 @@ class Theme_Installer_Skin extends WP_Upgrader_Skin {
 			esc_url( $activate_link ),
 			__( 'Activate' ),
 			/* translators: %s: Theme name. */
-			sprintf( __( 'Activate &#8220;%s&#8221;' ), $name )
+			sprintf( _x( 'Activate &#8220;%s&#8221;', 'theme' ), $name )
 		);
 
 		if ( is_network_admin() && current_user_can( 'manage_network_themes' ) ) {

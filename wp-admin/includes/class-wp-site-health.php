@@ -1735,6 +1735,45 @@ class WP_Site_Health {
 	}
 
 	/**
+	 * Test if plugin and theme auto-updates appear to be configured correctly.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @return array The test results.
+	 */
+	public function get_test_plugin_theme_auto_updates() {
+		$result = array(
+			'label'       => __( 'Plugin and Theme auto-updates appear to be configured correctly' ),
+			'status'      => 'good',
+			'badge'       => array(
+				'label' => __( 'Security' ),
+				'color' => 'blue',
+			),
+			'description' => sprintf(
+				'<p>%s</p>',
+				__( 'Plugin and theme auto updates ensure that the latest versions are always installed.' )
+			),
+			'actions'     => '',
+			'test'        => 'plugin_theme_auto_updates',
+		);
+
+		$check_plugin_theme_updates = $this->detect_plugin_theme_auto_update_issues();
+
+		$result['status'] = $check_plugin_theme_updates->status;
+
+		if ( 'good' !== $check_plugin_theme_updates->status ) {
+			$result['label'] = __( 'Your site may have problems auto-updating plugins and themes' );
+
+			$result['description'] .= sprintf(
+				'<p>%s</p>',
+				$check_plugin_theme_updates->message
+			);
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Test if loopbacks work as expected.
 	 *
 	 * A loopback is when WordPress queries itself, for example to start a new WP_Cron instance,
@@ -1956,6 +1995,84 @@ class WP_Site_Health {
 	}
 
 	/**
+	 * Test if 'file_uploads' directive in PHP.ini is turned off.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @return array The test results.
+	 */
+	public function get_test_file_uploads() {
+		$result = array(
+			'label'       => __( 'Files can be uploaded.' ),
+			'status'      => 'good',
+			'badge'       => array(
+				'label' => __( 'Performance' ),
+				'color' => 'blue',
+			),
+			'description' => sprintf(
+				'<p>%s</p>',
+				sprintf(
+					/* translators: 1: file_uploads, 2: php.ini */
+					__( 'The %1$s directive in %2$s determines if uploading files is allowed on your site.' ),
+					'<code>file_uploads</code>',
+					'<code>php.ini</code>'
+				)
+			),
+			'actions'     => '',
+			'test'        => 'file_uploads',
+		);
+
+		if ( ! function_exists( 'ini_get' ) ) {
+			$result['status']       = 'critical';
+			$result['description'] .= sprintf(
+				/* translators: %s: ini_get() */
+				__( 'The %s function has been disabled, some media settings are unavailable because of this.' ),
+				'<code>ini_get()</code>'
+			);
+			return $result;
+		}
+
+		if ( empty( ini_get( 'file_uploads' ) ) ) {
+			$result['status']       = 'critical';
+			$result['description'] .= sprintf(
+				'<p>%s</p>',
+				sprintf(
+					/* translators: 1: file_uploads, 2: 0 */
+					__( '%1$s is set to %2$s. You won\'t be able to upload files on your site.' ),
+					'<code>file_uploads</code>',
+					'<code>0</code>'
+				)
+			);
+			return $result;
+		}
+
+		$post_max_size   = ini_get( 'post_max_size' );
+		$upload_max_size = ini_get( 'upload_max_filesize' );
+
+		if ( wp_convert_hr_to_bytes( $post_max_size ) !== wp_convert_hr_to_bytes( $upload_max_size ) ) {
+			$result['label'] = sprintf(
+				/* translators: 1: post_max_size, 2: upload_max_filesize */
+				__( 'Mismatched "%1$s" and "%2$s" values.' ),
+				'post_max_size',
+				'upload_max_filesize'
+			);
+			$result['status']      = 'recommended';
+			$result['description'] = sprintf(
+				'<p>%s</p>',
+				sprintf(
+					/* translators: 1: post_max_size, 2: upload_max_filesize */
+					__( 'The settings for %1$s and %2$s are not the same, this could cause some problems when trying to upload files.' ),
+					'<code>post_max_size</code>',
+					'<code>upload_max_filesize</code>'
+				)
+			);
+			return $result;
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Return a set of tests that belong to the site status page.
 	 *
 	 * Each site status test is defined here, they may be `direct` tests, that run on page load, or `async` tests
@@ -2024,6 +2141,10 @@ class WP_Site_Health {
 				'debug_enabled'        => array(
 					'label' => __( 'Debugging enabled' ),
 					'test'  => 'is_in_debug_mode',
+				),
+				'file_uploads'         => array(
+					'label' => __( 'File uploads' ),
+					'test'  => 'file_uploads',
 				),
 			),
 			'async'  => array(
@@ -2203,6 +2324,55 @@ class WP_Site_Health {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Check for potential issues with plugin and theme auto-updates.
+	 *
+	 * Though there is no way to 100% determine if plugin and theme auto-updates are configured
+	 * correctly, a few educated guesses could be made to flag any conditions that would
+	 * potentially cause unexpected behaviors.
+	 *
+	 * @since 5.5.0
+	 *
+	 * @return object The test results.
+	 */
+	function detect_plugin_theme_auto_update_issues() {
+		$test_plugins_enabled   = apply_filters( 'auto_update_plugin', true );
+		$test_themes_enabled    = apply_filters( 'auto_update_theme', true );
+		$ui_enabled_for_plugins = wp_is_auto_update_enabled_for_type( 'plugin' );
+		$ui_enabled_for_themes  = wp_is_auto_update_enabled_for_type( 'theme' );
+		$plugin_filter_present  = has_filter( 'auto_update_plugin' );
+		$theme_filter_present   = has_filter( 'auto_update_theme' );
+
+		if ( ( ! $test_plugins_enabled && $ui_enabled_for_plugins ) || ( $test_themes_enabled && $ui_enabled_for_themes ) ) {
+			return (object) array(
+				'status'  => 'critical',
+				'message' => __( 'Auto-updates for plugins and/or themes appear to be disabled, but settings are still set to be displayed. This could cause auto-updates to not work as expected.' ),
+			);
+		}
+
+		if ( ( ! $test_plugins_enabled && $plugin_filter_present ) && ( ! $test_themes_enabled && $theme_filter_present ) ) {
+			return (object) array(
+				'status'  => 'recommended',
+				'message' => __( 'Auto-updates for plugins and themes appear to be disabled. This will prevent your sites from receiving new versions automatically when available.' ),
+			);
+		} elseif ( ! $test_plugins_enabled && $plugin_filter_present ) {
+			return (object) array(
+				'status'  => 'recommended',
+				'message' => __( 'Auto-updates for plugins appear to be disabled. This will prevent your sites from receiving new versions automatically when available.' ),
+			);
+		} elseif ( ! $test_themes_enabled && $theme_filter_present ) {
+			return (object) array(
+				'status'  => 'recommended',
+				'message' => __( 'Auto-updates for themes appear to be disabled. This will prevent your sites from receiving new versions automatically when available.' ),
+			);
+		}
+
+		return (object) array(
+			'status'  => 'good',
+			'message' => __( 'There appears to be no issues with plugin and theme auto-updates.' ),
+		);
 	}
 
 	/**
