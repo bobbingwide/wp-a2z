@@ -1542,7 +1542,7 @@ function do_accordion_sections( $screen, $context, $object ) {
  *
  * @since 2.7.0
  *
- * @global $wp_settings_sections Storage array of all settings sections added to admin pages.
+ * @global array $wp_settings_sections Storage array of all settings sections added to admin pages.
  *
  * @param string   $id       Slug-name to identify the section. Used in the 'id' attribute of tags.
  * @param string   $title    Formatted title of the section. Shown as the heading for the section.
@@ -1601,7 +1601,7 @@ function add_settings_section( $id, $title, $callback, $page ) {
  * @since 2.7.0
  * @since 4.2.0 The `$class` argument was added.
  *
- * @global $wp_settings_fields Storage array of settings fields and info about their pages/sections.
+ * @global array $wp_settings_fields Storage array of settings fields and info about their pages/sections.
  *
  * @param string   $id       Slug-name to identify the field. Used in the 'id' attribute of tags.
  * @param string   $title    Formatted title of the field. Shown as the label for the field
@@ -1666,8 +1666,8 @@ function add_settings_field( $id, $title, $callback, $page, $section = 'default'
  * to output all the sections and fields that were added to that $page with
  * add_settings_section() and add_settings_field()
  *
- * @global $wp_settings_sections Storage array of all settings sections added to admin pages.
- * @global $wp_settings_fields Storage array of settings fields and info about their pages/sections.
+ * @global array $wp_settings_sections Storage array of all settings sections added to admin pages.
+ * @global array $wp_settings_fields Storage array of settings fields and info about their pages/sections.
  * @since 2.7.0
  *
  * @param string $page The slug name of the page whose settings sections you want to output.
@@ -1704,7 +1704,7 @@ function do_settings_sections( $page ) {
  * a specific section. Should normally be called by do_settings_sections()
  * rather than directly.
  *
- * @global $wp_settings_fields Storage array of settings fields and their pages/sections.
+ * @global array $wp_settings_fields Storage array of settings fields and their pages/sections.
  *
  * @since 2.7.0
  *
@@ -1795,8 +1795,8 @@ function add_settings_error( $setting, $code, $message, $type = 'error' ) {
  *
  * @global array $wp_settings_errors Storage array of errors registered during this pageload
  *
- * @param string $setting Optional slug title of a specific setting whose errors you want.
- * @param boolean $sanitize Whether to re-sanitize the setting value before returning errors.
+ * @param string $setting  Optional. Slug title of a specific setting whose errors you want.
+ * @param bool   $sanitize Optional. Whether to re-sanitize the setting value before returning errors.
  * @return array Array of settings errors.
  */
 function get_settings_errors( $setting = '', $sanitize = false ) {
@@ -2158,6 +2158,7 @@ function _post_states( $post, $echo = true ) {
  */
 function get_post_states( $post ) {
 	$post_states = array();
+
 	if ( isset( $_REQUEST['post_status'] ) ) {
 		$post_status = $_REQUEST['post_status'];
 	} else {
@@ -2221,12 +2222,11 @@ function get_post_states( $post ) {
 }
 
 /**
- * Function to echo the attachment media states as HTML.
+ * Outputs the attachment media states as HTML.
  *
  * @since 3.2.0
  *
  * @param WP_Post $post The attachment post to retrieve states for.
- * @return string Media states string.
  */
 function _media_states( $post ) {
 	static $header_images;

@@ -46,6 +46,9 @@ class Theme_Installer_Skin extends WP_Upgrader_Skin {
 	}
 
 	/**
+	 * Action to perform before installing a theme.
+	 *
+	 * @since 2.8.0
 	 */
 	public function before() {
 		if ( ! empty( $this->api ) ) {
@@ -78,6 +81,9 @@ class Theme_Installer_Skin extends WP_Upgrader_Skin {
 	}
 
 	/**
+	 * Action to perform following a single theme install.
+	 *
+	 * @since 2.8.0
 	 */
 	public function after() {
 		if ( $this->do_overwrite() ) {
@@ -215,7 +221,7 @@ class Theme_Installer_Skin extends WP_Upgrader_Skin {
 
 		echo '<h2 class="update-from-upload-heading">' . esc_html( __( 'This theme is already installed.' ) ) . '</h2>';
 
-		// Check errors for current theme
+		// Check errors for current theme.
 		if ( is_wp_error( $current_theme_data->errors() ) ) {
 			$this->feedback( 'current_theme_has_errors', $current_theme_data->errors()->get_error_message() );
 		}
@@ -334,7 +340,7 @@ class Theme_Installer_Skin extends WP_Upgrader_Skin {
 
 			$overwrite = $this->is_downgrading ? 'downgrade-theme' : 'update-theme';
 
-			$install_actions['ovewrite_theme'] = sprintf(
+			$install_actions['overwrite_theme'] = sprintf(
 				'<a class="button button-primary update-from-upload-overwrite" href="%s" target="_parent">%s</a>',
 				wp_nonce_url( add_query_arg( 'overwrite', $overwrite, $this->url ), 'theme-upload' ),
 				__( 'Replace current with uploaded' )
@@ -352,7 +358,8 @@ class Theme_Installer_Skin extends WP_Upgrader_Skin {
 		);
 
 		/**
-		 * Filters the list of action links available following a single theme installation failed but ovewrite is allowed.
+		 * Filters the list of action links available following a single theme installation
+		 * failure when overwriting is allowed.
 		 *
 		 * @since 5.5.0
 		 *
@@ -360,7 +367,7 @@ class Theme_Installer_Skin extends WP_Upgrader_Skin {
 		 * @param object   $api             Object containing WordPress.org API theme data.
 		 * @param array    $new_theme_data  Array with uploaded theme data.
 		 */
-		$install_actions = apply_filters( 'install_theme_ovewrite_actions', $install_actions, $this->api, $new_theme_data );
+		$install_actions = apply_filters( 'install_theme_overwrite_actions', $install_actions, $this->api, $new_theme_data );
 
 		if ( ! empty( $install_actions ) ) {
 			printf(

@@ -78,17 +78,20 @@ class WP_Comments_List_Table extends WP_List_Table {
 	}
 
 	/**
+	 * @global string $mode           List table view mode.
 	 * @global int    $post_id
 	 * @global string $comment_status
 	 * @global string $comment_type
 	 * @global string $search
 	 */
 	public function prepare_items() {
-		global $post_id, $comment_status, $comment_type, $search;
+		global $mode, $post_id, $comment_status, $comment_type, $search;
 
 		if ( ! empty( $_REQUEST['mode'] ) ) {
 			$mode = 'excerpt' === $_REQUEST['mode'] ? 'excerpt' : 'list';
 			set_user_setting( 'posts_list_mode', $mode );
+		} else {
+			$mode = get_user_setting( 'posts_list_mode', 'list' );
 		}
 
 		$comment_status = isset( $_REQUEST['comment_status'] ) ? $_REQUEST['comment_status'] : 'all';
@@ -368,7 +371,7 @@ class WP_Comments_List_Table extends WP_List_Table {
 		if ( in_array( $comment_status, array( 'trash', 'spam' ), true ) || ! EMPTY_TRASH_DAYS ) {
 			$actions['delete'] = __( 'Delete permanently' );
 		} else {
-			$actions['trash'] = __( 'Move to trash' );
+			$actions['trash'] = __( 'Move to Trash' );
 		}
 
 		return $actions;
@@ -1014,8 +1017,8 @@ class WP_Comments_List_Table extends WP_List_Table {
 		 *
 		 * @since 2.8.0
 		 *
-		 * @param string $column_name         The custom column's name.
-		 * @param int    $comment->comment_ID The custom column's unique ID number.
+		 * @param string $column_name The custom column's name.
+		 * @param int    $comment_ID  The custom column's unique ID number.
 		 */
 		do_action( 'manage_comments_custom_column', $column_name, $comment->comment_ID );
 	}

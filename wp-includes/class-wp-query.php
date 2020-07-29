@@ -37,7 +37,7 @@ class WP_Query {
 	 * Taxonomy query, as passed to get_tax_sql()
 	 *
 	 * @since 3.1.0
-	 * @var object WP_Tax_Query
+	 * @var WP_Tax_Query A taxonomy query instance.
 	 */
 	public $tax_query;
 
@@ -45,7 +45,7 @@ class WP_Query {
 	 * Metadata query container
 	 *
 	 * @since 3.2.0
-	 * @var object WP_Meta_Query
+	 * @var WP_Meta_Query A meta query instance.
 	 */
 	public $meta_query = false;
 
@@ -53,7 +53,7 @@ class WP_Query {
 	 * Date query container
 	 *
 	 * @since 3.7.0
-	 * @var object WP_Date_Query
+	 * @var WP_Date_Query A date query instance.
 	 */
 	public $date_query = false;
 
@@ -649,9 +649,12 @@ class WP_Query {
 	 *                                                 See WP_Date_Query::__construct().
 	 *     @type int          $day                     Day of the month. Default empty. Accepts numbers 1-31.
 	 *     @type bool         $exact                   Whether to search by exact keyword. Default false.
-	 *     @type string|array $fields                  Which fields to return. Single field or all fields (string),
-	 *                                                 or array of fields. 'id=>parent' uses 'id' and 'post_parent'.
-	 *                                                 Default all fields. Accepts 'ids', 'id=>parent'.
+	 *     @type string       $fields                  Post fields to query for. Accepts:
+	 *                                                 - '' Returns an array of complete post objects (`WP_Post[]`).
+	 *                                                 - 'ids' Returns an array of post IDs (`int[]`).
+	 *                                                 - 'id=>parent' Returns an associative array of parent post IDs,
+	 *                                                   keyed by post ID (`int[]`).
+	 *                                                 Default ''.
 	 *     @type int          $hour                    Hour of the day. Default empty. Accepts numbers 0-23.
 	 *     @type int|bool     $ignore_sticky_posts     Whether to ignore sticky posts or not. Setting this to false
 	 *                                                 excludes stickies from 'post__in'. Accepts 1|true, 0|false.
@@ -3590,8 +3593,8 @@ class WP_Query {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param string   $name      Method to call.
-	 * @param array    $arguments Arguments to pass when calling.
+	 * @param string $name      Method to call.
+	 * @param array  $arguments Arguments to pass when calling.
 	 * @return mixed|false Return value of the callback, false otherwise.
 	 */
 	public function __call( $name, $arguments ) {

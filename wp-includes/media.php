@@ -1707,7 +1707,10 @@ function wp_lazy_loading_enabled( $tag_name, $context ) {
 /**
  * Filters specific tags in post content and modifies their markup.
  *
- * This function adds `srcset`, `sizes`, and `loading` attributes to `img` HTML tags.
+ * Modifies HTML tags in post content to include new browser and HTML technologies
+ * that may not have existed at the time of post creation. These modifications currently
+ * include adding `srcset`, `sizes`, and `loading` attributes to `img` HTML tags.
+ * Future similar optimizations should be added/expected here.
  *
  * @since 5.5.0
  *
@@ -4215,8 +4218,8 @@ function wp_enqueue_media( $args = array() ) {
 		'warnBulkDelete'              => __( "You are about to permanently delete these items from your site.\nThis action cannot be undone.\n 'Cancel' to stop, 'OK' to delete." ),
 		'warnBulkTrash'               => __( "You are about to trash these items.\n  'Cancel' to stop, 'OK' to delete." ),
 		'bulkSelect'                  => __( 'Bulk select' ),
-		'trashSelected'               => __( 'Move to trash' ),
-		'restoreSelected'             => __( 'Restore from trash' ),
+		'trashSelected'               => __( 'Move to Trash' ),
+		'restoreSelected'             => __( 'Restore from Trash' ),
 		'deletePermanently'           => __( 'Delete permanently' ),
 		'apply'                       => __( 'Apply' ),
 		'filterByDate'                => __( 'Filter by date' ),

@@ -4025,7 +4025,7 @@ function wp_unregister_GLOBALS() {  // phpcs:ignore WordPress.NamingConventions.
  * Does comment contain disallowed characters or words.
  *
  * @since 1.5.0
- * @deprecated 5.5.0 Use wp_blocklist_check() instead.
+ * @deprecated 5.5.0 Use wp_check_comment_disallowed_list() instead.
  *                   Please consider writing more inclusive code.
  *
  * @param string $author The author of the comment
@@ -4037,9 +4037,9 @@ function wp_unregister_GLOBALS() {  // phpcs:ignore WordPress.NamingConventions.
  * @return bool True if comment contains disallowed content, false if comment does not
  */
 function wp_blacklist_check( $author, $email, $url, $comment, $user_ip, $user_agent ) {
-	_deprecated_function( __FUNCTION__, '5.5.0', 'wp_blocklist_check()' );
+	_deprecated_function( __FUNCTION__, '5.5.0', 'wp_check_comment_disallowed_list()' );
 
-	return wp_blocklist_check( $author, $email, $url, $comment, $user_ip, $user_agent );
+	return wp_check_comment_disallowed_list( $author, $email, $url, $comment, $user_ip, $user_agent );
 }
 
 /**
@@ -4086,7 +4086,7 @@ function add_option_whitelist( $new_options, $options = '' ) {
  * Removes a list of options from the allowed options list.
  *
  * @since 2.7.0
- * @deprecated 5.5.0 Use remove_option_allowed_list() instead.
+ * @deprecated 5.5.0 Use remove_allowed_options() instead.
  *                   Please consider writing more inclusive code.
  *
  * @global array $allowed_options
@@ -4096,7 +4096,7 @@ function add_option_whitelist( $new_options, $options = '' ) {
  * @return array
  */
 function remove_option_whitelist( $del_options, $options = '' ) {
-	_deprecated_function( __FUNCTION__, '5.5.0', 'remove_option_allowed_list()' );
+	_deprecated_function( __FUNCTION__, '5.5.0', 'remove_allowed_options()' );
 
-	return remove_option_allowed_list( $del_options, $options );
+	return remove_allowed_options( $del_options, $options );
 }

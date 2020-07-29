@@ -1046,21 +1046,22 @@ function wp_get_widget_defaults() {
 }
 
 /**
- * Convert the widget settings from single to multi-widget format.
+ * Converts the widget settings from single to multi-widget format.
  *
  * @since 2.8.0
  *
  * @global array $_wp_sidebars_widgets
  *
- * @param string $base_name
- * @param string $option_name
- * @param array  $settings
- * @return array
+ * @param string $base_name   Root ID for all widgets of this type.
+ * @param string $option_name Option name for this widget type.
+ * @param array  $settings    The array of widget instance settings.
+ * @return array The array of widget settings converted to multi-widget format.
  */
 function wp_convert_widget_settings( $base_name, $option_name, $settings ) {
 	// This test may need expanding.
 	$single  = false;
 	$changed = false;
+
 	if ( empty( $settings ) ) {
 		$single = true;
 	} else {
@@ -1484,8 +1485,8 @@ function _wp_remove_unregistered_widgets( $sidebars_widgets, $allowed_widget_ids
  *
  * @since 2.5.0
  *
- * @param string|array|object $rss RSS url.
- * @param array $args Widget arguments.
+ * @param string|array|object $rss  RSS url.
+ * @param array               $args Widget arguments.
  */
 function wp_widget_rss_output( $rss, $args = array() ) {
 	if ( is_string( $rss ) ) {
@@ -1595,8 +1596,8 @@ function wp_widget_rss_output( $rss, $args = array() ) {
  *
  * @since 2.5.0
  *
- * @param array|string $args Values for input fields.
- * @param array $inputs Override default display options.
+ * @param array|string $args   Values for input fields.
+ * @param array        $inputs Override default display options.
  */
 function wp_widget_rss_form( $args, $inputs = null ) {
 	$default_inputs = array(

@@ -187,8 +187,9 @@ function get_approved_comments( $post_id, $args = array() ) {
  * @global WP_Comment $comment Global comment object.
  *
  * @param WP_Comment|string|int $comment Comment to retrieve.
- * @param string                $output  Optional. The required return type. One of OBJECT, ARRAY_A, or ARRAY_N, which correspond to
- *                                       a WP_Comment object, an associative array, or a numeric array, respectively. Default OBJECT.
+ * @param string                $output  Optional. The required return type. One of OBJECT, ARRAY_A, or ARRAY_N, which
+ *                                       correspond to a WP_Comment object, an associative array, or a numeric array,
+ *                                       respectively. Default OBJECT.
  * @return WP_Comment|array|null Depends on $output value.
  */
 function get_comment( &$comment = null, $output = OBJECT ) {
@@ -495,7 +496,7 @@ function delete_comment_meta( $comment_id, $meta_key, $meta_value = '' ) {
  *                           This parameter has no effect if $key is not specified.
  *                           Default false.
  * @return mixed An array if $single is false. The value of meta data field
- *               if $single is true.
+ *               if $single is true. False for an invalid $comment_id.
  */
 function get_comment_meta( $comment_id, $key = '', $single = false ) {
 	return get_metadata( 'comment', $comment_id, $key, $single );
@@ -560,7 +561,7 @@ function wp_queue_comments_for_comment_meta_lazyload( $comments ) {
  *
  * @param WP_Comment $comment         Comment object.
  * @param WP_User    $user            Comment author's user object. The user may not exist.
- * @param boolean    $cookies_consent Optional. Comment author's consent to store cookies. Default true.
+ * @param bool       $cookies_consent Optional. Comment author's consent to store cookies. Default true.
  */
 function wp_set_comment_cookies( $comment, $user, $cookies_consent = true ) {
 	// If the user already exists, or the user opted out of cookies, don't set cookies.
@@ -820,7 +821,7 @@ function wp_allow_comment( $commentdata, $wp_error = false ) {
 			$approved = 0;
 		}
 
-		if ( wp_blocklist_check(
+		if ( wp_check_comment_disallowed_list(
 			$commentdata['comment_author'],
 			$commentdata['comment_author_email'],
 			$commentdata['comment_author_url'],
@@ -1005,7 +1006,7 @@ function separate_comments( &$comments ) {
  *
  * @global WP_Query $wp_query WordPress Query object.
  *
- * @param WP_Comment[] $comments Optional. Array of WP_Comment objects. Defaults to $wp_query->comments.
+ * @param WP_Comment[] $comments Optional. Array of WP_Comment objects. Defaults to `$wp_query->comments`.
  * @param int          $per_page Optional. Comments per page.
  * @param bool         $threaded Optional. Control over flat or threaded comments.
  * @return int Number of comment pages.
@@ -1062,15 +1063,16 @@ function get_comment_pages_count( $comments = null, $per_page = null, $threaded 
  *
  * @param int   $comment_ID Comment ID.
  * @param array $args {
- *      Array of optional arguments.
- *      @type string     $type      Limit paginated comments to those matching a given type.
- *                                  Accepts 'comment', 'trackback', 'pingback', 'pings'
- *                                  (trackbacks and pingbacks), or 'all'. Default 'all'.
- *      @type int        $per_page  Per-page count to use when calculating pagination.
- *                                  Defaults to the value of the 'comments_per_page' option.
- *      @type int|string $max_depth If greater than 1, comment page will be determined
- *                                  for the top-level parent `$comment_ID`.
- *                                  Defaults to the value of the 'thread_comments_depth' option.
+ *     Array of optional arguments.
+ *
+ *     @type string     $type      Limit paginated comments to those matching a given type.
+ *                                 Accepts 'comment', 'trackback', 'pingback', 'pings'
+ *                                 (trackbacks and pingbacks), or 'all'. Default 'all'.
+ *     @type int        $per_page  Per-page count to use when calculating pagination.
+ *                                 Defaults to the value of the 'comments_per_page' option.
+ *     @type int|string $max_depth If greater than 1, comment page will be determined
+ *                                 for the top-level parent `$comment_ID`.
+ *                                 Defaults to the value of the 'thread_comments_depth' option.
  * } *
  * @return int|null Comment page number or null on error.
  */
@@ -1320,12 +1322,12 @@ function wp_check_comment_data_max_lengths( $comment_data ) {
  * @param string $user_agent The author's browser user agent
  * @return bool True if comment contains disallowed content, false if comment does not
  */
-function wp_blocklist_check( $author, $email, $url, $comment, $user_ip, $user_agent ) {
+function wp_check_comment_disallowed_list( $author, $email, $url, $comment, $user_ip, $user_agent ) {
 	/**
 	 * Fires before the comment is tested for disallowed characters or words.
 	 *
 	 * @since 1.5.0
-	 * @deprecated 5.5.0 Use {@see 'wp_blocklist_check'} instead.
+	 * @deprecated 5.5.0 Use {@see 'wp_check_comment_disallowed_list'} instead.
 	 *
 	 * @param string $author     Comment author.
 	 * @param string $email      Comment author's email.
@@ -1338,7 +1340,7 @@ function wp_blocklist_check( $author, $email, $url, $comment, $user_ip, $user_ag
 		'wp_blacklist_check',
 		array( $author, $email, $url, $comment, $user_ip, $user_agent ),
 		'5.5.0',
-		'wp_blocklist_check',
+		'wp_check_comment_disallowed_list',
 		__( 'Please consider writing more inclusive code.' )
 	);
 
@@ -1354,9 +1356,9 @@ function wp_blocklist_check( $author, $email, $url, $comment, $user_ip, $user_ag
 	 * @param string $user_ip    Comment author's IP address.
 	 * @param string $user_agent Comment author's browser user agent.
 	 */
-	do_action( 'wp_blocklist_check', $author, $email, $url, $comment, $user_ip, $user_agent );
+	do_action( 'wp_check_comment_disallowed_list', $author, $email, $url, $comment, $user_ip, $user_agent );
 
-	$mod_keys = trim( get_option( 'blocklist_keys' ) );
+	$mod_keys = trim( get_option( 'disallowed_keys' ) );
 	if ( '' === $mod_keys ) {
 		return false; // If moderation keys are empty.
 	}
@@ -2114,9 +2116,9 @@ function wp_filter_comment( $commentdata ) {
  *
  * @since 2.1.0
  *
- * @param bool $block Whether plugin has already blocked comment.
- * @param int $time_lastcomment Timestamp for last comment.
- * @param int $time_newcomment Timestamp for new comment.
+ * @param bool $block            Whether plugin has already blocked comment.
+ * @param int  $time_lastcomment Timestamp for last comment.
+ * @param int  $time_newcomment  Timestamp for new comment.
  * @return bool Whether comment should be blocked.
  */
 function wp_throttle_comment_flood( $block, $time_lastcomment, $time_newcomment ) {
@@ -2172,8 +2174,8 @@ function wp_throttle_comment_flood( $block, $time_lastcomment, $time_newcomment 
  *     @type string $comment_author_IP    Comment author IP address in IPv4 format. Default is the value of
  *                                        'REMOTE_ADDR' in the `$_SERVER` superglobal sent in the original request.
  * }
- * @param bool $wp_error Should errors be returned as WP_Error objects instead of
- *                       executing wp_die()? Default false.
+ * @param bool  $wp_error Should errors be returned as WP_Error objects instead of
+ *                        executing wp_die()? Default false.
  * @return int|false|WP_Error The ID of the comment on success, false or WP_Error on failure.
  */
 function wp_new_comment( $commentdata, $wp_error = false ) {
@@ -2710,8 +2712,8 @@ function wp_update_comment_count_now( $post_id ) {
  *
  * @since 1.5.0
  *
- * @param string $url URL to ping.
- * @param int $deprecated Not Used.
+ * @param string $url        URL to ping.
+ * @param int    $deprecated Not Used.
  * @return string|false String containing URI on success, false on failure.
  */
 function discover_pingback_server_uri( $url, $deprecated = '' ) {
@@ -2940,7 +2942,7 @@ function generic_ping( $post_id = 0 ) {
  * @since 0.71
  * @since 4.7.0 `$post_id` can be a WP_Post object.
  *
- * @param string $content Post content to check for links. If empty will retrieve from post.
+ * @param string      $content Post content to check for links. If empty will retrieve from post.
  * @param int|WP_Post $post_id Post Object or ID.
  */
 function pingback( $content, $post_id ) {
@@ -3067,9 +3069,9 @@ function privacy_ping_filter( $sites ) {
  * @global wpdb $wpdb WordPress database abstraction object.
  *
  * @param string $trackback_url URL to send trackbacks.
- * @param string $title Title of post.
- * @param string $excerpt Excerpt of post.
- * @param int $ID Post ID.
+ * @param string $title         Title of post.
+ * @param string $excerpt       Excerpt of post.
+ * @param int    $ID            Post ID.
  * @return int|false|void Database query from update.
  */
 function trackback( $trackback_url, $title, $excerpt, $ID ) {
@@ -3286,8 +3288,8 @@ function _close_comments_for_old_posts( $posts, $query ) {
  * @since 2.7.0
  * @access private
  *
- * @param bool $open Comments open or closed
- * @param int $post_id Post ID
+ * @param bool $open    Comments open or closed.
+ * @param int  $post_id Post ID.
  * @return bool $open
  */
 function _close_comments_for_old_post( $open, $post_id ) {

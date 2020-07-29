@@ -4210,7 +4210,7 @@ function wp_ajax_update_theme() {
 	}
 
 	// An unhandled error occurred.
-	$status['errorMessage'] = __( 'Update failed.' );
+	$status['errorMessage'] = __( 'Theme update failed.' );
 	wp_send_json_error( $status );
 }
 
@@ -5196,7 +5196,6 @@ function wp_ajax_health_check_background_updates() {
 	$site_health = WP_Site_Health::get_instance();
 	wp_send_json_success( $site_health->get_test_background_updates() );
 }
-
 
 /**
  * Ajax handler for site health checks on loopback requests.

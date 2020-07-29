@@ -159,17 +159,17 @@ class WP_Site_Health {
 		 * @param array $test_result {
 		 *     An associative array of test result data.
 		 *
-		 *     @param string $label       A label describing the test, and is used as a header in the output.
-		 *     @param string $status      The status of the test, which can be a value of `good`, `recommended` or `critical`.
-		 *     @param array  $badge {
+		 *     @type string $label       A label describing the test, and is used as a header in the output.
+		 *     @type string $status      The status of the test, which can be a value of `good`, `recommended` or `critical`.
+		 *     @type array  $badge {
 		 *         Tests are put into categories which have an associated badge shown, these can be modified and assigned here.
 		 *
-		 *         @param string $label The test label, for example `Performance`.
-		 *         @param string $color Default `blue`. A string representing a color to use for the label.
+		 *         @type string $label The test label, for example `Performance`.
+		 *         @type string $color Default `blue`. A string representing a color to use for the label.
 		 *     }
-		 *     @param string $description A more descriptive explanation of what the test looks for, and why it is important for the end user.
-		 *     @param string $actions     An action to direct the user to where they can resolve the issue, if one exists.
-		 *     @param string $test        The name of the test being ran, used as a reference point.
+		 *     @type string $description A more descriptive explanation of what the test looks for, and why it is important for the end user.
+		 *     @type string $actions     An action to direct the user to where they can resolve the issue, if one exists.
+		 *     @type string $test        The name of the test being ran, used as a reference point.
 		 * }
 		 */
 		return apply_filters( 'site_status_test_result', call_user_func( $callback ) );
@@ -953,18 +953,18 @@ class WP_Site_Health {
 		 * @since 5.3.0 The `$constant` and `$class` parameters were added.
 		 *
 		 * @param array $modules {
-		 *     An associated array of modules to test for.
+		 *     An associative array of modules to test for.
 		 *
-		 *     array $module {
-		 *         An associated array of module properties used during testing.
+		 *     @type array ...$0 {
+		 *         An associative array of module properties used during testing.
 		 *         One of either `$function` or `$extension` must be provided, or they will fail by default.
 		 *
-		 *         string $function     Optional. A function name to test for the existence of.
-		 *         string $extension    Optional. An extension to check if is loaded in PHP.
-		 *         string $constant     Optional. A constant name to check for to verify an extension exists.
-		 *         string $class        Optional. A class name to check for to verify an extension exists.
-		 *         bool   $required     Is this a required feature or not.
-		 *         string $fallback_for Optional. The module this module replaces as a fallback.
+		 *         @type string $function     Optional. A function name to test for the existence of.
+		 *         @type string $extension    Optional. An extension to check if is loaded in PHP.
+		 *         @type string $constant     Optional. A constant name to check for to verify an extension exists.
+		 *         @type string $class        Optional. A class name to check for to verify an extension exists.
+		 *         @type bool   $required     Is this a required feature or not.
+		 *         @type string $fallback_for Optional. The module this module replaces as a fallback.
 		 *     }
 		 * }
 		 */
@@ -1743,7 +1743,7 @@ class WP_Site_Health {
 	 */
 	public function get_test_plugin_theme_auto_updates() {
 		$result = array(
-			'label'       => __( 'Plugin and Theme auto-updates appear to be configured correctly' ),
+			'label'       => __( 'Plugin and theme auto-updates appear to be configured correctly' ),
 			'status'      => 'good',
 			'badge'       => array(
 				'label' => __( 'Security' ),
@@ -1751,7 +1751,7 @@ class WP_Site_Health {
 			),
 			'description' => sprintf(
 				'<p>%s</p>',
-				__( 'Plugin and theme auto updates ensure that the latest versions are always installed.' )
+				__( 'Plugin and theme auto-updates ensure that the latest versions are always installed.' )
 			),
 			'actions'     => '',
 			'test'        => 'plugin_theme_auto_updates',
@@ -1761,7 +1761,7 @@ class WP_Site_Health {
 
 		$result['status'] = $check_plugin_theme_updates->status;
 
-		if ( 'good' !== $check_plugin_theme_updates->status ) {
+		if ( 'good' !== $result['status'] ) {
 			$result['label'] = __( 'Your site may have problems auto-updating plugins and themes' );
 
 			$result['description'] .= sprintf(
@@ -1804,7 +1804,7 @@ class WP_Site_Health {
 
 		$result['status'] = $check_loopback->status;
 
-		if ( 'good' !== $check_loopback->status ) {
+		if ( 'good' !== $result['status'] ) {
 			$result['label'] = __( 'Your site could not complete a loopback request' );
 
 			$result['description'] .= sprintf(
@@ -1969,7 +1969,7 @@ class WP_Site_Health {
 					/* translators: 1: The HTTP error code. 2: The HTTP error message. */
 					__( 'The REST API call gave the following unexpected result: (%1$d) %2$s.' ),
 					wp_remote_retrieve_response_code( $r ),
-					wp_remote_retrieve_body( $r )
+					esc_html( wp_remote_retrieve_body( $r ) )
 				)
 			);
 		} else {
@@ -2086,65 +2086,69 @@ class WP_Site_Health {
 	public static function get_tests() {
 		$tests = array(
 			'direct' => array(
-				'wordpress_version'    => array(
+				'wordpress_version'         => array(
 					'label' => __( 'WordPress Version' ),
 					'test'  => 'wordpress_version',
 				),
-				'plugin_version'       => array(
+				'plugin_version'            => array(
 					'label' => __( 'Plugin Versions' ),
 					'test'  => 'plugin_version',
 				),
-				'theme_version'        => array(
+				'theme_version'             => array(
 					'label' => __( 'Theme Versions' ),
 					'test'  => 'theme_version',
 				),
-				'php_version'          => array(
+				'php_version'               => array(
 					'label' => __( 'PHP Version' ),
 					'test'  => 'php_version',
 				),
-				'php_extensions'       => array(
+				'php_extensions'            => array(
 					'label' => __( 'PHP Extensions' ),
 					'test'  => 'php_extensions',
 				),
-				'php_default_timezone' => array(
+				'php_default_timezone'      => array(
 					'label' => __( 'PHP Default Timezone' ),
 					'test'  => 'php_default_timezone',
 				),
-				'php_sessions'         => array(
+				'php_sessions'              => array(
 					'label' => __( 'PHP Sessions' ),
 					'test'  => 'php_sessions',
 				),
-				'sql_server'           => array(
+				'sql_server'                => array(
 					'label' => __( 'Database Server version' ),
 					'test'  => 'sql_server',
 				),
-				'utf8mb4_support'      => array(
+				'utf8mb4_support'           => array(
 					'label' => __( 'MySQL utf8mb4 support' ),
 					'test'  => 'utf8mb4_support',
 				),
-				'https_status'         => array(
+				'https_status'              => array(
 					'label' => __( 'HTTPS status' ),
 					'test'  => 'https_status',
 				),
-				'ssl_support'          => array(
+				'ssl_support'               => array(
 					'label' => __( 'Secure communication' ),
 					'test'  => 'ssl_support',
 				),
-				'scheduled_events'     => array(
+				'scheduled_events'          => array(
 					'label' => __( 'Scheduled events' ),
 					'test'  => 'scheduled_events',
 				),
-				'http_requests'        => array(
+				'http_requests'             => array(
 					'label' => __( 'HTTP Requests' ),
 					'test'  => 'http_requests',
 				),
-				'debug_enabled'        => array(
+				'debug_enabled'             => array(
 					'label' => __( 'Debugging enabled' ),
 					'test'  => 'is_in_debug_mode',
 				),
-				'file_uploads'         => array(
+				'file_uploads'              => array(
 					'label' => __( 'File uploads' ),
 					'test'  => 'file_uploads',
+				),
+				'plugin_theme_auto_updates' => array(
+					'label' => __( 'Plugin and theme auto-updates' ),
+					'test'  => 'plugin_theme_auto_updates',
 				),
 			),
 			'async'  => array(
@@ -2315,9 +2319,9 @@ class WP_Site_Health {
 		foreach ( $this->crons as $id => $cron ) {
 			$cron_offset = $cron->time - time();
 			if (
-					$cron_offset >= $this->timeout_missed_cron &&
-					$cron_offset < $this->timeout_late_cron
-				) {
+				$cron_offset >= $this->timeout_missed_cron &&
+				$cron_offset < $this->timeout_late_cron
+			) {
 				$this->last_late_cron = $cron->hook;
 				return true;
 			}
@@ -2338,40 +2342,76 @@ class WP_Site_Health {
 	 * @return object The test results.
 	 */
 	function detect_plugin_theme_auto_update_issues() {
-		$test_plugins_enabled   = apply_filters( 'auto_update_plugin', true );
-		$test_themes_enabled    = apply_filters( 'auto_update_theme', true );
+		$mock_plugin = (object) array(
+			'id'            => 'w.org/plugins/a-fake-plugin',
+			'slug'          => 'a-fake-plugin',
+			'plugin'        => 'a-fake-plugin/a-fake-plugin.php',
+			'new_version'   => '9.9',
+			'url'           => 'https://wordpress.org/plugins/a-fake-plugin/',
+			'package'       => 'https://downloads.wordpress.org/plugin/a-fake-plugin.9.9.zip',
+			'icons'         => array(
+				'2x' => 'https://ps.w.org/a-fake-plugin/assets/icon-256x256.png',
+				'1x' => 'https://ps.w.org/a-fake-plugin/assets/icon-128x128.png',
+			),
+			'banners'       => array(
+				'2x' => 'https://ps.w.org/a-fake-plugin/assets/banner-1544x500.png',
+				'1x' => 'https://ps.w.org/a-fake-plugin/assets/banner-772x250.png',
+			),
+			'banners_rtl'   => array(),
+			'tested'        => '5.5.0',
+			'requires_php'  => '5.6.20',
+			'compatibility' => new stdClass(),
+		);
+
+		$mock_theme = (object) array(
+			'theme'        => 'a-fake-theme',
+			'new_version'  => '9.9',
+			'url'          => 'https://wordpress.org/themes/a-fake-theme/',
+			'package'      => 'https://downloads.wordpress.org/theme/a-fake-theme.9.9.zip',
+			'requires'     => '5.0.0',
+			'requires_php' => '5.6.20',
+		);
+
+		/** This filter is documented in wp-admin/includes/class-wp-automatic-updater.php */
+		$test_plugins_enabled = apply_filters( 'auto_update_plugin', true, $mock_plugin );
+		/** This filter is documented in wp-admin/includes/class-wp-automatic-updater.php */
+		$test_themes_enabled    = apply_filters( 'auto_update_theme', true, $mock_theme );
 		$ui_enabled_for_plugins = wp_is_auto_update_enabled_for_type( 'plugin' );
 		$ui_enabled_for_themes  = wp_is_auto_update_enabled_for_type( 'theme' );
 		$plugin_filter_present  = has_filter( 'auto_update_plugin' );
 		$theme_filter_present   = has_filter( 'auto_update_theme' );
 
-		if ( ( ! $test_plugins_enabled && $ui_enabled_for_plugins ) || ( $test_themes_enabled && $ui_enabled_for_themes ) ) {
+		if ( ( ! $test_plugins_enabled && $ui_enabled_for_plugins )
+			|| ( ! $test_themes_enabled && $ui_enabled_for_themes )
+		) {
 			return (object) array(
 				'status'  => 'critical',
 				'message' => __( 'Auto-updates for plugins and/or themes appear to be disabled, but settings are still set to be displayed. This could cause auto-updates to not work as expected.' ),
 			);
 		}
 
-		if ( ( ! $test_plugins_enabled && $plugin_filter_present ) && ( ! $test_themes_enabled && $theme_filter_present ) ) {
+		if ( ( ! $test_plugins_enabled && $plugin_filter_present )
+			&& ( ! $test_themes_enabled && $theme_filter_present )
+		) {
 			return (object) array(
 				'status'  => 'recommended',
-				'message' => __( 'Auto-updates for plugins and themes appear to be disabled. This will prevent your sites from receiving new versions automatically when available.' ),
+				'message' => __( 'Auto-updates for plugins and themes appear to be disabled. This will prevent your site from receiving new versions automatically when available.' ),
 			);
 		} elseif ( ! $test_plugins_enabled && $plugin_filter_present ) {
 			return (object) array(
 				'status'  => 'recommended',
-				'message' => __( 'Auto-updates for plugins appear to be disabled. This will prevent your sites from receiving new versions automatically when available.' ),
+				'message' => __( 'Auto-updates for plugins appear to be disabled. This will prevent your site from receiving new versions automatically when available.' ),
 			);
 		} elseif ( ! $test_themes_enabled && $theme_filter_present ) {
 			return (object) array(
 				'status'  => 'recommended',
-				'message' => __( 'Auto-updates for themes appear to be disabled. This will prevent your sites from receiving new versions automatically when available.' ),
+				'message' => __( 'Auto-updates for themes appear to be disabled. This will prevent your site from receiving new versions automatically when available.' ),
 			);
 		}
 
 		return (object) array(
 			'status'  => 'good',
-			'message' => __( 'There appears to be no issues with plugin and theme auto-updates.' ),
+			'message' => __( 'There appear to be no issues with plugin and theme auto-updates.' ),
 		);
 	}
 

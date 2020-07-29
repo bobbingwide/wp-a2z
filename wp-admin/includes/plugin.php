@@ -858,7 +858,7 @@ function deactivate_plugins( $plugins, $silent = false, $network_wide = null ) {
  * @param string          $redirect     Redirect to page after successful activation.
  * @param bool            $network_wide Whether to enable the plugin for all sites in the network.
  *                                      Default false.
- * @param bool $silent                  Prevent calling activation hooks. Default false.
+ * @param bool            $silent       Prevent calling activation hooks. Default false.
  * @return bool|WP_Error True when finished or WP_Error if there were errors during a plugin activation.
  */
 function activate_plugins( $plugins, $redirect = '', $network_wide = false, $silent = false ) {
@@ -2231,7 +2231,7 @@ function add_allowed_options( $new_options, $options = '' ) {
  * @param string|array $options
  * @return array
  */
-function remove_option_allowed_list( $del_options, $options = '' ) {
+function remove_allowed_options( $del_options, $options = '' ) {
 	if ( '' === $options ) {
 		global $allowed_options;
 	} else {

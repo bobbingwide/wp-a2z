@@ -7,7 +7,7 @@
  */
 
 /**
- * Crop an Image to a given size.
+ * Crops an image to a given size.
  *
  * @since 2.1.0
  *
@@ -468,8 +468,8 @@ function _wp_make_subsizes( $new_sizes, $file, $image_meta, $attachment_id ) {
  *
  * @since 2.1.0
  *
- * @param int $attachment_id Attachment Id to process.
- * @param string $file Filepath of the Attached image.
+ * @param int    $attachment_id Attachment Id to process.
+ * @param string $file          Filepath of the Attached image.
  * @return mixed Metadata for attachment.
  */
 function wp_generate_attachment_metadata( $attachment_id, $file ) {
