@@ -64,9 +64,6 @@ class Plugin_Upgrader extends WP_Upgrader {
 		$this->strings['process_failed']       = __( 'Plugin update failed.' );
 		$this->strings['process_success']      = __( 'Plugin updated successfully.' );
 		$this->strings['process_bulk_success'] = __( 'Plugins updated successfully.' );
-
-		/* translators: 1: Plugin name, 2: Plugin version. */
-		$this->strings['process_success_specific'] = __( 'Successfully installed the plugin <strong>%1$s %2$s</strong>.' );
 	}
 
 	/**
@@ -85,6 +82,8 @@ class Plugin_Upgrader extends WP_Upgrader {
 		$this->strings['no_files']            = __( 'The plugin contains no files.' );
 		$this->strings['process_failed']      = __( 'Plugin installation failed.' );
 		$this->strings['process_success']     = __( 'Plugin installed successfully.' );
+		/* translators: 1: Plugin name, 2: Plugin version. */
+		$this->strings['process_success_specific'] = __( 'Successfully installed the plugin <strong>%1$s %2$s</strong>.' );
 
 		if ( ! empty( $this->skin->overwrite ) ) {
 			if ( 'update-plugin' === $this->skin->overwrite ) {
@@ -127,6 +126,7 @@ class Plugin_Upgrader extends WP_Upgrader {
 		$this->install_strings();
 
 		add_filter( 'upgrader_source_selection', array( $this, 'check_package' ) );
+
 		if ( $parsed_args['clear_update_cache'] ) {
 			// Clear cache so wp_update_plugins() knows about the new plugin.
 			add_action( 'upgrader_process_complete', 'wp_clean_plugins_cache', 9, 0 );
