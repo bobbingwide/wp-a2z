@@ -27,3 +27,5 @@ wp-content/wp-cache-config.php
 wp-content/languages
 wp-content/wflogs
 /bwtrace
+wp-content/cache/supercache/*
+wp-content/w3tc-cache/*
