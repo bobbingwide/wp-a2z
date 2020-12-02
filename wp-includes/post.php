@@ -3610,7 +3610,7 @@ function wp_get_recent_posts( $args = array(), $output = ARRAY_A ) {
  * @since 2.6.0 Added the `$wp_error` parameter to allow a WP_Error to be returned on failure.
  * @since 4.2.0 Support was added for encoding emoji in the post title, content, and excerpt.
  * @since 4.4.0 A 'meta_input' array can now be passed to `$postarr` to add post meta data.
- * @since 5.6.0 Added the `fire_after_hooks` parameter.
+ * @since 5.6.0 Added the `$fire_after_hooks` parameter.
  *
  * @see sanitize_post()
  * @global wpdb $wpdb WordPress database abstraction object.
@@ -3717,6 +3717,7 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 		$previous_status = get_post_field( 'post_status', $post_ID );
 	} else {
 		$previous_status = 'new';
+		$post_before     = null;
 	}
 
 	$post_type = empty( $postarr['post_type'] ) ? 'post' : $postarr['post_type'];
@@ -4319,7 +4320,7 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
 	do_action( 'wp_insert_post', $post_ID, $post, $update );
 
 	if ( $fire_after_hooks ) {
-		wp_after_insert_post( $post, $update );
+		wp_after_insert_post( $post, $update, $post_before );
 	}
 
 	return $post_ID;
@@ -4333,7 +4334,7 @@ function wp_insert_post( $postarr, $wp_error = false, $fire_after_hooks = true )
  *
  * @since 1.0.0
  * @since 3.5.0 Added the `$wp_error` parameter to allow a WP_Error to be returned on failure.
- * @since 5.6.0 Added the `fire_after_hooks` parameter.
+ * @since 5.6.0 Added the `$fire_after_hooks` parameter.
  *
  * @param array|object $postarr          Optional. Post data. Arrays are expected to be escaped,
  *                                       objects are not. See wp_insert_post() for accepted arguments.
@@ -4432,6 +4433,8 @@ function wp_publish_post( $post ) {
 		return;
 	}
 
+	$post_before = get_post( $post->ID );
+
 	// Ensure at least one term is applied for taxonomies with a default term.
 	foreach ( get_object_taxonomies( $post->post_type, 'object' ) as $taxonomy => $tax_object ) {
 		// Skip taxonomy if no default term is set.
@@ -4482,7 +4485,7 @@ function wp_publish_post( $post ) {
 	/** This action is documented in wp-includes/post.php */
 	do_action( 'wp_insert_post', $post->ID, $post, true );
 
-	wp_after_insert_post( $post, true );
+	wp_after_insert_post( $post, true, $post_before );
 }
 
 /**
@@ -4937,10 +4940,12 @@ function wp_transition_post_status( $new_status, $old_status, $post ) {
  *
  * @since 5.6.0
  *
- * @param int|WP_Post $post   The post ID or object that has been saved.
- * @param bool        $update Whether this is an existing post being updated.
+ * @param int|WP_Post  $post        The post ID or object that has been saved.
+ * @param bool         $update      Whether this is an existing post being updated.
+ * @param null|WP_Post $post_before Null for new posts, the WP_Post object prior
+ *                                  to the update for updated posts.
  */
-function wp_after_insert_post( $post, $update ) {
+function wp_after_insert_post( $post, $update, $post_before ) {
 	$post = get_post( $post );
 	if ( ! $post ) {
 		return;
@@ -4953,11 +4958,13 @@ function wp_after_insert_post( $post, $update ) {
 	 *
 	 * @since 5.6.0
 	 *
-	 * @param int     $post_id Post ID.
-	 * @param WP_Post $post    Post object.
-	 * @param bool    $update  Whether this is an existing post being updated.
+	 * @param int          $post_id     Post ID.
+	 * @param WP_Post      $post        Post object.
+	 * @param bool         $update      Whether this is an existing post being updated.
+	 * @param null|WP_Post $post_before Null for new posts, the WP_Post object prior
+	 *                                  to the update for updated posts.
 	 */
-	do_action( 'wp_after_insert_post', $post_id, $post, $update );
+	do_action( 'wp_after_insert_post', $post_id, $post, $update, $post_before );
 }
 
 //
@@ -5830,7 +5837,7 @@ function is_local_attachment( $url ) {
  *
  * @since 2.0.0
  * @since 4.7.0 Added the `$wp_error` parameter to allow a WP_Error to be returned on failure.
- * @since 5.6.0 Added the `fire_after_hooks` parameter.
+ * @since 5.6.0 Added the `$fire_after_hooks` parameter.
  *
  * @see wp_insert_post()
  *
