@@ -1357,7 +1357,7 @@ function get_sample_permalink( $id, $title = null, $name = null ) {
 	$original_date   = $post->post_date;
 	$original_name   = $post->post_name;
 
-	// Hack: get_permalink() would return ugly permalink for drafts, so we will fake that our post is published.
+	// Hack: get_permalink() would return plain permalink for drafts, so we will fake that our post is published.
 	if ( in_array( $post->post_status, array( 'draft', 'pending', 'future' ), true ) ) {
 		$post->post_status = 'publish';
 		$post->post_name   = sanitize_title( $post->post_name ? $post->post_name : $post->post_title, $post->ID );
@@ -2240,18 +2240,19 @@ function get_block_editor_server_block_settings() {
 	$block_registry = WP_Block_Type_Registry::get_instance();
 	$blocks         = array();
 	$fields_to_pick = array(
+		'api_version'      => 'apiVersion',
 		'title'            => 'title',
 		'description'      => 'description',
 		'icon'             => 'icon',
-		'category'         => 'category',
-		'keywords'         => 'keywords',
-		'parent'           => 'parent',
-		'supports'         => 'supports',
 		'attributes'       => 'attributes',
 		'provides_context' => 'providesContext',
 		'uses_context'     => 'usesContext',
+		'supports'         => 'supports',
+		'category'         => 'category',
 		'styles'           => 'styles',
 		'textdomain'       => 'textdomain',
+		'parent'           => 'parent',
+		'keywords'         => 'keywords',
 		'example'          => 'example',
 	);
 
