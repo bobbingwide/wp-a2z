@@ -90,7 +90,6 @@ function wp_default_packages_vendor( $scripts ) {
 		'wp-polyfill-url',
 		'wp-polyfill-dom-rect',
 		'wp-polyfill-element-closest',
-		'wp-polyfill-object-fit',
 		'wp-polyfill',
 	);
 
@@ -105,7 +104,6 @@ function wp_default_packages_vendor( $scripts ) {
 		'wp-polyfill-url'             => '3.6.4',
 		'wp-polyfill-dom-rect'        => '3.42.0',
 		'wp-polyfill-element-closest' => '2.0.2',
-		'wp-polyfill-object-fit'      => '2.3.4',
 		'wp-polyfill'                 => '7.4.4',
 	);
 
@@ -133,7 +131,6 @@ function wp_default_packages_vendor( $scripts ) {
 				'window.URL && window.URL.prototype && window.URLSearchParams' => 'wp-polyfill-url',
 				'window.FormData && window.FormData.prototype.keys' => 'wp-polyfill-formdata',
 				'Element.prototype.matches && Element.prototype.closest' => 'wp-polyfill-element-closest',
-				'\'objectFit\' in document.documentElement.style' => 'wp-polyfill-object-fit',
 			)
 		)
 	);
@@ -266,20 +263,6 @@ function wp_default_packages_scripts( $scripts ) {
 
 		if ( in_array( 'wp-i18n', $dependencies, true ) ) {
 			$scripts->set_translations( $handle );
-		}
-
-		/*
-		 * Manually set the text direction localization after wp-i18n is printed.
-		 * This ensures that wp.i18n.isRTL() returns true in RTL languages.
-		 * We cannot use $scripts->set_translations( 'wp-i18n' ) to do this
-		 * because WordPress prints a script's translations *before* the script,
-		 * which means, in the case of wp-i18n, that wp.i18n.setLocaleData()
-		 * is called before wp.i18n is defined.
-		 */
-		if ( 'wp-i18n' === $handle ) {
-			$ltr    = _x( 'ltr', 'text direction', 'default' );
-			$script = sprintf( "wp.i18n.setLocaleData( { 'text direction\u0004ltr': [ '%s' ] } );", $ltr );
-			$scripts->add_inline_script( $handle, $script, 'after' );
 		}
 	}
 }
@@ -1092,15 +1075,6 @@ function wp_default_scripts( $scripts ) {
 
 	$scripts->add( 'user-profile', "/wp-admin/js/user-profile$suffix.js", array( 'jquery', 'password-strength-meter', 'wp-util' ), false, 1 );
 	$scripts->set_translations( 'user-profile' );
-	$user_id = isset( $_GET['user_id'] ) ? (int) $_GET['user_id'] : 0;
-	did_action( 'init' ) && $scripts->localize(
-		'user-profile',
-		'userProfileL10n',
-		array(
-			'user_id' => $user_id,
-			'nonce'   => wp_create_nonce( 'reset-password-for-' . $user_id ),
-		)
-	);
 
 	$scripts->add( 'language-chooser', "/wp-admin/js/language-chooser$suffix.js", array( 'jquery' ), false, 1 );
 
@@ -1312,7 +1286,7 @@ function wp_default_scripts( $scripts ) {
 		$scripts->add( 'plugin-install', "/wp-admin/js/plugin-install$suffix.js", array( 'jquery', 'jquery-ui-core', 'thickbox' ), false, 1 );
 		$scripts->set_translations( 'plugin-install' );
 
-		$scripts->add( 'site-health', "/wp-admin/js/site-health$suffix.js", array( 'clipboard', 'jquery', 'wp-util', 'wp-a11y', 'wp-api-request', 'wp-url', 'wp-i18n', 'wp-hooks' ), false, 1 );
+		$scripts->add( 'site-health', "/wp-admin/js/site-health$suffix.js", array( 'clipboard', 'jquery', 'wp-util', 'wp-a11y', 'wp-api-request', 'wp-url' ), false, 1 );
 		$scripts->set_translations( 'site-health' );
 
 		$scripts->add( 'privacy-tools', "/wp-admin/js/privacy-tools$suffix.js", array( 'jquery', 'wp-a11y' ), false, 1 );
@@ -1488,7 +1462,7 @@ function wp_default_styles( $styles ) {
 	$styles->add( 'colors-fresh', false, array( 'wp-admin', 'buttons' ) ); // Old handle.
 	$styles->add( 'open-sans', $open_sans_font_url ); // No longer used in core as of 4.6.
 
-	// Noto Serif is no longer used by core, but may be relied upon by themes and plugins.
+	// Packages styles.
 	$fonts_url = '';
 
 	/*
@@ -1500,7 +1474,7 @@ function wp_default_styles( $styles ) {
 	if ( 'off' !== $font_family ) {
 		$fonts_url = 'https://fonts.googleapis.com/css?family=' . urlencode( $font_family );
 	}
-	$styles->add( 'wp-editor-font', $fonts_url ); // No longer used in core as of 5.7.
+	$styles->add( 'wp-editor-font', $fonts_url );
 
 	$styles->add( 'wp-block-library-theme', "/wp-includes/css/dist/block-library/theme$suffix.css" );
 
@@ -1517,7 +1491,10 @@ function wp_default_styles( $styles ) {
 	);
 
 	$package_styles = array(
-		'block-editor'         => array( 'wp-components' ),
+		'block-editor'         => array(
+			'wp-components',
+			'wp-editor-font',
+		),
 		'block-library'        => array(),
 		'block-directory'      => array(),
 		'components'           => array(),
