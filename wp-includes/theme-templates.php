@@ -49,7 +49,7 @@ function wp_filter_wp_template_unique_post_slug( $override_slug, $slug, $post_ID
 		),
 	);
 	$check_query      = new WP_Query( $check_query_args );
-	$posts            = $check_query->get_posts();
+	$posts            = $check_query->posts;
 
 	if ( count( $posts ) > 0 ) {
 		$suffix = 2;
@@ -59,7 +59,7 @@ function wp_filter_wp_template_unique_post_slug( $override_slug, $slug, $post_ID
 			$query_args['post_name__in'] = array( $alt_post_name );
 			$query                       = new WP_Query( $query_args );
 			$suffix++;
-		} while ( count( $query->get_posts() ) > 0 );
+		} while ( count( $query->posts ) > 0 );
 		$override_slug = $alt_post_name;
 	}
 
@@ -72,12 +72,20 @@ function wp_filter_wp_template_unique_post_slug( $override_slug, $slug, $post_ID
  * @access private
  * @since 5.8.0
  *
+ * @global string $_wp_current_template_content
+ *
  * @return void
  */
 function the_block_template_skip_link() {
+	global $_wp_current_template_content;
 
-	// Early exit if not an FSE theme.
+	// Early exit if not a block theme.
 	if ( ! current_theme_supports( 'block-templates' ) ) {
+		return;
+	}
+
+	// Early exit if not a block template.
+	if ( ! $_wp_current_template_content ) {
 		return;
 	}
 	?>
@@ -137,7 +145,12 @@ function the_block_template_skip_link() {
 
 		// Get the site wrapper.
 		// The skip-link will be injected in the beginning of it.
-		parentEl = document.querySelector( '.wp-site-blocks' ) || document.body,
+		parentEl = document.querySelector( '.wp-site-blocks' );
+
+		// Early exit if the root element was not found.
+		if ( ! parentEl ) {
+			return;
+		}
 
 		// Get the skip-link target's ID, and generate one if it doesn't exist.
 		skipLinkTargetID = skipLinkTarget.id;
