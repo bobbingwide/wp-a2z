@@ -711,11 +711,11 @@ class WP_Theme_JSON {
 			foreach ( $preset['classes'] as $class ) {
 				foreach ( $preset_by_slug as $slug => $value ) {
 					$stylesheet .= self::to_ruleset(
-						self::append_to_selector( $selector, '.has-' . $slug . '-' . $class['class_suffix'] ),
+						self::append_to_selector( $selector, '.has-' . _wp_to_kebab_case( $slug ) . '-' . $class['class_suffix'] ),
 						array(
 							array(
 								'name'  => $class['property_name'],
-								'value' => $value . ' !important',
+								'value' => 'var(--wp--preset--' . $preset['css_var_infix'] . '--' . _wp_to_kebab_case( $slug ) . ') !important',
 							),
 						)
 					);
@@ -751,7 +751,7 @@ class WP_Theme_JSON {
 			$preset_by_slug    = self::get_merged_preset_by_slug( $preset_per_origin, $preset['value_key'] );
 			foreach ( $preset_by_slug as $slug => $value ) {
 				$declarations[] = array(
-					'name'  => '--wp--preset--' . $preset['css_var_infix'] . '--' . $slug,
+					'name'  => '--wp--preset--' . $preset['css_var_infix'] . '--' . _wp_to_kebab_case( $slug ),
 					'value' => $value,
 				);
 			}
@@ -1098,9 +1098,11 @@ class WP_Theme_JSON {
 		$incoming_data    = $incoming->get_raw_data();
 		$this->theme_json = array_replace_recursive( $this->theme_json, $incoming_data );
 
-		// The array_replace_recursive algorithm merges at the leaf level.
-		// For leaf values that are arrays it will use the numeric indexes for replacement.
-		// In those cases, we want to replace the existing with the incoming value, if it exists.
+		/*
+		 * The array_replace_recursive() algorithm merges at the leaf level.
+		 * For leaf values that are arrays it will use the numeric indexes for replacement.
+		 * In those cases, we want to replace the existing with the incoming value, if it exists.
+		 */
 		$to_replace   = array();
 		$to_replace[] = array( 'custom' );
 		$to_replace[] = array( 'spacing', 'units' );
