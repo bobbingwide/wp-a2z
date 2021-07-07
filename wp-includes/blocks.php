@@ -78,12 +78,7 @@ function register_block_script_handle( $metadata, $field_name ) {
 		return $script_handle;
 	}
 
-	$script_handle = generate_block_asset_handle( $metadata['name'], $field_name );
-
-	if ( 'viewScript' === $field_name ) {
-		$script_path = str_replace( '.min.js', '.js', $script_path );
-	}
-
+	$script_handle     = generate_block_asset_handle( $metadata['name'], $field_name );
 	$script_asset_path = realpath(
 		dirname( $metadata['file'] ) . '/' .
 		substr_replace( $script_path, '.asset.php', - strlen( '.js' ) )
@@ -219,9 +214,7 @@ function register_block_type_from_metadata( $file_or_folder, $args = array() ) {
 	 */
 	$metadata = apply_filters( 'block_type_metadata', $metadata );
 
-	/**
-	 * Add `style` and `editor_style` for core blocks if missing.
-	 */
+	// Add `style` and `editor_style` for core blocks if missing.
 	if ( ! empty( $metadata['name'] ) && 0 === strpos( $metadata['name'], 'core/' ) ) {
 		$block_name = str_replace( 'core/', '', $metadata['name'] );
 
@@ -1054,8 +1047,11 @@ function build_query_vars_from_query_block( $block, $page ) {
 	);
 
 	if ( isset( $block->context['query'] ) ) {
-		if ( isset( $block->context['query']['postType'] ) ) {
-			$query['post_type'] = $block->context['query']['postType'];
+		if ( ! empty( $block->context['query']['postType'] ) ) {
+			$post_type_param = $block->context['query']['postType'];
+			if ( is_post_type_viewable( $post_type_param ) ) {
+				$query['post_type'] = $post_type_param;
+			}
 		}
 		if ( isset( $block->context['query']['sticky'] ) && ! empty( $block->context['query']['sticky'] ) ) {
 			$sticky = get_option( 'sticky_posts' );
@@ -1065,29 +1061,54 @@ function build_query_vars_from_query_block( $block, $page ) {
 				$query['post__not_in'] = array_merge( $query['post__not_in'], $sticky );
 			}
 		}
-		if ( isset( $block->context['query']['exclude'] ) ) {
-			$query['post__not_in'] = array_merge( $query['post__not_in'], $block->context['query']['exclude'] );
+		if ( ! empty( $block->context['query']['exclude'] ) ) {
+			$excluded_post_ids     = array_map( 'intval', $block->context['query']['exclude'] );
+			$excluded_post_ids     = array_filter( $excluded_post_ids );
+			$query['post__not_in'] = array_merge( $query['post__not_in'], $excluded_post_ids );
 		}
-		if ( isset( $block->context['query']['perPage'] ) ) {
-			$query['offset']         = ( $block->context['query']['perPage'] * ( $page - 1 ) ) + $block->context['query']['offset'];
-			$query['posts_per_page'] = $block->context['query']['perPage'];
+		if (
+			isset( $block->context['query']['perPage'] ) &&
+			is_numeric( $block->context['query']['perPage'] )
+		) {
+			$per_page = absint( $block->context['query']['perPage'] );
+			$offset   = 0;
+
+			if (
+				isset( $block->context['query']['offset'] ) &&
+				is_numeric( $block->context['query']['offset'] )
+			) {
+				$offset = absint( $block->context['query']['offset'] );
+			}
+
+			$query['offset']         = ( $per_page * ( $page - 1 ) ) + $offset;
+			$query['posts_per_page'] = $per_page;
 		}
-		if ( isset( $block->context['query']['categoryIds'] ) ) {
-			$query['category__in'] = $block->context['query']['categoryIds'];
+		if ( ! empty( $block->context['query']['categoryIds'] ) ) {
+			$term_ids              = array_map( 'intval', $block->context['query']['categoryIds'] );
+			$term_ids              = array_filter( $term_ids );
+			$query['category__in'] = $term_ids;
 		}
-		if ( isset( $block->context['query']['tagIds'] ) ) {
-			$query['tag__in'] = $block->context['query']['tagIds'];
+		if ( ! empty( $block->context['query']['tagIds'] ) ) {
+			$term_ids         = array_map( 'intval', $block->context['query']['tagIds'] );
+			$term_ids         = array_filter( $term_ids );
+			$query['tag__in'] = $term_ids;
 		}
-		if ( isset( $block->context['query']['order'] ) ) {
+		if (
+			isset( $block->context['query']['order'] ) &&
+				in_array( strtoupper( $block->context['query']['order'] ), array( 'ASC', 'DESC' ), true )
+		) {
 			$query['order'] = strtoupper( $block->context['query']['order'] );
 		}
 		if ( isset( $block->context['query']['orderBy'] ) ) {
 			$query['orderby'] = $block->context['query']['orderBy'];
 		}
-		if ( isset( $block->context['query']['author'] ) ) {
-			$query['author'] = $block->context['query']['author'];
+		if (
+			isset( $block->context['query']['author'] ) &&
+			(int) $block->context['query']['author'] > 0
+		) {
+			$query['author'] = (int) $block->context['query']['author'];
 		}
-		if ( isset( $block->context['query']['search'] ) ) {
+		if ( ! empty( $block->context['query']['search'] ) ) {
 			$query['s'] = $block->context['query']['search'];
 		}
 	}
