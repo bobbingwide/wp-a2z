@@ -78,7 +78,12 @@ function register_block_script_handle( $metadata, $field_name ) {
 		return $script_handle;
 	}
 
-	$script_handle     = generate_block_asset_handle( $metadata['name'], $field_name );
+	$script_handle = generate_block_asset_handle( $metadata['name'], $field_name );
+
+	if ( 'viewScript' === $field_name ) {
+		$script_path = str_replace( '.min.js', '.js', $script_path );
+	}
+
 	$script_asset_path = realpath(
 		dirname( $metadata['file'] ) . '/' .
 		substr_replace( $script_path, '.asset.php', - strlen( '.js' ) )
@@ -151,11 +156,13 @@ function register_block_style_handle( $metadata, $field_name ) {
 		$style_uri  = includes_url( 'blocks/' . str_replace( 'core/', '', $metadata['name'] ) . "/style$suffix.css" );
 	}
 
-	$style_handle = generate_block_asset_handle( $metadata['name'], $field_name );
-	$block_dir    = dirname( $metadata['file'] );
-	$style_file   = realpath( "$block_dir/$style_path" );
-	$version      = file_exists( $style_file ) ? filemtime( $style_file ) : false;
-	$result       = wp_register_style(
+	$style_handle   = generate_block_asset_handle( $metadata['name'], $field_name );
+	$block_dir      = dirname( $metadata['file'] );
+	$style_file     = realpath( "$block_dir/$style_path" );
+	$has_style_file = false !== $style_file;
+	$version        = ! $is_core_block && isset( $metadata['version'] ) ? $metadata['version'] : false;
+	$style_uri      = $has_style_file ? $style_uri : false;
+	$result         = wp_register_style(
 		$style_handle,
 		$style_uri,
 		array(),
@@ -164,7 +171,7 @@ function register_block_style_handle( $metadata, $field_name ) {
 	if ( file_exists( str_replace( '.css', '-rtl.css', $style_file ) ) ) {
 		wp_style_add_data( $style_handle, 'rtl', 'replace' );
 	}
-	if ( file_exists( $style_file ) ) {
+	if ( $has_style_file ) {
 		wp_style_add_data( $style_handle, 'path', $style_file );
 	}
 
@@ -221,8 +228,8 @@ function register_block_type_from_metadata( $file_or_folder, $args = array() ) {
 		if ( ! isset( $metadata['style'] ) ) {
 			$metadata['style'] = "wp-block-$block_name";
 		}
-		if ( ! isset( $metadata['editor_style'] ) ) {
-			$metadata['editor_style'] = "wp-block-$block_name-editor";
+		if ( ! isset( $metadata['editorStyle'] ) ) {
+			$metadata['editorStyle'] = "wp-block-{$block_name}-editor";
 		}
 	}
 
