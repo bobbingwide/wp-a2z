@@ -15057,9 +15057,11 @@ function ColorEdit(props) {
     name: blockName,
     attributes
   } = props;
-  const isLinkColorEnabled = useSetting('color.link');
-  const colors = useSetting('color.palette') || color_EMPTY_ARRAY;
-  const gradients = useSetting('color.gradients') || color_EMPTY_ARRAY; // Shouldn't be needed but right now the ColorGradientsPanel
+  const solids = useSetting('color.palette') || color_EMPTY_ARRAY;
+  const gradients = useSetting('color.gradients') || color_EMPTY_ARRAY;
+  const areCustomSolidsEnabled = useSetting('color.custom');
+  const areCustomGradientsEnabled = useSetting('color.customGradient');
+  const isLinkEnabled = useSetting('color.link'); // Shouldn't be needed but right now the ColorGradientsPanel
   // can trigger both onChangeColor and onChangeBackground
   // synchronously causing our two callbacks to override changes
   // from each other.
@@ -15073,8 +15075,15 @@ function ColorEdit(props) {
     return null;
   }
 
-  const hasBackground = hasBackgroundColorSupport(blockName);
-  const hasGradient = hasGradientSupport(blockName);
+  const hasLinkColor = hasLinkColorSupport(blockName) && isLinkEnabled && (solids.length > 0 || areCustomSolidsEnabled);
+  const hasTextColor = hasTextColorSupport(blockName) && (solids.length > 0 || areCustomSolidsEnabled);
+  const hasBackgroundColor = hasBackgroundColorSupport(blockName) && (solids.length > 0 || areCustomSolidsEnabled);
+  const hasGradientColor = hasGradientSupport(blockName) && (gradients.length > 0 || areCustomGradientsEnabled);
+
+  if (!hasLinkColor && !hasTextColor && !hasBackgroundColor && !hasGradientColor) {
+    return null;
+  }
+
   const {
     style,
     textColor,
@@ -15083,9 +15092,9 @@ function ColorEdit(props) {
   } = attributes;
   let gradientValue;
 
-  if (hasGradient && gradient) {
+  if (hasGradientColor && gradient) {
     gradientValue = getGradientValueBySlug(gradients, gradient);
-  } else if (hasGradient) {
+  } else if (hasGradientColor) {
     var _style$color5;
 
     gradientValue = style === null || style === void 0 ? void 0 : (_style$color5 = style.color) === null || _style$color5 === void 0 ? void 0 : _style$color5.gradient;
@@ -15094,7 +15103,7 @@ function ColorEdit(props) {
   const onChangeColor = name => value => {
     var _localAttributes$curr, _localAttributes$curr2;
 
-    const colorObject = getColorObjectByColorValue(colors, value);
+    const colorObject = getColorObjectByColorValue(solids, value);
     const attributeName = name + 'Color';
     const newStyle = { ...localAttributes.current.style,
       color: { ...((_localAttributes$curr = localAttributes.current) === null || _localAttributes$curr === void 0 ? void 0 : (_localAttributes$curr2 = _localAttributes$curr.style) === null || _localAttributes$curr2 === void 0 ? void 0 : _localAttributes$curr2.color),
@@ -15149,7 +15158,7 @@ function ColorEdit(props) {
   };
 
   const onChangeLinkColor = value => {
-    const colorObject = getColorObjectByColorValue(colors, value);
+    const colorObject = getColorObjectByColorValue(solids, value);
     const newLinkColorValue = colorObject !== null && colorObject !== void 0 && colorObject.slug ? `var:preset|color|${colorObject.slug}` : value;
     const newStyle = immutableSet(style, ['elements', 'link', 'color', 'text'], newLinkColorValue);
     props.setAttributes({
@@ -15161,20 +15170,20 @@ function ColorEdit(props) {
     enableContrastChecking: // Turn on contrast checker for web only since it's not supported on mobile yet.
     external_wp_element_["Platform"].OS === 'web' && !gradient && !(style !== null && style !== void 0 && (_style$color6 = style.color) !== null && _style$color6 !== void 0 && _style$color6.gradient),
     clientId: props.clientId,
-    settings: [...(hasTextColorSupport(blockName) ? [{
+    settings: [...(hasTextColor ? [{
       label: Object(external_wp_i18n_["__"])('Text color'),
       onColorChange: onChangeColor('text'),
-      colorValue: getColorObjectByAttributeValues(colors, textColor, style === null || style === void 0 ? void 0 : (_style$color7 = style.color) === null || _style$color7 === void 0 ? void 0 : _style$color7.text).color
-    }] : []), ...(hasBackground || hasGradient ? [{
+      colorValue: getColorObjectByAttributeValues(solids, textColor, style === null || style === void 0 ? void 0 : (_style$color7 = style.color) === null || _style$color7 === void 0 ? void 0 : _style$color7.text).color
+    }] : []), ...(hasBackgroundColor || hasGradientColor ? [{
       label: Object(external_wp_i18n_["__"])('Background color'),
-      onColorChange: hasBackground ? onChangeColor('background') : undefined,
-      colorValue: getColorObjectByAttributeValues(colors, backgroundColor, style === null || style === void 0 ? void 0 : (_style$color8 = style.color) === null || _style$color8 === void 0 ? void 0 : _style$color8.background).color,
+      onColorChange: hasBackgroundColor ? onChangeColor('background') : undefined,
+      colorValue: getColorObjectByAttributeValues(solids, backgroundColor, style === null || style === void 0 ? void 0 : (_style$color8 = style.color) === null || _style$color8 === void 0 ? void 0 : _style$color8.background).color,
       gradientValue,
-      onGradientChange: hasGradient ? onChangeGradient : undefined
-    }] : []), ...(isLinkColorEnabled && hasLinkColorSupport(blockName) ? [{
+      onGradientChange: hasGradientColor ? onChangeGradient : undefined
+    }] : []), ...(hasLinkColor ? [{
       label: Object(external_wp_i18n_["__"])('Link Color'),
       onColorChange: onChangeLinkColor,
-      colorValue: getLinkColorFromAttributeValue(colors, style === null || style === void 0 ? void 0 : (_style$elements2 = style.elements) === null || _style$elements2 === void 0 ? void 0 : (_style$elements2$link = _style$elements2.link) === null || _style$elements2$link === void 0 ? void 0 : (_style$elements2$link2 = _style$elements2$link.color) === null || _style$elements2$link2 === void 0 ? void 0 : _style$elements2$link2.text),
+      colorValue: getLinkColorFromAttributeValue(solids, style === null || style === void 0 ? void 0 : (_style$elements2 = style.elements) === null || _style$elements2 === void 0 ? void 0 : (_style$elements2$link = _style$elements2.link) === null || _style$elements2$link === void 0 ? void 0 : (_style$elements2$link2 = _style$elements2$link.color) === null || _style$elements2$link2 === void 0 ? void 0 : _style$elements2$link2.text),
       clearable: !!(style !== null && style !== void 0 && (_style$elements3 = style.elements) !== null && _style$elements3 !== void 0 && (_style$elements3$link = _style$elements3.link) !== null && _style$elements3$link !== void 0 && (_style$elements3$link2 = _style$elements3$link.color) !== null && _style$elements3$link2 !== void 0 && _style$elements3$link2.text)
     }] : [])]
   });
@@ -17031,7 +17040,8 @@ function DuotonePickerPopover({
   onToggle,
   duotonePalette,
   colorPalette,
-  disableCustomColors
+  disableCustomColors,
+  disableCustomDuotone
 }) {
   return Object(external_wp_element_["createElement"])(external_wp_components_["Popover"], {
     className: "block-editor-duotone-control__popover",
@@ -17043,6 +17053,7 @@ function DuotonePickerPopover({
     colorPalette: colorPalette,
     duotonePalette: duotonePalette,
     disableCustomColors: disableCustomColors,
+    disableCustomDuotone: disableCustomDuotone,
     value: value,
     onChange: onChange
   })));
@@ -17070,14 +17081,11 @@ function DuotoneControl({
   colorPalette,
   duotonePalette,
   disableCustomColors,
+  disableCustomDuotone,
   value,
   onChange
 }) {
   const [isOpen, setIsOpen] = Object(external_wp_element_["useState"])(false);
-
-  if (!duotonePalette) {
-    return null;
-  }
 
   const onToggle = () => {
     setIsOpen(prev => !prev);
@@ -17107,7 +17115,8 @@ function DuotoneControl({
     onToggle: onToggle,
     duotonePalette: duotonePalette,
     colorPalette: colorPalette,
-    disableCustomColors: disableCustomColors
+    disableCustomColors: disableCustomColors,
+    disableCustomDuotone: disableCustomDuotone
   }));
 }
 
@@ -17135,6 +17144,7 @@ function DuotoneControl({
  */
 
 
+const duotone_EMPTY_ARRAY = [];
 /**
  * Convert a list of colors to an object of R, G, and B values.
  *
@@ -17234,14 +17244,21 @@ function DuotonePanel({
 
   const style = attributes === null || attributes === void 0 ? void 0 : attributes.style;
   const duotone = style === null || style === void 0 ? void 0 : (_style$color = style.color) === null || _style$color === void 0 ? void 0 : _style$color.duotone;
-  const duotonePalette = useSetting('color.duotone');
-  const colorPalette = useSetting('color.palette');
+  const duotonePalette = useSetting('color.duotone') || duotone_EMPTY_ARRAY;
+  const colorPalette = useSetting('color.palette') || duotone_EMPTY_ARRAY;
   const disableCustomColors = !useSetting('color.custom');
+  const disableCustomDuotone = !useSetting('color.customDuotone') || (colorPalette === null || colorPalette === void 0 ? void 0 : colorPalette.length) === 0 && disableCustomColors;
+
+  if ((duotonePalette === null || duotonePalette === void 0 ? void 0 : duotonePalette.length) === 0 && disableCustomDuotone) {
+    return null;
+  }
+
   return Object(external_wp_element_["createElement"])(block_controls, {
     group: "block"
   }, Object(external_wp_element_["createElement"])(duotone_control, {
     duotonePalette: duotonePalette,
     colorPalette: colorPalette,
+    disableCustomDuotone: disableCustomDuotone,
     disableCustomColors: disableCustomColors,
     value: duotone,
     onChange: newDuotone => {
@@ -17381,7 +17398,7 @@ function LayoutPanel({
     return getSettings().supportsLayout;
   }, []);
   const units = Object(external_wp_components_["__experimentalUseCustomUnits"])({
-    availableUnits: useSetting('layout.units') || ['%', 'px', 'em', 'rem', 'vw']
+    availableUnits: useSetting('spacing.units') || ['%', 'px', 'em', 'rem', 'vw']
   });
 
   if (!themeSupportsLayout) {
@@ -20157,14 +20174,15 @@ var diff_character = __webpack_require__("iA5R");
  */
 
 
-const BlockView = ({
+
+function BlockView({
   title,
   rawContent,
   renderedContent,
   action,
   actionText,
   className
-}) => {
+}) {
   return Object(external_wp_element_["createElement"])("div", {
     className: className
   }, Object(external_wp_element_["createElement"])("div", {
@@ -20175,16 +20193,14 @@ const BlockView = ({
     className: "block-editor-block-compare__html"
   }, rawContent), Object(external_wp_element_["createElement"])("div", {
     className: "block-editor-block-compare__preview edit-post-visual-editor"
-  }, renderedContent)), Object(external_wp_element_["createElement"])("div", {
+  }, Object(external_wp_element_["createElement"])(external_wp_element_["RawHTML"], null, Object(external_wp_dom_["safeHTML"])(renderedContent)))), Object(external_wp_element_["createElement"])("div", {
     className: "block-editor-block-compare__action"
   }, Object(external_wp_element_["createElement"])(external_wp_components_["Button"], {
     isSecondary: true,
     tabIndex: "0",
     onClick: action
   }, actionText)));
-};
-
-/* harmony default export */ var block_view = (BlockView);
+}
 
 // CONCATENATED MODULE: ./node_modules/@wordpress/block-editor/build-module/components/block-compare/index.js
 
@@ -20235,35 +20251,27 @@ function BlockCompare({
     const newBlocks = Object(external_lodash_["castArray"])(convertedBlock); // Get converted block details
 
     const newContent = newBlocks.map(item => Object(external_wp_blocks_["getSaveContent"])(item.name, item.attributes, item.innerBlocks));
-    const renderedContent = newBlocks.map(item => Object(external_wp_blocks_["getSaveElement"])(item.name, item.attributes, item.innerBlocks));
-    return {
-      rawContent: newContent.join(''),
-      renderedContent
-    };
+    return newContent.join('');
   }
 
-  const original = {
-    rawContent: block.originalContent,
-    renderedContent: Object(external_wp_blocks_["getSaveElement"])(block.name, block.attributes)
-  };
   const converted = getConvertedContent(convertor(block));
-  const difference = getDifference(original.rawContent, converted.rawContent);
+  const difference = getDifference(block.originalContent, converted);
   return Object(external_wp_element_["createElement"])("div", {
     className: "block-editor-block-compare__wrapper"
-  }, Object(external_wp_element_["createElement"])(block_view, {
+  }, Object(external_wp_element_["createElement"])(BlockView, {
     title: Object(external_wp_i18n_["__"])('Current'),
     className: "block-editor-block-compare__current",
     action: onKeep,
     actionText: Object(external_wp_i18n_["__"])('Convert to HTML'),
-    rawContent: original.rawContent,
-    renderedContent: original.renderedContent
-  }), Object(external_wp_element_["createElement"])(block_view, {
+    rawContent: block.originalContent,
+    renderedContent: block.originalContent
+  }), Object(external_wp_element_["createElement"])(BlockView, {
     title: Object(external_wp_i18n_["__"])('After Conversion'),
     className: "block-editor-block-compare__converted",
     action: onConvert,
     actionText: convertButtonText,
     rawContent: difference,
-    renderedContent: converted.renderedContent
+    renderedContent: converted
   }));
 }
 
@@ -28551,6 +28559,7 @@ useBlockProps.save = external_wp_blocks_["__unstableGetBlockProps"];
 
 
 
+
 /**
  * Internal dependencies
  */
@@ -28658,11 +28667,12 @@ function block_BlockListBlock({
   let block;
 
   if (!isValid) {
+    const saveContent = Object(external_wp_blocks_["getSaveContent"])(blockType, attributes);
     block = Object(external_wp_element_["createElement"])(Block, {
       className: "has-warning"
     }, Object(external_wp_element_["createElement"])(block_invalid_warning, {
       clientId: clientId
-    }), Object(external_wp_element_["createElement"])("div", null, Object(external_wp_blocks_["getSaveElement"])(blockType, attributes)));
+    }), Object(external_wp_element_["createElement"])(external_wp_element_["RawHTML"], null, Object(external_wp_dom_["safeHTML"])(saveContent)));
   } else if (mode === 'html') {
     // Render blockEdit so the inspector controls don't disappear.
     // See #8969.
@@ -38672,14 +38682,6 @@ function use_multi_selection_useMultiSelection() {
  */
 
 
-/**
- * Useful for positioning an element within the viewport so focussing the
- * element does not scroll the page.
- */
-
-const PREVENT_SCROLL_ON_FOCUS = {
-  position: 'fixed'
-};
 
 function isFormElement(element) {
   const {
@@ -38727,14 +38729,12 @@ function useTabNav() {
   const before = Object(external_wp_element_["createElement"])("div", {
     ref: focusCaptureBeforeRef,
     tabIndex: focusCaptureTabIndex,
-    onFocus: onFocusCapture,
-    style: PREVENT_SCROLL_ON_FOCUS
+    onFocus: onFocusCapture
   });
   const after = Object(external_wp_element_["createElement"])("div", {
     ref: focusCaptureAfterRef,
     tabIndex: focusCaptureTabIndex,
-    onFocus: onFocusCapture,
-    style: PREVENT_SCROLL_ON_FOCUS
+    onFocus: onFocusCapture
   });
   const ref = Object(external_wp_compose_["useRefEffect"])(node => {
     function onKeyDown(event) {
@@ -38774,17 +38774,59 @@ function useTabNav() {
       // doesn't refocus this block and so it allows default behaviour
       // (moving focus to the next tabbable element).
 
-      noCapture.current = true;
-      next.current.focus();
+      noCapture.current = true; // Focusing the focus capture element, which is located above and
+      // below the editor, should not scroll the page all the way up or
+      // down.
+
+      next.current.focus({
+        preventScroll: true
+      });
     }
 
     function onFocusOut(event) {
       lastFocus.current = event.target;
+    } // When tabbing back to an element in block list, this event handler prevents scrolling if the
+    // focus capture divs (before/after) are outside of the viewport. (For example shift+tab back to a paragraph
+    // when focus is on a sidebar element. This prevents the scrollable writing area from jumping either to the
+    // top or bottom of the document.
+    //
+    // Note that it isn't possible to disable scrolling in the onFocus event. We need to intercept this
+    // earlier in the keypress handler, and call focus( { preventScroll: true } ) instead.
+    // https://developer.mozilla.org/en-US/docs/Web/API/HTMLOrForeignElement/focus#parameters
+
+
+    function preventScrollOnTab(event) {
+      var _event$target;
+
+      if (event.keyCode !== external_wp_keycodes_["TAB"]) {
+        return;
+      }
+
+      if (((_event$target = event.target) === null || _event$target === void 0 ? void 0 : _event$target.getAttribute('role')) === 'region') {
+        return;
+      }
+
+      if (container.current === event.target) {
+        return;
+      }
+
+      const isShift = event.shiftKey;
+      const direction = isShift ? 'findPrevious' : 'findNext';
+      const target = external_wp_dom_["focus"].tabbable[direction](event.target); // only do something when the next tabbable is a focus capture div (before/after)
+
+      if (target === focusCaptureBeforeRef.current || target === focusCaptureAfterRef.current) {
+        event.preventDefault();
+        target.focus({
+          preventScroll: true
+        });
+      }
     }
 
+    node.ownerDocument.defaultView.addEventListener('keydown', preventScrollOnTab);
     node.addEventListener('keydown', onKeyDown);
     node.addEventListener('focusout', onFocusOut);
     return () => {
+      node.ownerDocument.defaultView.removeEventListener('keydown', preventScrollOnTab);
       node.removeEventListener('keydown', onKeyDown);
       node.removeEventListener('focusout', onFocusOut);
     };
