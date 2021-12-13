@@ -2,21 +2,26 @@
 /**
  * HTTP Proxy connection interface
  *
- * @package Requests
- * @subpackage Proxy
- * @since 1.6
+ * @package Requests\Proxy
+ * @since   1.6
  */
+
+namespace WpOrg\Requests\Proxy;
+
+use WpOrg\Requests\Exception\ArgumentCount;
+use WpOrg\Requests\Exception\InvalidArgument;
+use WpOrg\Requests\Hooks;
+use WpOrg\Requests\Proxy;
 
 /**
  * HTTP Proxy connection interface
  *
  * Provides a handler for connection via an HTTP proxy
  *
- * @package Requests
- * @subpackage Proxy
- * @since 1.6
+ * @package Requests\Proxy
+ * @since   1.6
  */
-class Requests_Proxy_HTTP implements Requests_Proxy {
+final class Http implements Proxy {
 	/**
 	 * Proxy host and port
 	 *
@@ -51,8 +56,13 @@ class Requests_Proxy_HTTP implements Requests_Proxy {
 	 * Constructor
 	 *
 	 * @since 1.6
-	 * @throws Requests_Exception On incorrect number of arguments (`authbasicbadargs`)
-	 * @param array|null $args Array of user and password. Must have exactly two elements
+	 *
+	 * @param array|string|null $args Proxy as a string or an array of proxy, user and password.
+	 *                                When passed as an array, must have exactly one (proxy)
+	 *                                or three elements (proxy, user, password).
+	 *
+	 * @throws \WpOrg\Requests\Exception\InvalidArgument When the passed argument is not an array, a string or null.
+	 * @throws \WpOrg\Requests\Exception\ArgumentCount On incorrect number of arguments (`proxyhttpbadargs`)
 	 */
 	public function __construct($args = null) {
 		if (is_string($args)) {
@@ -67,8 +77,14 @@ class Requests_Proxy_HTTP implements Requests_Proxy {
 				$this->use_authentication                    = true;
 			}
 			else {
-				throw new Requests_Exception('Invalid number of arguments', 'proxyhttpbadargs');
+				throw ArgumentCount::create(
+					'an array with exactly one element or exactly three elements',
+					count($args),
+					'proxyhttpbadargs'
+				);
 			}
+		} elseif ($args !== null) {
+			throw InvalidArgument::create(1, '$args', 'array|string|null', gettype($args));
 		}
 	}
 
@@ -76,19 +92,19 @@ class Requests_Proxy_HTTP implements Requests_Proxy {
 	 * Register the necessary callbacks
 	 *
 	 * @since 1.6
-	 * @see curl_before_send
-	 * @see fsockopen_remote_socket
-	 * @see fsockopen_remote_host_path
-	 * @see fsockopen_header
-	 * @param Requests_Hooks $hooks Hook system
+	 * @see \WpOrg\Requests\Proxy\HTTP::curl_before_send()
+	 * @see \WpOrg\Requests\Proxy\HTTP::fsockopen_remote_socket()
+	 * @see \WpOrg\Requests\Proxy\HTTP::fsockopen_remote_host_path()
+	 * @see \WpOrg\Requests\Proxy\HTTP::fsockopen_header()
+	 * @param \WpOrg\Requests\Hooks $hooks Hook system
 	 */
-	public function register(Requests_Hooks $hooks) {
-		$hooks->register('curl.before_send', array($this, 'curl_before_send'));
+	public function register(Hooks $hooks) {
+		$hooks->register('curl.before_send', [$this, 'curl_before_send']);
 
-		$hooks->register('fsockopen.remote_socket', array($this, 'fsockopen_remote_socket'));
-		$hooks->register('fsockopen.remote_host_path', array($this, 'fsockopen_remote_host_path'));
+		$hooks->register('fsockopen.remote_socket', [$this, 'fsockopen_remote_socket']);
+		$hooks->register('fsockopen.remote_host_path', [$this, 'fsockopen_remote_host_path']);
 		if ($this->use_authentication) {
-			$hooks->register('fsockopen.after_headers', array($this, 'fsockopen_header'));
+			$hooks->register('fsockopen.after_headers', [$this, 'fsockopen_header']);
 		}
 	}
 
@@ -96,7 +112,7 @@ class Requests_Proxy_HTTP implements Requests_Proxy {
 	 * Set cURL parameters before the data is sent
 	 *
 	 * @since 1.6
-	 * @param resource $handle cURL resource
+	 * @param resource|\CurlHandle $handle cURL handle
 	 */
 	public function curl_before_send(&$handle) {
 		curl_setopt($handle, CURLOPT_PROXYTYPE, CURLPROXY_HTTP);

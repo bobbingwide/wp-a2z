@@ -2,15 +2,20 @@
 /**
  * Exception based on HTTP response
  *
- * @package Requests
+ * @package Requests\Exceptions
  */
+
+namespace WpOrg\Requests\Exception;
+
+use WpOrg\Requests\Exception;
+use WpOrg\Requests\Exception\Http\StatusUnknown;
 
 /**
  * Exception based on HTTP response
  *
- * @package Requests
+ * @package Requests\Exceptions
  */
-class Requests_Exception_HTTP extends Requests_Exception {
+class Http extends Exception {
 	/**
 	 * HTTP status code
 	 *
@@ -44,7 +49,9 @@ class Requests_Exception_HTTP extends Requests_Exception {
 	}
 
 	/**
-	 * Get the status message
+	 * Get the status message.
+	 *
+	 * @return string
 	 */
 	public function getReason() {
 		return $this->reason;
@@ -58,14 +65,14 @@ class Requests_Exception_HTTP extends Requests_Exception {
 	 */
 	public static function get_class($code) {
 		if (!$code) {
-			return 'Requests_Exception_HTTP_Unknown';
+			return StatusUnknown::class;
 		}
 
-		$class = sprintf('Requests_Exception_HTTP_%d', $code);
+		$class = sprintf('\WpOrg\Requests\Exception\Http\Status%d', $code);
 		if (class_exists($class)) {
 			return $class;
 		}
 
-		return 'Requests_Exception_HTTP_Unknown';
+		return StatusUnknown::class;
 	}
 }

@@ -2137,8 +2137,15 @@ function sanitize_user( $username, $strict = false ) {
  */
 function sanitize_key( $key ) {
 	$raw_key = $key;
-	$key     = strtolower( $key );
-	$key     = preg_replace( '/[^a-z0-9_\-]/', '', $key );
+
+	if ( ! is_string( $key ) ) {
+		$key = '';
+	}
+
+	if ( '' !== $key ) {
+		$key = strtolower( $key );
+		$key = preg_replace( '/[^a-z0-9_\-]/', '', $key );
+	}
 
 	/**
 	 * Filters a sanitized key string.
@@ -2288,8 +2295,42 @@ function sanitize_title_with_dashes( $title, $raw_title = '', $context = 'displa
 				'%cc%80',
 				'%cc%84',
 				'%cc%8c',
+				// Non-visible characters that display without a width.
+				'%e2%80%8b',
+				'%e2%80%8c',
+				'%e2%80%8d',
+				'%e2%80%8e',
+				'%e2%80%8f',
+				'%e2%80%aa',
+				'%e2%80%ab',
+				'%e2%80%ac',
+				'%e2%80%ad',
+				'%e2%80%ae',
+				'%ef%bb%bf',
 			),
 			'',
+			$title
+		);
+
+		// Convert non-visible characters that display with a width to hyphen.
+		$title = str_replace(
+			array(
+				'%e2%80%80',
+				'%e2%80%81',
+				'%e2%80%82',
+				'%e2%80%83',
+				'%e2%80%84',
+				'%e2%80%85',
+				'%e2%80%86',
+				'%e2%80%87',
+				'%e2%80%88',
+				'%e2%80%89',
+				'%e2%80%8a',
+				'%e2%80%a8',
+				'%e2%80%a9',
+				'%e2%80%af',
+			),
+			'-',
 			$title
 		);
 
@@ -2480,9 +2521,9 @@ function force_balance_tags( $text ) {
 	$tagqueue  = '';
 	$newtext   = '';
 	// Known single-entity/self-closing tags.
-	$single_tags = array( 'area', 'base', 'basefont', 'br', 'col', 'command', 'embed', 'frame', 'hr', 'img', 'input', 'isindex', 'link', 'meta', 'param', 'source' );
+	$single_tags = array( 'area', 'base', 'basefont', 'br', 'col', 'command', 'embed', 'frame', 'hr', 'img', 'input', 'isindex', 'link', 'meta', 'param', 'source', 'track', 'wbr' );
 	// Tags that can be immediately nested within themselves.
-	$nestable_tags = array( 'blockquote', 'div', 'object', 'q', 'span' );
+	$nestable_tags = array( 'article', 'aside', 'blockquote', 'details', 'div', 'figure', 'object', 'q', 'section', 'span' );
 
 	// WP bug fix for comments - in case you REALLY meant to type '< !--'.
 	$text = str_replace( '< !--', '<    !--', $text );
@@ -3113,7 +3154,7 @@ function wp_rel_nofollow( $text ) {
 	$text = stripslashes( $text );
 	$text = preg_replace_callback(
 		'|<a (.+?)>|i',
-		function( $matches ) {
+		static function( $matches ) {
 			return wp_rel_callback( $matches, 'nofollow' );
 		},
 		$text
@@ -3147,7 +3188,7 @@ function wp_rel_ugc( $text ) {
 	$text = stripslashes( $text );
 	$text = preg_replace_callback(
 		'|<a (.+?)>|i',
-		function( $matches ) {
+		static function( $matches ) {
 			return wp_rel_callback( $matches, 'nofollow ugc' );
 		},
 		$text
@@ -3265,7 +3306,7 @@ function wp_init_targeted_link_rel_filters() {
 
 	foreach ( $filters as $filter ) {
 		add_filter( $filter, 'wp_targeted_link_rel' );
-	};
+	}
 }
 
 /**
@@ -3288,7 +3329,7 @@ function wp_remove_targeted_link_rel_filters() {
 
 	foreach ( $filters as $filter ) {
 		remove_filter( $filter, 'wp_targeted_link_rel' );
-	};
+	}
 }
 
 /**
@@ -3539,8 +3580,8 @@ function get_gmt_from_date( $string, $format = 'Y-m-d H:i:s' ) {
 /**
  * Given a date in UTC or GMT timezone, returns that date in the timezone of the site.
  *
- * Requires and returns a date in the Y-m-d H:i:s format.
- * Return format can be overridden using the $format parameter.
+ * Requires a date in the Y-m-d H:i:s format.
+ * Default return format of 'Y-m-d H:i:s' can be overridden using the `$format` parameter.
  *
  * @since 1.2.0
  *
@@ -4404,7 +4445,7 @@ function esc_url( $url, $protocols = null, $_context = 'display' ) {
 }
 
 /**
- * Performs esc_url() for database usage.
+ * Performs esc_url() for database or redirect usage.
  *
  * @since 2.8.0
  *
@@ -4417,6 +4458,26 @@ function esc_url( $url, $protocols = null, $_context = 'display' ) {
  */
 function esc_url_raw( $url, $protocols = null ) {
 	return esc_url( $url, $protocols, 'db' );
+}
+
+/**
+ * Performs esc_url() for database or redirect usage.
+ *
+ * This function is an alias for esc_url_raw().
+ *
+ * @since 2.3.1
+ * @since 2.8.0 Deprecated in favor of esc_url_raw().
+ * @since 5.9.0 Restored (un-deprecated).
+ *
+ * @see esc_url_raw()
+ *
+ * @param string   $url       The URL to be cleaned.
+ * @param string[] $protocols Optional. An array of acceptable protocols.
+ *                            Defaults to return value of wp_allowed_protocols().
+ * @return string The cleaned URL after esc_url() is run with the 'db' context.
+ */
+function sanitize_url( $url, $protocols = null ) {
+	return esc_url_raw( $url, $protocols );
 }
 
 /**
@@ -4650,7 +4711,7 @@ function sanitize_option( $option, $value ) {
 	global $wpdb;
 
 	$original_value = $value;
-	$error          = '';
+	$error          = null;
 
 	switch ( $option ) {
 		case 'admin_email':
@@ -4858,7 +4919,9 @@ function sanitize_option( $option, $value ) {
 				$value = str_replace( 'http://', '', $value );
 			}
 
-			if ( 'permalink_structure' === $option && '' !== $value && ! preg_match( '/%[^\/%]+%/', $value ) ) {
+			if ( 'permalink_structure' === $option && null === $error
+				&& '' !== $value && ! preg_match( '/%[^\/%]+%/', $value )
+			) {
 				$error = sprintf(
 					/* translators: %s: Documentation URL. */
 					__( 'A structure tag is required when using custom permalinks. <a href="%s">Learn more</a>' ),
@@ -4887,7 +4950,12 @@ function sanitize_option( $option, $value ) {
 			break;
 	}
 
-	if ( ! empty( $error ) ) {
+	if ( null !== $error ) {
+		if ( '' === $error && is_wp_error( $value ) ) {
+			/* translators: 1: Option name, 2: Error code. */
+			$error = sprintf( __( 'Could not sanitize the %1$s option. Error code: %2$s' ), $option, $value->get_error_code() );
+		}
+
 		$value = get_option( $option );
 		if ( function_exists( 'add_settings_error' ) ) {
 			add_settings_error( $option, "invalid_{$option}", $error );
@@ -4944,12 +5012,12 @@ function map_deep( $value, $callback ) {
  * @param array  $array  Variables will be stored in this array.
  */
 function wp_parse_str( $string, &$array ) {
-	parse_str( $string, $array );
+	parse_str( (string) $string, $array );
 
 	/**
 	 * Filters the array of variables derived from a parsed string.
 	 *
-	 * @since 2.3.0
+	 * @since 2.2.1
 	 *
 	 * @param array $array The array populated with variables.
 	 */
@@ -4975,7 +5043,7 @@ function wp_pre_kses_less_than( $text ) {
  *
  * @since 2.3.0
  *
- * @param array $matches Populated by matches to preg_replace.
+ * @param string[] $matches Populated by matches to preg_replace.
  * @return string The text returned after esc_html if needed.
  */
 function wp_pre_kses_less_than_callback( $matches ) {
@@ -5630,7 +5698,7 @@ img.emoji {
 	box-shadow: none !important;
 	height: 1em !important;
 	width: 1em !important;
-	margin: 0 .07em !important;
+	margin: 0 0.07em !important;
 	vertical-align: -0.1em !important;
 	background: none !important;
 	padding: 0 !important;
@@ -5702,8 +5770,7 @@ function _print_emoji_detection_script() {
 		'svgExt'  => apply_filters( 'emoji_svg_ext', '.svg' ),
 	);
 
-	$version   = 'ver=' . get_bloginfo( 'version' );
-	$type_attr = current_theme_supports( 'html5', 'style' ) ? '' : ' type="text/javascript"';
+	$version = 'ver=' . get_bloginfo( 'version' );
 
 	if ( SCRIPT_DEBUG ) {
 		$settings['source'] = array(
@@ -5712,36 +5779,17 @@ function _print_emoji_detection_script() {
 			/** This filter is documented in wp-includes/class.wp-scripts.php */
 			'twemoji' => apply_filters( 'script_loader_src', includes_url( "js/twemoji.js?$version" ), 'twemoji' ),
 		);
-
-		?>
-		<script<?php echo $type_attr; ?>>
-			window._wpemojiSettings = <?php echo wp_json_encode( $settings ); ?>;
-			<?php readfile( ABSPATH . WPINC . '/js/wp-emoji-loader.js' ); ?>
-		</script>
-		<?php
 	} else {
 		$settings['source'] = array(
 			/** This filter is documented in wp-includes/class.wp-scripts.php */
 			'concatemoji' => apply_filters( 'script_loader_src', includes_url( "js/wp-emoji-release.min.js?$version" ), 'concatemoji' ),
 		);
-
-		/*
-		 * If you're looking at a src version of this file, you'll see an "include"
-		 * statement below. This is used by the `npm run build` process to directly
-		 * include a minified version of wp-emoji-loader.js, instead of using the
-		 * readfile() method from above.
-		 *
-		 * If you're looking at a build version of this file, you'll see a string of
-		 * minified JavaScript. If you need to debug it, please turn on SCRIPT_DEBUG
-		 * and edit wp-emoji-loader.js directly.
-		 */
-		?>
-		<script<?php echo $type_attr; ?>>
-			window._wpemojiSettings = <?php echo wp_json_encode( $settings ); ?>;
-			!function(e,a,t){var n,r,o,i=a.createElement("canvas"),p=i.getContext&&i.getContext("2d");function s(e,t){var a=String.fromCharCode;p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,e),0,0);e=i.toDataURL();return p.clearRect(0,0,i.width,i.height),p.fillText(a.apply(this,t),0,0),e===i.toDataURL()}function c(e){var t=a.createElement("script");t.src=e,t.defer=t.type="text/javascript",a.getElementsByTagName("head")[0].appendChild(t)}for(o=Array("flag","emoji"),t.supports={everything:!0,everythingExceptFlag:!0},r=0;r<o.length;r++)t.supports[o[r]]=function(e){if(!p||!p.fillText)return!1;switch(p.textBaseline="top",p.font="600 32px Arial",e){case"flag":return s([127987,65039,8205,9895,65039],[127987,65039,8203,9895,65039])?!1:!s([55356,56826,55356,56819],[55356,56826,8203,55356,56819])&&!s([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]);case"emoji":return!s([10084,65039,8205,55357,56613],[10084,65039,8203,55357,56613])}return!1}(o[r]),t.supports.everything=t.supports.everything&&t.supports[o[r]],"flag"!==o[r]&&(t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&t.supports[o[r]]);t.supports.everythingExceptFlag=t.supports.everythingExceptFlag&&!t.supports.flag,t.DOMReady=!1,t.readyCallback=function(){t.DOMReady=!0},t.supports.everything||(n=function(){t.readyCallback()},a.addEventListener?(a.addEventListener("DOMContentLoaded",n,!1),e.addEventListener("load",n,!1)):(e.attachEvent("onload",n),a.attachEvent("onreadystatechange",function(){"complete"===a.readyState&&t.readyCallback()})),(n=t.source||{}).concatemoji?c(n.concatemoji):n.wpemoji&&n.twemoji&&(c(n.twemoji),c(n.wpemoji)))}(window,document,window._wpemojiSettings);
-		</script>
-		<?php
 	}
+
+	wp_print_inline_script_tag(
+		sprintf( 'window._wpemojiSettings = %s;', wp_json_encode( $settings ) ) .
+			file_get_contents( sprintf( ABSPATH . WPINC . '/js/wp-emoji-loader' . wp_scripts_get_suffix() . '.js' ) )
+	);
 }
 
 /**
@@ -5876,11 +5924,11 @@ function wp_staticize_emoji_for_email( $mail ) {
 	}
 
 	/*
-	 * We can only transform the emoji into images if it's a text/html email.
+	 * We can only transform the emoji into images if it's a `text/html` email.
 	 * To do that, here's a cut down version of the same process that happens
-	 * in wp_mail() - get the Content-Type from the headers, if there is one,
-	 * then pass it through the wp_mail_content_type filter, in case a plugin
-	 * is handling changing the Content-Type.
+	 * in wp_mail() - get the `Content-Type` from the headers, if there is one,
+	 * then pass it through the {@see 'wp_mail_content_type'} filter, in case
+	 * a plugin is handling changing the `Content-Type`.
 	 */
 	$headers = array();
 	if ( isset( $mail['headers'] ) ) {

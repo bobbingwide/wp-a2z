@@ -1,6 +1,36 @@
 <?php
 
 /**
+ * Sets a custom slug when creating auto-draft template parts.
+ *
+ * This is only needed for auto-drafts created by the regular WP editor.
+ * If this page is to be removed, this won't be necessary.
+ *
+ * @since 5.9.0
+ *
+ */
+function wp_set_unique_slug_on_create_template_part( $post_id ) {
+	$post = get_post( $post_id );
+	if ( 'auto-draft' !== $post->post_status ) {
+		return;
+	}
+
+	if ( ! $post->post_name ) {
+		wp_update_post(
+			array(
+				'ID'        => $post_id,
+				'post_name' => 'custom_slug_' . uniqid(),
+			)
+		);
+	}
+
+	$terms = get_the_terms( $post_id, 'wp_theme' );
+	if ( ! is_array( $terms ) || ! count( $terms ) ) {
+		wp_set_post_terms( $post_id, wp_get_theme()->get_stylesheet(), 'wp_theme' );
+	}
+}
+
+/**
  * Generates a unique slug for templates.
  *
  * @access private
@@ -14,7 +44,7 @@
  * @return string The original, desired slug.
  */
 function wp_filter_wp_template_unique_post_slug( $override_slug, $slug, $post_ID, $post_status, $post_type ) {
-	if ( 'wp_template' !== $post_type ) {
+	if ( 'wp_template' !== $post_type && 'wp_template_part' !== $post_type ) {
 		return $override_slug;
 	}
 
@@ -135,7 +165,7 @@ function the_block_template_skip_link() {
 	<script>
 	( function() {
 		var skipLinkTarget = document.querySelector( 'main' ),
-			parentEl,
+			sibling,
 			skipLinkTargetID,
 			skipLink;
 
@@ -146,10 +176,10 @@ function the_block_template_skip_link() {
 
 		// Get the site wrapper.
 		// The skip-link will be injected in the beginning of it.
-		parentEl = document.querySelector( '.wp-site-blocks' );
+		sibling = document.querySelector( '.wp-site-blocks' );
 
 		// Early exit if the root element was not found.
-		if ( ! parentEl ) {
+		if ( ! sibling ) {
 			return;
 		}
 
@@ -167,7 +197,7 @@ function the_block_template_skip_link() {
 		skipLink.innerHTML = '<?php esc_html_e( 'Skip to content' ); ?>';
 
 		// Inject the skip link.
-		parentEl.insertAdjacentElement( 'afterbegin', skipLink );
+		sibling.parentElement.insertBefore( skipLink, sibling );
 	}() );
 	</script>
 	<?php
