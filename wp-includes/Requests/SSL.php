@@ -2,49 +2,37 @@
 /**
  * SSL utilities for Requests
  *
- * @package Requests\Utilities
+ * @package Requests
+ * @subpackage Utilities
  */
-
-namespace WpOrg\Requests;
-
-use WpOrg\Requests\Exception\InvalidArgument;
-use WpOrg\Requests\Utility\InputValidator;
 
 /**
  * SSL utilities for Requests
  *
  * Collection of utilities for working with and verifying SSL certificates.
  *
- * @package Requests\Utilities
+ * @package Requests
+ * @subpackage Utilities
  */
-final class Ssl {
+class Requests_SSL {
 	/**
 	 * Verify the certificate against common name and subject alternative names
 	 *
 	 * Unfortunately, PHP doesn't check the certificate against the alternative
 	 * names, leading things like 'https://www.github.com/' to be invalid.
 	 *
-	 * @link https://tools.ietf.org/html/rfc2818#section-3.1 RFC2818, Section 3.1
+	 * @see https://tools.ietf.org/html/rfc2818#section-3.1 RFC2818, Section 3.1
 	 *
-	 * @param string|Stringable $host Host name to verify against
+	 * @throws Requests_Exception On not obtaining a match for the host (`fsockopen.ssl.no_match`)
+	 * @param string $host Host name to verify against
 	 * @param array $cert Certificate data from openssl_x509_parse()
 	 * @return bool
-	 * @throws \WpOrg\Requests\Exception\InvalidArgument When the passed $host argument is not a string or a stringable object.
-	 * @throws \WpOrg\Requests\Exception\InvalidArgument When the passed $cert argument is not an array or array accessible.
 	 */
 	public static function verify_certificate($host, $cert) {
-		if (InputValidator::is_string_or_stringable($host) === false) {
-			throw InvalidArgument::create(1, '$host', 'string|Stringable', gettype($host));
-		}
-
-		if (InputValidator::has_array_access($cert) === false) {
-			throw InvalidArgument::create(2, '$cert', 'array|ArrayAccess', gettype($cert));
-		}
-
 		$has_dns_alt = false;
 
 		// Check the subjectAltName
-		if (!empty($cert['extensions']['subjectAltName'])) {
+		if (!empty($cert['extensions']) && !empty($cert['extensions']['subjectAltName'])) {
 			$altnames = explode(',', $cert['extensions']['subjectAltName']);
 			foreach ($altnames as $altname) {
 				$altname = trim($altname);
@@ -62,17 +50,15 @@ final class Ssl {
 					return true;
 				}
 			}
-
-			if ($has_dns_alt === true) {
-				return false;
-			}
 		}
 
 		// Fall back to checking the common name if we didn't get any dNSName
 		// alt names, as per RFC2818
-		if (!empty($cert['subject']['CN'])) {
+		if (!$has_dns_alt && !empty($cert['subject']['CN'])) {
 			// Check for a match
-			return (self::match_domain($host, $cert['subject']['CN']) === true);
+			if (self::match_domain($host, $cert['subject']['CN']) === true) {
+				return true;
+			}
 		}
 
 		return false;
@@ -91,29 +77,11 @@ final class Ssl {
 	 * character to be the full first component; that is, with the exclusion of
 	 * the third rule.
 	 *
-	 * @param string|Stringable $reference Reference dNSName
+	 * @param string $reference Reference dNSName
 	 * @return boolean Is the name valid?
-	 * @throws \WpOrg\Requests\Exception\InvalidArgument When the passed argument is not a string or a stringable object.
 	 */
 	public static function verify_reference_name($reference) {
-		if (InputValidator::is_string_or_stringable($reference) === false) {
-			throw InvalidArgument::create(1, '$reference', 'string|Stringable', gettype($reference));
-		}
-
-		if ($reference === '') {
-			return false;
-		}
-
-		if (preg_match('`\s`', $reference) > 0) {
-			// Whitespace detected. This can never be a dNSName.
-			return false;
-		}
-
 		$parts = explode('.', $reference);
-		if ($parts !== array_filter($parts)) {
-			// DNSName cannot contain two dots next to each other.
-			return false;
-		}
 
 		// Check the first part of the name
 		$first = array_shift($parts);
@@ -144,35 +112,29 @@ final class Ssl {
 	/**
 	 * Match a hostname against a dNSName reference
 	 *
-	 * @param string|Stringable $host Requested host
-	 * @param string|Stringable $reference dNSName to match against
+	 * @param string $host Requested host
+	 * @param string $reference dNSName to match against
 	 * @return boolean Does the domain match?
-	 * @throws \WpOrg\Requests\Exception\InvalidArgument When either of the passed arguments is not a string or a stringable object.
 	 */
 	public static function match_domain($host, $reference) {
-		if (InputValidator::is_string_or_stringable($host) === false) {
-			throw InvalidArgument::create(1, '$host', 'string|Stringable', gettype($host));
-		}
-
 		// Check if the reference is blocklisted first
 		if (self::verify_reference_name($reference) !== true) {
 			return false;
 		}
 
 		// Check for a direct match
-		if ((string) $host === (string) $reference) {
+		if ($host === $reference) {
 			return true;
 		}
 
 		// Calculate the valid wildcard match if the host is not an IP address
-		// Also validates that the host has 3 parts or more, as per Firefox's ruleset,
-		// as a wildcard reference is only allowed with 3 parts or more, so the
-		// comparison will never match if host doesn't contain 3 parts or more as well.
+		// Also validates that the host has 3 parts or more, as per Firefox's
+		// ruleset.
 		if (ip2long($host) === false) {
 			$parts    = explode('.', $host);
 			$parts[0] = '*';
 			$wildcard = implode('.', $parts);
-			if ($wildcard === (string) $reference) {
+			if ($wildcard === $reference) {
 				return true;
 			}
 		}

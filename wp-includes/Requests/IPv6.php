@@ -2,13 +2,9 @@
 /**
  * Class to validate and to work with IPv6 addresses
  *
- * @package Requests\Utilities
+ * @package Requests
+ * @subpackage Utilities
  */
-
-namespace WpOrg\Requests;
-
-use WpOrg\Requests\Exception\InvalidArgument;
-use WpOrg\Requests\Utility\InputValidator;
 
 /**
  * Class to validate and to work with IPv6 addresses
@@ -16,9 +12,10 @@ use WpOrg\Requests\Utility\InputValidator;
  * This was originally based on the PEAR class of the same name, but has been
  * entirely rewritten.
  *
- * @package Requests\Utilities
+ * @package Requests
+ * @subpackage Utilities
  */
-final class Ipv6 {
+class Requests_IPv6 {
 	/**
 	 * Uncompresses an IPv6 address
 	 *
@@ -33,20 +30,11 @@ final class Ipv6 {
 	 * @author elfrink at introweb dot nl
 	 * @author Josh Peck <jmp at joshpeck dot org>
 	 * @copyright 2003-2005 The PHP Group
-	 * @license https://opensource.org/licenses/bsd-license.php
-	 *
-	 * @param string|Stringable $ip An IPv6 address
+	 * @license http://www.opensource.org/licenses/bsd-license.php
+	 * @param string $ip An IPv6 address
 	 * @return string The uncompressed IPv6 address
-	 *
-	 * @throws \WpOrg\Requests\Exception\InvalidArgument When the passed argument is not a string or a stringable object.
 	 */
 	public static function uncompress($ip) {
-		if (InputValidator::is_string_or_stringable($ip) === false) {
-			throw InvalidArgument::create(1, '$ip', 'string|Stringable', gettype($ip));
-		}
-
-		$ip = (string) $ip;
-
 		if (substr_count($ip, '::') !== 1) {
 			return $ip;
 		}
@@ -90,14 +78,12 @@ final class Ipv6 {
 	 * Example:  FF01:0:0:0:0:0:0:101   ->  FF01::101
 	 *           0:0:0:0:0:0:0:1        ->  ::1
 	 *
-	 * @see \WpOrg\Requests\IPv6::uncompress()
-	 *
+	 * @see uncompress()
 	 * @param string $ip An IPv6 address
 	 * @return string The compressed IPv6 address
 	 */
 	public static function compress($ip) {
-		// Prepare the IP to be compressed.
-		// Note: Input validation is handled in the `uncompress()` method, which is the first call made in this method.
+		// Prepare the IP to be compressed
 		$ip       = self::uncompress($ip);
 		$ip_parts = self::split_v6_v4($ip);
 
@@ -138,15 +124,15 @@ final class Ipv6 {
 	 * @param string $ip An IPv6 address
 	 * @return string[] [0] contains the IPv6 represented part, and [1] the IPv4 represented part
 	 */
-	private static function split_v6_v4($ip) {
+	protected static function split_v6_v4($ip) {
 		if (strpos($ip, '.') !== false) {
 			$pos       = strrpos($ip, ':');
 			$ipv6_part = substr($ip, 0, $pos);
 			$ipv4_part = substr($ip, $pos + 1);
-			return [$ipv6_part, $ipv4_part];
+			return array($ipv6_part, $ipv4_part);
 		}
 		else {
-			return [$ip, ''];
+			return array($ip, '');
 		}
 	}
 
@@ -159,7 +145,6 @@ final class Ipv6 {
 	 * @return bool true if $ip is a valid IPv6 address
 	 */
 	public static function check_ipv6($ip) {
-		// Note: Input validation is handled in the `uncompress()` method, which is the first call made in this method.
 		$ip                = self::uncompress($ip);
 		list($ipv6, $ipv4) = self::split_v6_v4($ip);
 		$ipv6              = explode(':', $ipv6);

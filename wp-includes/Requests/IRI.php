@@ -2,16 +2,9 @@
 /**
  * IRI parser/serialiser/normaliser
  *
- * @package Requests\Utilities
+ * @package Requests
+ * @subpackage Utilities
  */
-
-namespace WpOrg\Requests;
-
-use WpOrg\Requests\Exception;
-use WpOrg\Requests\Exception\InvalidArgument;
-use WpOrg\Requests\Ipv6;
-use WpOrg\Requests\Port;
-use WpOrg\Requests\Utility\InputValidator;
 
 /**
  * IRI parser/serialiser/normaliser
@@ -45,15 +38,16 @@ use WpOrg\Requests\Utility\InputValidator;
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  *
- * @package Requests\Utilities
+ * @package Requests
+ * @subpackage Utilities
  * @author Geoffrey Sneddon
  * @author Steve Minutillo
  * @copyright 2007-2009 Geoffrey Sneddon and Steve Minutillo
- * @license https://opensource.org/licenses/bsd-license.php
+ * @license http://www.opensource.org/licenses/bsd-license.php
  * @link http://hg.gsnedders.com/iri/
  *
  * @property string $iri IRI we're working with
- * @property-read string $uri IRI in URI form, {@see \WpOrg\Requests\IRI::to_uri()}
+ * @property-read string $uri IRI in URI form, {@see to_uri}
  * @property string $scheme Scheme part of the IRI
  * @property string $authority Authority part, formatted for a URI (userinfo + host + port)
  * @property string $iauthority Authority part of the IRI (userinfo + host + port)
@@ -69,7 +63,7 @@ use WpOrg\Requests\Utility\InputValidator;
  * @property string $fragment Fragment, formatted for a URI (after '#')
  * @property string $ifragment Fragment part of the IRI (after '#')
  */
-class Iri {
+class Requests_IRI {
 	/**
 	 * Scheme
 	 *
@@ -129,19 +123,19 @@ class Iri {
 	 */
 	protected $normalization = array(
 		'acap' => array(
-			'port' => Port::ACAP,
+			'port' => 674
 		),
 		'dict' => array(
-			'port' => Port::DICT,
+			'port' => 2628
 		),
 		'file' => array(
-			'ihost' => 'localhost',
+			'ihost' => 'localhost'
 		),
 		'http' => array(
-			'port' => Port::HTTP,
+			'port' => 80,
 		),
 		'https' => array(
-			'port' => Port::HTTPS,
+			'port' => 443,
 		),
 	);
 
@@ -246,15 +240,9 @@ class Iri {
 	/**
 	 * Create a new IRI object, from a specified string
 	 *
-	 * @param string|Stringable|null $iri
-	 *
-	 * @throws \WpOrg\Requests\Exception\InvalidArgument When the passed $iri argument is not a string, Stringable or null.
+	 * @param string|null $iri
 	 */
 	public function __construct($iri = null) {
-		if ($iri !== null && InputValidator::is_string_or_stringable($iri) === false) {
-			throw InvalidArgument::create(1, '$iri', 'string|Stringable|null', gettype($iri));
-		}
-
 		$this->set_iri($iri);
 	}
 
@@ -263,13 +251,13 @@ class Iri {
 	 *
 	 * Returns false if $base is not absolute, otherwise an IRI.
 	 *
-	 * @param \WpOrg\Requests\Iri|string $base (Absolute) Base IRI
-	 * @param \WpOrg\Requests\Iri|string $relative Relative IRI
-	 * @return \WpOrg\Requests\Iri|false
+	 * @param Requests_IRI|string $base (Absolute) Base IRI
+	 * @param Requests_IRI|string $relative Relative IRI
+	 * @return Requests_IRI|false
 	 */
 	public static function absolutize($base, $relative) {
-		if (!($relative instanceof self)) {
-			$relative = new self($relative);
+		if (!($relative instanceof Requests_IRI)) {
+			$relative = new Requests_IRI($relative);
 		}
 		if (!$relative->is_valid()) {
 			return false;
@@ -278,8 +266,8 @@ class Iri {
 			return clone $relative;
 		}
 
-		if (!($base instanceof self)) {
-			$base = new self($base);
+		if (!($base instanceof Requests_IRI)) {
+			$base = new Requests_IRI($base);
 		}
 		if ($base->scheme === null || !$base->is_valid()) {
 			return false;
@@ -291,7 +279,7 @@ class Iri {
 				$target->scheme = $base->scheme;
 			}
 			else {
-				$target = new self;
+				$target = new Requests_IRI;
 				$target->scheme = $base->scheme;
 				$target->iuserinfo = $base->iuserinfo;
 				$target->ihost = $base->ihost;
@@ -342,7 +330,7 @@ class Iri {
 		$iri = trim($iri, "\x20\x09\x0A\x0C\x0D");
 		$has_match = preg_match('/^((?P<scheme>[^:\/?#]+):)?(\/\/(?P<authority>[^\/?#]*))?(?P<path>[^?#]*)(\?(?P<query>[^#]*))?(#(?P<fragment>.*))?$/', $iri, $match);
 		if (!$has_match) {
-			throw new Exception('Cannot parse supplied IRI', 'iri.cannot_parse', $iri);
+			throw new Requests_Exception('Cannot parse supplied IRI', 'iri.cannot_parse', $iri);
 		}
 
 		if ($match[1] === '') {
@@ -425,18 +413,18 @@ class Iri {
 	/**
 	 * Replace invalid character with percent encoding
 	 *
-	 * @param string $text Input string
+	 * @param string $string Input string
 	 * @param string $extra_chars Valid characters not in iunreserved or
 	 *                            iprivate (this is ASCII-only)
 	 * @param bool $iprivate Allow iprivate
 	 * @return string
 	 */
-	protected function replace_invalid_with_pct_encoding($text, $extra_chars, $iprivate = false) {
+	protected function replace_invalid_with_pct_encoding($string, $extra_chars, $iprivate = false) {
 		// Normalize as many pct-encoded sections as possible
-		$text = preg_replace_callback('/(?:%[A-Fa-f0-9]{2})+/', array($this, 'remove_iunreserved_percent_encoded'), $text);
+		$string = preg_replace_callback('/(?:%[A-Fa-f0-9]{2})+/', array($this, 'remove_iunreserved_percent_encoded'), $string);
 
 		// Replace invalid percent characters
-		$text = preg_replace('/%(?![A-Fa-f0-9]{2})/', '%25', $text);
+		$string = preg_replace('/%(?![A-Fa-f0-9]{2})/', '%25', $string);
 
 		// Add unreserved and % to $extra_chars (the latter is safe because all
 		// pct-encoded sections are now valid).
@@ -444,9 +432,9 @@ class Iri {
 
 		// Now replace any bytes that aren't allowed with their pct-encoded versions
 		$position = 0;
-		$strlen = strlen($text);
-		while (($position += strspn($text, $extra_chars, $position)) < $strlen) {
-			$value = ord($text[$position]);
+		$strlen = strlen($string);
+		while (($position += strspn($string, $extra_chars, $position)) < $strlen) {
+			$value = ord($string[$position]);
 
 			// Start position
 			$start = $position;
@@ -483,7 +471,7 @@ class Iri {
 			if ($remaining) {
 				if ($position + $length <= $strlen) {
 					for ($position++; $remaining; $position++) {
-						$value = ord($text[$position]);
+						$value = ord($string[$position]);
 
 						// Check that the byte is valid, then add it to the character:
 						if (($value & 0xC0) === 0x80) {
@@ -534,7 +522,7 @@ class Iri {
 				}
 
 				for ($j = $start; $j <= $position; $j++) {
-					$text = substr_replace($text, sprintf('%%%02X', ord($text[$j])), $j, 1);
+					$string = substr_replace($string, sprintf('%%%02X', ord($string[$j])), $j, 1);
 					$j += 2;
 					$position += 2;
 					$strlen += 2;
@@ -542,7 +530,7 @@ class Iri {
 			}
 		}
 
-		return $text;
+		return $string;
 	}
 
 	/**
@@ -551,13 +539,13 @@ class Iri {
 	 * Removes sequences of percent encoded bytes that represent UTF-8
 	 * encoded characters in iunreserved
 	 *
-	 * @param array $regex_match PCRE match
+	 * @param array $match PCRE match
 	 * @return string Replacement
 	 */
-	protected function remove_iunreserved_percent_encoded($regex_match) {
+	protected function remove_iunreserved_percent_encoded($match) {
 		// As we just have valid percent encoded sequences we can just explode
 		// and ignore the first member of the returned array (an empty string).
-		$bytes = explode('%', $regex_match[0]);
+		$bytes = explode('%', $match[0]);
 
 		// Initialize the new string (this is what will be returned) and that
 		// there are no bytes remaining in the current sequence (unsurprising
@@ -733,9 +721,6 @@ class Iri {
 		if ($iri === null) {
 			return true;
 		}
-
-		$iri = (string) $iri;
-
 		if (isset($cache[$iri])) {
 			list($this->scheme,
 				 $this->iuserinfo,
@@ -748,7 +733,7 @@ class Iri {
 			return $return;
 		}
 
-		$parsed = $this->parse_iri($iri);
+		$parsed = $this->parse_iri((string) $iri);
 
 		$return = $this->set_scheme($parsed['scheme'])
 			&& $this->set_authority($parsed['authority'])
@@ -878,8 +863,8 @@ class Iri {
 			return true;
 		}
 		if (substr($ihost, 0, 1) === '[' && substr($ihost, -1) === ']') {
-			if (Ipv6::check_ipv6(substr($ihost, 1, -1))) {
-				$this->ihost = '[' . Ipv6::compress(substr($ihost, 1, -1)) . ']';
+			if (Requests_IPv6::check_ipv6(substr($ihost, 1, -1))) {
+				$this->ihost = '[' . Requests_IPv6::compress(substr($ihost, 1, -1)) . ']';
 			}
 			else {
 				$this->ihost = null;
@@ -1000,11 +985,11 @@ class Iri {
 	/**
 	 * Convert an IRI to a URI (or parts thereof)
 	 *
-	 * @param string|bool $iri IRI to convert (or false from {@see \WpOrg\Requests\IRI::get_iri()})
+	 * @param string|bool IRI to convert (or false from {@see get_iri})
 	 * @return string|false URI if IRI is valid, false otherwise.
 	 */
-	protected function to_uri($iri) {
-		if (!is_string($iri)) {
+	protected function to_uri($string) {
+		if (!is_string($string)) {
 			return false;
 		}
 
@@ -1014,14 +999,14 @@ class Iri {
 		}
 
 		$position = 0;
-		$strlen = strlen($iri);
-		while (($position += strcspn($iri, $non_ascii, $position)) < $strlen) {
-			$iri = substr_replace($iri, sprintf('%%%02X', ord($iri[$position])), $position, 1);
+		$strlen = strlen($string);
+		while (($position += strcspn($string, $non_ascii, $position)) < $strlen) {
+			$string = substr_replace($string, sprintf('%%%02X', ord($string[$position])), $position, 1);
 			$position += 3;
 			$strlen += 2;
 		}
 
-		return $iri;
+		return $string;
 	}
 
 	/**

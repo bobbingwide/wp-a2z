@@ -1,20 +1,6 @@
 <?php
-/**
- * CURL Transport Exception.
- *
- * @package Requests\Exceptions
- */
 
-namespace WpOrg\Requests\Exception\Transport;
-
-use WpOrg\Requests\Exception\Transport;
-
-/**
- * CURL Transport Exception.
- *
- * @package Requests\Exceptions
- */
-final class Curl extends Transport {
+class Requests_Exception_Transport_cURL extends Requests_Exception_Transport {
 
 	const EASY  = 'cURLEasy';
 	const MULTI = 'cURLMulti';
@@ -43,21 +29,13 @@ final class Curl extends Transport {
 	 */
 	protected $reason = 'Unknown';
 
-	/**
-	 * Create a new exception.
-	 *
-	 * @param string $message Exception message.
-	 * @param string $type    Exception type.
-	 * @param mixed  $data    Associated data, if applicable.
-	 * @param int    $code    Exception numerical code, if applicable.
-	 */
 	public function __construct($message, $type, $data = null, $code = 0) {
 		if ($type !== null) {
 			$this->type = $type;
 		}
 
 		if ($code !== null) {
-			$this->code = (int) $code;
+			$this->code = $code;
 		}
 
 		if ($message !== null) {
@@ -69,9 +47,7 @@ final class Curl extends Transport {
 	}
 
 	/**
-	 * Get the error message.
-	 *
-	 * @return string
+	 * Get the error message
 	 */
 	public function getReason() {
 		return $this->reason;
