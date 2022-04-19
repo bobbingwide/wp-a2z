@@ -272,11 +272,15 @@ if ( ! function_exists( 'wp_install_defaults' ) ) :
 
 		$first_comment_author = ! empty( $first_comment_author ) ? $first_comment_author : __( 'A WordPress Commenter' );
 		$first_comment_email  = ! empty( $first_comment_email ) ? $first_comment_email : 'wapuu@wordpress.example';
-		$first_comment_url    = ! empty( $first_comment_url ) ? $first_comment_url : 'https://wordpress.org/';
-		$first_comment        = ! empty( $first_comment ) ? $first_comment : __(
-			'Hi, this is a comment.
+		$first_comment_url    = ! empty( $first_comment_url ) ? $first_comment_url : esc_url( __( 'https://wordpress.org/' ) );
+		$first_comment        = ! empty( $first_comment ) ? $first_comment : sprintf(
+			/* translators: %s: Gravatar URL. */
+			__(
+				'Hi, this is a comment.
 To get started with moderating, editing, and deleting comments, please visit the Comments screen in the dashboard.
-Commenter avatars come from <a href="https://gravatar.com">Gravatar</a>.'
+Commenter avatars come from <a href="%s">Gravatar</a>.'
+			),
+			esc_url( __( 'https://en.gravatar.com/' ) )
 		);
 		$wpdb->insert(
 			$wpdb->comments,
@@ -839,6 +843,10 @@ function upgrade_all() {
 
 	if ( $wp_current_db_version < 51917 ) {
 		upgrade_590();
+	}
+
+	if ( $wp_current_db_version < 53011 ) {
+		upgrade_600();
 	}
 
 	maybe_disable_link_manager();
@@ -2275,6 +2283,22 @@ function upgrade_590() {
 			$crons = array_filter( $crons );
 			_set_cron_array( $crons );
 		}
+	}
+}
+
+/**
+ * Executes changes made in WordPress 6.0.0.
+ *
+ * @ignore
+ * @since 6.0.0
+ *
+ * @global int $wp_current_db_version The old (current) database version.
+ */
+function upgrade_600() {
+	global $wp_current_db_version;
+
+	if ( $wp_current_db_version < 53011 ) {
+		wp_update_user_counts();
 	}
 }
 
