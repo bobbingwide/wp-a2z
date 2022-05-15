@@ -31971,8 +31971,8 @@ var camelCaseAttributes = new Set([
 
 
 
-function renderSVG(element, renderState) {
-    renderHTML(element, renderState);
+function renderSVG(element, renderState, _styleProp, projection) {
+    renderHTML(element, renderState, undefined, projection);
     for (var key in renderState.attrs) {
         element.setAttribute(!camelCaseAttributes.has(key) ? camelToDash(key) : key, renderState.attrs[key]);
     }
@@ -32136,7 +32136,6 @@ var svgMotionConfig = {
                 };
             }
             buildSVGAttrs(renderState, latestValues, { enableHardwareAcceleration: false }, props.transformTemplate);
-            // TODO: Replace with direct assignment
             renderSVG(instance, renderState);
         },
     }),
@@ -39604,63 +39603,63 @@ function useRecognizers(handlers, config = {}, gestureKey, nativeHandlers) {
   return undefined;
 }
 
-function use_gesture_react_esm_useDrag(handler, config = {}) {
+function use_gesture_react_esm_useDrag(handler, config) {
   actions_8e12537b_esm_registerAction(actions_8e12537b_esm_dragAction);
   return useRecognizers({
     drag: handler
-  }, config, 'drag');
+  }, config || {}, 'drag');
 }
 
-function usePinch(handler, config = {}) {
+function usePinch(handler, config) {
   registerAction(pinchAction);
   return useRecognizers({
     pinch: handler
-  }, config, 'pinch');
+  }, config || {}, 'pinch');
 }
 
-function useWheel(handler, config = {}) {
+function useWheel(handler, config) {
   registerAction(wheelAction);
   return useRecognizers({
     wheel: handler
-  }, config, 'wheel');
+  }, config || {}, 'wheel');
 }
 
-function useScroll(handler, config = {}) {
+function useScroll(handler, config) {
   registerAction(scrollAction);
   return useRecognizers({
     scroll: handler
-  }, config, 'scroll');
+  }, config || {}, 'scroll');
 }
 
-function useMove(handler, config = {}) {
+function useMove(handler, config) {
   registerAction(moveAction);
   return useRecognizers({
     move: handler
-  }, config, 'move');
+  }, config || {}, 'move');
 }
 
-function useHover(handler, config = {}) {
+function useHover(handler, config) {
   actions_8e12537b_esm_registerAction(actions_8e12537b_esm_hoverAction);
   return useRecognizers({
     hover: handler
-  }, config, 'hover');
+  }, config || {}, 'hover');
 }
 
 function createUseGesture(actions) {
   actions.forEach(registerAction);
-  return function useGesture(_handlers, _config = {}) {
+  return function useGesture(_handlers, _config) {
     const {
       handlers,
       nativeHandlers,
       config
-    } = parseMergedHandlers(_handlers, _config);
+    } = parseMergedHandlers(_handlers, _config || {});
     return useRecognizers(handlers, config, undefined, nativeHandlers);
   };
 }
 
-function useGesture(handlers, config = {}) {
+function useGesture(handlers, config) {
   const hook = createUseGesture([dragAction, pinchAction, scrollAction, wheelAction, moveAction, hoverAction]);
-  return hook(handlers, config);
+  return hook(handlers, config || {});
 }
 
 
@@ -40413,15 +40412,12 @@ function AngleCircle(_ref) {
     const {
       x: centerX,
       y: centerY
-    } = angleCircleCenter.current;
-    const {
-      ownerDocument
-    } = angleCircleRef.current; // Prevent (drag) mouse events from selecting and accidentally
+    } = angleCircleCenter.current; // Prevent (drag) mouse events from selecting and accidentally
     // triggering actions from other elements.
 
-    event.preventDefault(); // Ensure the input isn't focused as preventDefault would leave it.
+    event.preventDefault(); // Input control needs to lose focus and by preventDefault above, it doesn't.
 
-    ownerDocument.activeElement.blur();
+    event.target.focus();
     onChange(getAngle(centerX, centerY, event.clientX, event.clientY));
   };
 
@@ -40461,7 +40457,8 @@ function AngleCircle(_ref) {
       style: value ? {
         transform: `rotate(${value}deg)`
       } : undefined,
-      className: "components-angle-picker-control__angle-circle-indicator-wrapper"
+      className: "components-angle-picker-control__angle-circle-indicator-wrapper",
+      tabIndex: -1
     }, (0,external_wp_element_namespaceObject.createElement)(CircleIndicator, {
       className: "components-angle-picker-control__angle-circle-indicator"
     })))
