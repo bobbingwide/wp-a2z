@@ -3385,7 +3385,7 @@ function wp_delete_post( $postid = 0, $force_delete = false ) {
 	 *
 	 * @since 4.4.0
 	 *
-	 * @param WP_Post|false|null $delete       Whether to go forward with deletion. @TODO description
+	 * @param WP_Post|false|null $delete       Whether to go forward with deletion.
 	 * @param WP_Post            $post         Post object.
 	 * @param bool               $force_delete Whether to bypass the Trash.
 	 */
@@ -4034,6 +4034,7 @@ function wp_get_recent_posts( $args = array(), $output = ARRAY_A ) {
  *                                         child terms can have the same names with different parent terms,
  *                                         so the only way to connect them is using ID. Default empty.
  *     @type array  $meta_input            Array of post meta values keyed by their post meta key. Default empty.
+ *     @type string $page_template         Page template to use.
  * }
  * @param bool  $wp_error         Optional. Whether to return a WP_Error on failure. Default false.
  * @param bool  $fire_after_hooks Optional. Whether to fire the after insert hooks. Default true.
@@ -6372,7 +6373,7 @@ function wp_delete_attachment( $post_id, $force_delete = false ) {
 	 *
 	 * @since 5.5.0
 	 *
-	 * @param WP_Post|false|null $delete       Whether to go forward with deletion. @TODO description
+	 * @param WP_Post|false|null $delete       Whether to go forward with deletion.
 	 * @param WP_Post            $post         Post object.
 	 * @param bool               $force_delete Whether to bypass the Trash.
 	 */
