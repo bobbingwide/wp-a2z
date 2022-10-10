@@ -37,62 +37,6 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 			</nav>
 		</div>
 
-		<div class="about__section changelog">
-			<div class="column">
-				<h2><?php _e( 'Maintenance and Security Releases' ); ?></h2>
-				<p>
-					<?php
-					printf(
-						/* translators: 1: WordPress version number, 2: plural number of bugs. More than one security issue. */
-						_n(
-							'<strong>Version %1$s</strong> addressed some security issues and fixed %2$s bug.',
-							'<strong>Version %1$s</strong> addressed some security issues and fixed %2$s bugs.',
-							17
-						),
-						'6.0.2',
-						number_format_i18n( 17 )
-					);
-					?>
-					<?php
-					printf(
-						/* translators: %s: HelpHub URL */
-						__( 'For more information, see <a href="%s">the release notes</a>.' ),
-						sprintf(
-							/* translators: %s: WordPress version */
-							esc_url( __( 'https://wordpress.org/support/wordpress-version/version-%s/' ) ),
-							sanitize_title( '6.0.2' )
-						)
-					);
-					?>
-				</p>
-				<p>
-					<?php
-					printf(
-						/* translators: 1: WordPress version number, 2: Plural number of bugs. */
-						_n(
-							'<strong>Version %1$s</strong> addressed %2$s bug.',
-							'<strong>Version %1$s</strong> addressed %2$s bugs.',
-							31
-						),
-						'6.0.1',
-						number_format_i18n( 31 )
-					);
-					?>
-					<?php
-					printf(
-						/* translators: %s: HelpHub URL. */
-						__( 'For more information, see <a href="%s">the release notes</a>.' ),
-						sprintf(
-							/* translators: %s: WordPress version. */
-							esc_url( __( 'https://wordpress.org/support/wordpress-version/version-%s/' ) ),
-							sanitize_title( '6.0.1' )
-						)
-					);
-					?>
-				</p>
-			</div>
-		</div>
-
 		<div class="about__section">
 			<div class="column">
 				<h2 class="aligncenter">
@@ -354,7 +298,7 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 				<p>
 					<?php
 					printf(
-						/* translators: %s: WordPress 6.0 Field Guide link. */
+						/* translators: %s: WordPress Field Guide link. */
 						__( 'Check out the latest version of the <a href="%s">WordPress Field Guide</a>. It is overflowing with detailed developer notes to help you build with WordPress.' ),
 						__( 'https://make.wordpress.org/core/2022/05/03/wordpress-6-0-field-guide/' )
 					);
@@ -365,13 +309,14 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 				<p>
 					<?php
 					printf(
-						/* translators: %s: WordPress 6.0 Release Notes link. */
-						__( '<a href="%s">Read the WordPress 6.0 Release Notes</a> for more information on the included enhancements and issues fixed, installation information, developer notes and resources, release contributors, and the list of file changes in this release.' ),
+						/* translators: 1: WordPress Release Notes link, 2: WordPress version number. */
+						__( '<a href="%1$s">Read the WordPress %2$s Release Notes</a> for more information on the included enhancements and issues fixed, installation information, developer notes and resources, release contributors, and the list of file changes in this release.' ),
 						sprintf(
-							/* translators: %s: WordPress version. */
+							/* translators: %s: WordPress version number. */
 							esc_url( __( 'https://wordpress.org/support/wordpress-version/version-%s/' ) ),
 							'6-0'
-						)
+						),
+						'6.0'
 					);
 					?>
 				</p>
