@@ -33,9 +33,10 @@ class WP_Theme_JSON {
 	 * process it twice.
 	 *
 	 * @since 5.8.0
+	 * @since 6.1.0 Initialize as an empty array.
 	 * @var array
 	 */
-	protected static $blocks_metadata = null;
+	protected static $blocks_metadata = array();
 
 	/**
 	 * The CSS selector for the top-level styles.
@@ -166,15 +167,6 @@ class WP_Theme_JSON {
 		),
 		array(
 			'path'              => array( 'spacing', 'spacingSizes' ),
-			'prevent_override'  => false,
-			'use_default_names' => true,
-			'value_key'         => 'size',
-			'css_vars'          => '--wp--preset--spacing--$slug',
-			'classes'           => array(),
-			'properties'        => array( 'padding', 'margin' ),
-		),
-		array(
-			'path'              => array( 'spacing', 'spacingScale' ),
 			'prevent_override'  => false,
 			'use_default_names' => true,
 			'value_key'         => 'size',
@@ -334,6 +326,7 @@ class WP_Theme_JSON {
 			'units'             => null,
 		),
 		'typography'                    => array(
+			'fluid'          => null,
 			'customFontSize' => null,
 			'dropCap'        => null,
 			'fontFamilies'   => null,
@@ -729,14 +722,15 @@ class WP_Theme_JSON {
 	 * @return array Block metadata.
 	 */
 	protected static function get_blocks_metadata() {
-		if ( null !== static::$blocks_metadata ) {
+		$registry = WP_Block_Type_Registry::get_instance();
+		$blocks   = $registry->get_all_registered();
+
+		// Is there metadata for all currently registered blocks?
+		$blocks = array_diff_key( $blocks, static::$blocks_metadata );
+		if ( empty( $blocks ) ) {
 			return static::$blocks_metadata;
 		}
 
-		static::$blocks_metadata = array();
-
-		$registry = WP_Block_Type_Registry::get_instance();
-		$blocks   = $registry->get_all_registered();
 		foreach ( $blocks as $block_name => $block_type ) {
 			if (
 				isset( $block_type->supports['__experimentalSelector'] ) &&
@@ -1717,7 +1711,12 @@ class WP_Theme_JSON {
 	 * @return string|array Style property value.
 	 */
 	protected static function get_property_value( $styles, $path, $theme_json = null ) {
-		$value = _wp_array_get( $styles, $path );
+		$value = _wp_array_get( $styles, $path, '' );
+
+		if ( '' === $value || null === $value ) {
+			// No need to process the value further.
+			return '';
+		}
 
 		/*
 		 * This converts references to a path to the value at that path
@@ -2844,7 +2843,7 @@ class WP_Theme_JSON {
 				}
 				$flattened_preset = array();
 				foreach ( $items as $slug => $value ) {
-					$flattened_preset[] = array_merge( array( 'slug' => $slug ), $value );
+					$flattened_preset[] = array_merge( array( 'slug' => (string) $slug ), $value );
 				}
 				_wp_array_set( $output, $path, $flattened_preset );
 			}
