@@ -383,6 +383,22 @@ function wp_default_packages_inline_scripts( $scripts ) {
 		)
 	);
 
+	// Backwards compatibility - configure the old wp-data persistence system.
+	$scripts->add_inline_script(
+		'wp-data',
+		implode(
+			"\n",
+			array(
+				'( function() {',
+				'	var userId = ' . get_current_user_ID() . ';',
+				'	var storageKey = "WP_DATA_USER_" + userId;',
+				'	wp.data',
+				'		.use( wp.data.plugins.persistence, { storageKey: storageKey } );',
+				'} )();',
+			)
+		)
+	);
+
 	// Calculate the timezone abbr (EDT, PST) if possible.
 	$timezone_string = get_option( 'timezone_string', 'UTC' );
 	$timezone_abbr   = '';
@@ -2409,14 +2425,11 @@ function wp_enqueue_global_styles() {
 	}
 
 	/*
-	 * If we are loading CSS for each block separately, then we can load the theme.json CSS conditionally.
+	 * If loading the CSS for each block separately, then load the theme.json CSS conditionally.
 	 * This removes the CSS from the global-styles stylesheet and adds it to the inline CSS for each block.
+	 * This filter must be registered before calling wp_get_global_stylesheet();
 	 */
-	if ( $separate_assets ) {
-		add_filter( 'theme_json_get_style_nodes', 'wp_filter_out_block_nodes' );
-		// Add each block as an inline css.
-		wp_add_global_styles_for_blocks();
-	}
+	add_filter( 'wp_theme_json_get_style_nodes', 'wp_filter_out_block_nodes' );
 
 	$stylesheet = wp_get_global_stylesheet();
 
@@ -2427,6 +2440,9 @@ function wp_enqueue_global_styles() {
 	wp_register_style( 'global-styles', false, array(), true, true );
 	wp_add_inline_style( 'global-styles', $stylesheet );
 	wp_enqueue_style( 'global-styles' );
+
+	// Add each block as an inline css.
+	wp_add_global_styles_for_blocks();
 }
 
 /**
