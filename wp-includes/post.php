@@ -705,8 +705,6 @@ function create_initial_post_types() {
 /**
  * Retrieves attached file path based on attachment ID.
  *
- * Will return intermediate size path if the `$size` parameter is provided.
- *
  * By default the path will go through the {@see 'get_attached_file'} filter, but
  * passing `true` to the `$unfiltered` argument will return the file path unfiltered.
  *
@@ -715,28 +713,14 @@ function create_initial_post_types() {
  * a mechanism for sending the attached filename through a filter.
  *
  * @since 2.0.0
- * @since 6.2.0 The `$size` parameter was added.
  *
- * @param int          $attachment_id Attachment ID.
- * @param bool         $unfiltered    Optional. Whether to skip the {@see 'get_attached_file'} filter.
- *                                    Default false.
- * @param string|int[] $size          Optional. Image size. Accepts any registered image size name, or an array
- *                                    of width and height values in pixels (in that order). Default empty string.
+ * @param int  $attachment_id Attachment ID.
+ * @param bool $unfiltered    Optional. Whether to skip the {@see 'get_attached_file'} filter.
+ *                            Default false.
  * @return string|false The file path to where the attached file should be, false otherwise.
  */
-function get_attached_file( $attachment_id, $unfiltered = false, $size = '' ) {
-
-	// Check for intermediate sizes first, otherwise fall back to the original attachment size.
-	if ( ! empty( $size ) ) {
-		$intermediate_image = image_get_intermediate_size( $attachment_id, $size );
-		if ( ! $intermediate_image || ! isset( $intermediate_image['path'] ) ) {
-			return false;
-		}
-
-		$file = $intermediate_image['path'];
-	} else {
-		$file = get_post_meta( $attachment_id, '_wp_attached_file', true );
-	}
+function get_attached_file( $attachment_id, $unfiltered = false ) {
+	$file = get_post_meta( $attachment_id, '_wp_attached_file', true );
 
 	// If the file is relative, prepend upload dir.
 	if ( $file && 0 !== strpos( $file, '/' ) && ! preg_match( '|^.:\\\|', $file ) ) {
@@ -754,14 +738,11 @@ function get_attached_file( $attachment_id, $unfiltered = false, $size = '' ) {
 	 * Filters the attached file based on the given ID.
 	 *
 	 * @since 2.1.0
-	 * @since 6.2.0 The `$size` parameter was added.
 	 *
 	 * @param string|false $file          The file path to where the attached file should be, false otherwise.
 	 * @param int          $attachment_id Attachment ID.
-	 * @param string|int[] $size          Optional. Image size. Accepts any registered image size name, or an array
-	 *                                    of width and height values in pixels (in that order). Default empty string.
 	 */
-	return apply_filters( 'get_attached_file', $file, $attachment_id, $size );
+	return apply_filters( 'get_attached_file', $file, $attachment_id );
 }
 
 /**
@@ -7802,9 +7783,9 @@ function wp_queue_posts_for_term_meta_lazyload( $posts ) {
 			$cached_term_ids = wp_cache_get_multiple( $post_ids, "{$taxonomy}_relationships" );
 			if ( is_array( $cached_term_ids ) ) {
 				$cached_term_ids = array_filter( $cached_term_ids );
-				foreach ( $cached_term_ids as $term_ids ) {
+				foreach ( $cached_term_ids as $_term_ids ) {
 					// Backward compatibility for if a plugin is putting objects into the cache, rather than IDs.
-					foreach ( $term_ids as $term_id ) {
+					foreach ( $_term_ids as $term_id ) {
 						if ( is_numeric( $term_id ) ) {
 							$prime_term_ids[]                  = (int) $term_id;
 							$prime_taxonomy_ids[ $taxonomy ][] = (int) $term_id;
