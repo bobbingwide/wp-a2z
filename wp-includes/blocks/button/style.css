@@ -74,6 +74,37 @@
 }
 
 .wp-block-button .wp-block-button__link.is-style-outline:not(.has-background),.wp-block-button.is-style-outline>.wp-block-button__link:not(.has-background){
-  background-color:transparent;
+  background-color:initial;
   background-image:none;
+}
+
+.wp-block-button .wp-block-button__link:where(.has-border-color){
+  border-width:initial;
+}
+.wp-block-button .wp-block-button__link:where([style*=border-top-color]){
+  border-top-width:medium;
+}
+.wp-block-button .wp-block-button__link:where([style*=border-right-color]){
+  border-right-width:medium;
+}
+.wp-block-button .wp-block-button__link:where([style*=border-bottom-color]){
+  border-bottom-width:medium;
+}
+.wp-block-button .wp-block-button__link:where([style*=border-left-color]){
+  border-left-width:medium;
+}
+.wp-block-button .wp-block-button__link:where([style*=border-style]){
+  border-width:initial;
+}
+.wp-block-button .wp-block-button__link:where([style*=border-top-style]){
+  border-top-width:medium;
+}
+.wp-block-button .wp-block-button__link:where([style*=border-right-style]){
+  border-right-width:medium;
+}
+.wp-block-button .wp-block-button__link:where([style*=border-bottom-style]){
+  border-bottom-width:medium;
+}
+.wp-block-button .wp-block-button__link:where([style*=border-left-style]){
+  border-left-width:medium;
 }

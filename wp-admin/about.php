@@ -42,63 +42,6 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 			<a href="privacy.php" class="nav-tab"><?php _e( 'Privacy' ); ?></a>
 		</nav>
 
-		<div class="about__section changelog">
-			<div class="column">
-				<h2><?php _e( 'Maintenance and Security Releases' ); ?></h2>
-				<p>
-					<?php
-					printf(
-						/* translators: 1: WordPress version number, 2: Plural number of bugs. More than one security issue. */
-						_n(
-							'<strong>Version %1$s</strong> addressed a security issue and fixed %2$s bug.',
-							'<strong>Version %1$s</strong> addressed a security issue and fixed %2$s bugs.',
-							1
-						),
-						'6.2.2',
-						'1'
-					);
-					?>
-					<?php
-					printf(
-						/* translators: %s: HelpHub URL. */
-						__( 'For more information, see <a href="%s">the release notes</a>.' ),
-						sprintf(
-							/* translators: %s: WordPress version. */
-							esc_url( __( 'https://wordpress.org/support/wordpress-version/version-%s/' ) ),
-							sanitize_title( '6.2.2' )
-						)
-					);
-					?>
-				</p>
-
-				<p>
-					<?php
-					printf(
-						/* translators: 1: WordPress version number, 2: Plural number of bugs. More than one security issue. */
-						_n(
-							'<strong>Version %1$s</strong> addressed some security issues and fixed %2$s bug.',
-							'<strong>Version %1$s</strong> addressed some security issues and fixed %2$s bugs.',
-							30
-						),
-						'6.2.1',
-						'30'
-					);
-					?>
-					<?php
-					printf(
-						/* translators: %s: HelpHub URL. */
-						__( 'For more information, see <a href="%s">the release notes</a>.' ),
-						sprintf(
-							/* translators: %s: WordPress version. */
-							esc_url( __( 'https://wordpress.org/support/wordpress-version/version-%s/' ) ),
-							sanitize_title( '6.2.1' )
-						)
-					);
-					?>
-				</p>
-			</div>
-		</div>
-
 		<div class="about__section">
 			<div class="column">
 				<h2>
@@ -323,7 +266,7 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 						__( '<a href="%1$s">Read the WordPress %2$s Release Notes</a> for more information on the included enhancements and issues fixed, installation information, developer notes and resources, release contributors, and the list of file changes in this release.' ),
 						sprintf(
 							/* translators: %s: WordPress version number. */
-							esc_url( __( 'https://wordpress.org/support/wordpress-version/version-%s/' ) ),
+							esc_url( __( 'https://wordpress.org/documentation/wordpress-version/version-%s/' ) ),
 							'6-2'
 						),
 						'6.2'
@@ -336,12 +279,21 @@ require_once ABSPATH . 'wp-admin/admin-header.php';
 		<hr class="is-large" />
 
 		<div class="return-to-dashboard">
-			<?php if ( current_user_can( 'update_core' ) && isset( $_GET['updated'] ) ) : ?>
-				<a href="<?php echo esc_url( self_admin_url( 'update-core.php' ) ); ?>">
-					<?php is_multisite() ? _e( 'Go to Updates' ) : _e( 'Go to Dashboard &rarr; Updates' ); ?>
-				</a> |
-			<?php endif; ?>
-			<a href="<?php echo esc_url( self_admin_url() ); ?>"><?php is_blog_admin() ? _e( 'Go to Dashboard &rarr; Home' ) : _e( 'Go to Dashboard' ); ?></a>
+			<?php
+			if ( isset( $_GET['updated'] ) && current_user_can( 'update_core' ) ) {
+				printf(
+					'<a href="%1$s">%2$s</a> | ',
+					esc_url( self_admin_url( 'update-core.php' ) ),
+					is_multisite() ? __( 'Go to Updates' ) : __( 'Go to Dashboard &rarr; Updates' )
+				);
+			}
+
+			printf(
+				'<a href="%1$s">%2$s</a>',
+				esc_url( self_admin_url() ),
+				is_blog_admin() ? __( 'Go to Dashboard &rarr; Home' ) : __( 'Go to Dashboard' )
+			);
+			?>
 		</div>
 	</div>
 
