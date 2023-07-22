@@ -2024,7 +2024,6 @@ const editEntityRecord = (kind, name, recordId, edits, options = {}) => ({
   }
 
   const {
-    transientEdits = {},
     mergedEdits = {}
   } = entityConfig;
   const record = select.getRawEntityRecord(kind, name, recordId);
@@ -2043,8 +2042,7 @@ const editEntityRecord = (kind, name, recordId, edits, options = {}) => ({
       } : edits[key];
       acc[key] = es6_default()(recordValue, value) ? undefined : value;
       return acc;
-    }, {}),
-    transientEdits
+    }, {})
   };
   dispatch({
     type: 'EDIT_ENTITY_RECORD',
@@ -2055,7 +2053,8 @@ const editEntityRecord = (kind, name, recordId, edits, options = {}) => ({
         edits: Object.keys(edits).reduce((acc, key) => {
           acc[key] = editedRecord[key];
           return acc;
-        }, {})
+        }, {}),
+        isCached: options.isCached
       }
     }
   });
@@ -3595,7 +3594,7 @@ const entities = (state = {}, action) => {
  *
  * @property {number} list   The undo stack.
  * @property {number} offset Where in the undo stack we are.
- * @property {Object} cache  Cache of unpersisted transient edits.
+ * @property {Object} cache  Cache of unpersisted edits.
  */
 
 /** @typedef {Array<Object> & UndoStateMeta} UndoState */
@@ -3700,7 +3699,6 @@ function reducer_undo(state = UNDO_INITIAL_STATE, action) {
           return state;
         }
 
-        const isCachedChange = Object.keys(action.edits).every(key => action.transientEdits[key]);
         const edits = Object.keys(action.edits).map(key => {
           return {
             kind: action.kind,
@@ -3712,7 +3710,7 @@ function reducer_undo(state = UNDO_INITIAL_STATE, action) {
           };
         });
 
-        if (isCachedChange) {
+        if (action.meta.undo.isCached) {
           return { ...state,
             cache: edits.reduce(appendEditToStack, state.cache)
           };
@@ -6289,13 +6287,12 @@ function useEntityProp(kind, name, prop, _id) {
 function useEntityBlockEditor(kind, name, {
   id: _id
 } = {}) {
-  const [meta, updateMeta] = useEntityProp(kind, name, 'meta', _id);
-  const registry = (0,external_wp_data_namespaceObject.useRegistry)();
   const providerId = useEntityId(kind, name);
   const id = _id !== null && _id !== void 0 ? _id : providerId;
   const {
     content,
-    blocks
+    blocks,
+    meta
   } = (0,external_wp_data_namespaceObject.useSelect)(select => {
     const {
       getEditedEntityRecord
@@ -6303,7 +6300,8 @@ function useEntityBlockEditor(kind, name, {
     const editedRecord = getEditedEntityRecord(kind, name, id);
     return {
       blocks: editedRecord.blocks,
-      content: editedRecord.content
+      content: editedRecord.content,
+      meta: editedRecord.meta
     };
   }, [kind, name, id]);
   const {
@@ -6324,9 +6322,12 @@ function useEntityBlockEditor(kind, name, {
     }
   }, [content]);
   const updateFootnotes = (0,external_wp_element_namespaceObject.useCallback)(_blocks => {
-    if (!meta) return; // If meta.footnotes is empty, it means the meta is not registered.
+    const output = {
+      blocks: _blocks
+    };
+    if (!meta) return output; // If meta.footnotes is empty, it means the meta is not registered.
 
-    if (meta.footnotes === undefined) return;
+    if (meta.footnotes === undefined) return output;
     const {
       getRichTextValues
     } = unlock(external_wp_blockEditor_namespaceObject.privateApis);
@@ -6348,11 +6349,61 @@ function useEntityBlockEditor(kind, name, {
 
     const footnotes = meta.footnotes ? JSON.parse(meta.footnotes) : [];
     const currentOrder = footnotes.map(fn => fn.id);
-    if (currentOrder.join('') === newOrder.join('')) return;
+    if (currentOrder.join('') === newOrder.join('')) return output;
     const newFootnotes = newOrder.map(fnId => footnotes.find(fn => fn.id === fnId) || oldFootnotes[fnId] || {
       id: fnId,
       content: ''
     });
+
+    function updateAttributes(attributes) {
+      attributes = { ...attributes
+      };
+
+      for (const key in attributes) {
+        const value = attributes[key];
+
+        if (Array.isArray(value)) {
+          attributes[key] = value.map(updateAttributes);
+          continue;
+        }
+
+        if (typeof value !== 'string') {
+          continue;
+        }
+
+        if (value.indexOf('data-fn') === -1) {
+          continue;
+        } // When we store rich text values, this would no longer
+        // require a regex.
+
+
+        const regex = /(<sup[^>]+data-fn="([^"]+)"[^>]*><a[^>]*>)[\d*]*<\/a><\/sup>/g;
+        attributes[key] = value.replace(regex, (match, opening, fnId) => {
+          const index = newOrder.indexOf(fnId);
+          return `${opening}${index + 1}</a></sup>`;
+        });
+        const compatRegex = /<a[^>]+data-fn="([^"]+)"[^>]*>\*<\/a>/g;
+        attributes[key] = attributes[key].replace(compatRegex, (match, fnId) => {
+          const index = newOrder.indexOf(fnId);
+          return `<sup data-fn="${fnId}" class="fn"><a href="#${fnId}" id="${fnId}-link">${index + 1}</a></sup>`;
+        });
+      }
+
+      return attributes;
+    }
+
+    function updateBlocksAttributes(__blocks) {
+      return __blocks.map(block => {
+        return { ...block,
+          attributes: updateAttributes(block.attributes),
+          innerBlocks: updateBlocksAttributes(block.innerBlocks)
+        };
+      });
+    } // We need to go through all block attributs deeply and update the
+    // footnote anchor numbering (textContent) to match the new order.
+
+
+    const newBlocks = updateBlocksAttributes(_blocks);
     oldFootnotes = { ...oldFootnotes,
       ...footnotes.reduce((acc, fn) => {
         if (!newOrder.includes(fn.id)) {
@@ -6362,49 +6413,50 @@ function useEntityBlockEditor(kind, name, {
         return acc;
       }, {})
     };
-    updateMeta({ ...meta,
-      footnotes: JSON.stringify(newFootnotes)
-    });
-  }, [meta, updateMeta]);
-  const onChange = (0,external_wp_element_namespaceObject.useCallback)((newBlocks, options) => {
-    const {
-      selection
-    } = options;
-    const edits = {
-      blocks: newBlocks,
-      selection
+    return {
+      meta: { ...meta,
+        footnotes: JSON.stringify(newFootnotes)
+      },
+      blocks: newBlocks
     };
-    const noChange = blocks === edits.blocks;
+  }, [meta]);
+  const onChange = (0,external_wp_element_namespaceObject.useCallback)((newBlocks, options) => {
+    const noChange = blocks === newBlocks;
 
     if (noChange) {
       return __unstableCreateUndoLevel(kind, name, id);
-    } // We create a new function here on every persistent edit
+    }
+
+    const {
+      selection
+    } = options; // We create a new function here on every persistent edit
     // to make sure the edit makes the post dirty and creates
     // a new undo level.
 
-
-    edits.content = ({
-      blocks: blocksForSerialization = []
-    }) => (0,external_wp_blocks_namespaceObject.__unstableSerializeAndClean)(blocksForSerialization);
-
-    registry.batch(() => {
-      updateFootnotes(edits.blocks);
-      editEntityRecord(kind, name, id, edits);
+    const edits = {
+      selection,
+      content: ({
+        blocks: blocksForSerialization = []
+      }) => (0,external_wp_blocks_namespaceObject.__unstableSerializeAndClean)(blocksForSerialization),
+      ...updateFootnotes(newBlocks)
+    };
+    editEntityRecord(kind, name, id, edits, {
+      isCached: false
     });
-  }, [kind, name, id, blocks, updateFootnotes]);
+  }, [kind, name, id, blocks, updateFootnotes, __unstableCreateUndoLevel, editEntityRecord]);
   const onInput = (0,external_wp_element_namespaceObject.useCallback)((newBlocks, options) => {
     const {
       selection
     } = options;
+    const footnotesChanges = updateFootnotes(newBlocks);
     const edits = {
-      blocks: newBlocks,
-      selection
+      selection,
+      ...footnotesChanges
     };
-    registry.batch(() => {
-      updateFootnotes(edits.blocks);
-      editEntityRecord(kind, name, id, edits);
+    editEntityRecord(kind, name, id, edits, {
+      isCached: true
     });
-  }, [kind, name, id, updateFootnotes]);
+  }, [kind, name, id, updateFootnotes, editEntityRecord]);
   return [blocks !== null && blocks !== void 0 ? blocks : EMPTY_ARRAY, onInput, onChange];
 }
 

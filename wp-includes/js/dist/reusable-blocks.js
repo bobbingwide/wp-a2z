@@ -102,7 +102,7 @@ const __experimentalConvertBlocksToReusable = (clientIds, title, syncType) => as
   dispatch
 }) => {
   const meta = syncType === 'unsynced' ? {
-    sync_status: syncType
+    wp_pattern_sync_status: syncType
   } : undefined;
   const reusableBlock = {
     title: title || (0,external_wp_i18n_namespaceObject.__)('Untitled Pattern block'),
@@ -317,12 +317,16 @@ function ReusableBlockConvertButton({
   const onConvert = (0,external_wp_element_namespaceObject.useCallback)(async function (reusableBlockTitle) {
     try {
       await convertBlocksToReusable(clientIds, reusableBlockTitle, syncType);
-      createSuccessNotice(syncType === 'fully' ? (0,external_wp_i18n_namespaceObject.__)('Synced Pattern created.') : (0,external_wp_i18n_namespaceObject.__)('Unsynced Pattern created.'), {
-        type: 'snackbar'
+      createSuccessNotice(syncType === 'fully' ? (0,external_wp_i18n_namespaceObject.sprintf)( // translators: %s: the name the user has given to the pattern.
+      (0,external_wp_i18n_namespaceObject.__)('Synced Pattern created: %s'), reusableBlockTitle) : (0,external_wp_i18n_namespaceObject.sprintf)( // translators: %s: the name the user has given to the pattern.
+      (0,external_wp_i18n_namespaceObject.__)('Unsynced Pattern created: %s'), reusableBlockTitle), {
+        type: 'snackbar',
+        id: 'convert-to-reusable-block-success'
       });
     } catch (error) {
       createErrorNotice(error.message, {
-        type: 'snackbar'
+        type: 'snackbar',
+        id: 'convert-to-reusable-block-error'
       });
     }
   }, [convertBlocksToReusable, clientIds, syncType, createSuccessNotice, createErrorNotice]);
@@ -336,7 +340,7 @@ function ReusableBlockConvertButton({
   }) => (0,external_wp_element_namespaceObject.createElement)(external_wp_element_namespaceObject.Fragment, null, (0,external_wp_element_namespaceObject.createElement)(external_wp_components_namespaceObject.MenuItem, {
     icon: library_symbol,
     onClick: () => setIsModalOpen(true)
-  }, (0,external_wp_i18n_namespaceObject.__)('Create pattern')), isModalOpen && (0,external_wp_element_namespaceObject.createElement)(external_wp_components_namespaceObject.Modal, {
+  }, (0,external_wp_i18n_namespaceObject.__)('Create pattern/reusable block')), isModalOpen && (0,external_wp_element_namespaceObject.createElement)(external_wp_components_namespaceObject.Modal, {
     title: (0,external_wp_i18n_namespaceObject.__)('Create pattern'),
     onRequestClose: () => {
       setIsModalOpen(false);
@@ -353,15 +357,15 @@ function ReusableBlockConvertButton({
     }
   }, (0,external_wp_element_namespaceObject.createElement)(external_wp_components_namespaceObject.__experimentalVStack, {
     spacing: "5"
-  }, (0,external_wp_element_namespaceObject.createElement)(external_wp_components_namespaceObject.TextControl, {
+  }, (0,external_wp_element_namespaceObject.createElement)(external_wp_blockEditor_namespaceObject.ReusableBlocksRenameHint, null), (0,external_wp_element_namespaceObject.createElement)(external_wp_components_namespaceObject.TextControl, {
     __nextHasNoMarginBottom: true,
     label: (0,external_wp_i18n_namespaceObject.__)('Name'),
     value: title,
     onChange: setTitle,
     placeholder: (0,external_wp_i18n_namespaceObject.__)('My pattern')
   }), (0,external_wp_element_namespaceObject.createElement)(external_wp_components_namespaceObject.ToggleControl, {
-    label: (0,external_wp_i18n_namespaceObject.__)('Keep all pattern instances in sync'),
-    help: (0,external_wp_i18n_namespaceObject.__)('Editing the original pattern will also update anywhere the pattern is used.'),
+    label: (0,external_wp_i18n_namespaceObject.__)('Synced'),
+    help: (0,external_wp_i18n_namespaceObject.__)('Editing the pattern will update it anywhere it is used.'),
     checked: syncType === 'fully',
     onChange: () => {
       setSyncType(syncType === 'fully' ? 'unsynced' : 'fully');
@@ -407,21 +411,34 @@ function ReusableBlocksManageButton({
   const {
     canRemove,
     isVisible,
-    innerBlockCount
+    innerBlockCount,
+    managePatternsUrl
   } = (0,external_wp_data_namespaceObject.useSelect)(select => {
     const {
       getBlock,
       canRemoveBlock,
-      getBlockCount
+      getBlockCount,
+      getSettings
     } = select(external_wp_blockEditor_namespaceObject.store);
     const {
       canUser
     } = select(external_wp_coreData_namespaceObject.store);
     const reusableBlock = getBlock(clientId);
+
+    const isBlockTheme = getSettings().__unstableIsBlockBasedTheme;
+
     return {
       canRemove: canRemoveBlock(clientId),
       isVisible: !!reusableBlock && (0,external_wp_blocks_namespaceObject.isReusableBlock)(reusableBlock) && !!canUser('update', 'blocks', reusableBlock.attributes.ref),
-      innerBlockCount: getBlockCount(clientId)
+      innerBlockCount: getBlockCount(clientId),
+      // The site editor and templates both check whether the user
+      // has edit_theme_options capabilities. We can leverage that here
+      // and omit the manage patterns link if the user can't access it.
+      managePatternsUrl: isBlockTheme && canUser('read', 'templates') ? (0,external_wp_url_namespaceObject.addQueryArgs)('site-editor.php', {
+        path: '/patterns'
+      }) : (0,external_wp_url_namespaceObject.addQueryArgs)('edit.php', {
+        post_type: 'wp_block'
+      })
     };
   }, [clientId]);
   const {
@@ -433,9 +450,7 @@ function ReusableBlocksManageButton({
   }
 
   return (0,external_wp_element_namespaceObject.createElement)(external_wp_blockEditor_namespaceObject.BlockSettingsMenuControls, null, (0,external_wp_element_namespaceObject.createElement)(external_wp_components_namespaceObject.MenuItem, {
-    href: (0,external_wp_url_namespaceObject.addQueryArgs)('edit.php', {
-      post_type: 'wp_block'
-    })
+    href: managePatternsUrl
   }, (0,external_wp_i18n_namespaceObject.__)('Manage Patterns')), canRemove && (0,external_wp_element_namespaceObject.createElement)(external_wp_components_namespaceObject.MenuItem, {
     onClick: () => convertBlockToStatic(clientId)
   }, innerBlockCount > 1 ? (0,external_wp_i18n_namespaceObject.__)('Detach patterns') : (0,external_wp_i18n_namespaceObject.__)('Detach pattern')));
