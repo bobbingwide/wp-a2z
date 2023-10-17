@@ -10910,7 +10910,7 @@ var external_wp_privateApis_namespaceObject = window["wp"]["privateApis"];
 const {
   lock,
   unlock
-} = (0,external_wp_privateApis_namespaceObject.__dangerousOptInToUnstableAPIsOnlyForCoreModules)('I know using unstable features means my plugin or theme will inevitably break on the next WordPress release.', '@wordpress/block-editor');
+} = (0,external_wp_privateApis_namespaceObject.__dangerousOptInToUnstableAPIsOnlyForCoreModules)('I know using unstable features means my theme or plugin will inevitably break in the next version of WordPress.', '@wordpress/block-editor');
 
 ;// CONCATENATED MODULE: ./node_modules/@wordpress/block-editor/build-module/store/index.js
 /**
@@ -14192,7 +14192,7 @@ function useBlockSettings(name, parentLayout) {
       layout,
       parentLayout
     };
-  }, [fontFamilies, fontSizes, customFontSize, fontStyle, fontWeight, lineHeight, textColumns, textDecoration, textTransform, letterSpacing, writingMode, padding, margin, blockGap, spacingSizes, units, minHeight, layout, parentLayout, borderColor, borderRadius, borderStyle, borderWidth, customColorsEnabled, customColors, customDuotone, themeColors, defaultColors, defaultPalette, defaultDuotone, userDuotonePalette, themeDuotonePalette, defaultDuotonePalette, userGradientPalette, themeGradientPalette, defaultGradientPalette, defaultGradients, areCustomGradientsEnabled, isBackgroundEnabled, isLinkEnabled, isTextEnabled]);
+  }, [fontFamilies, fontSizes, customFontSize, fontStyle, fontWeight, lineHeight, textColumns, textDecoration, textTransform, letterSpacing, writingMode, padding, margin, blockGap, spacingSizes, units, minHeight, layout, parentLayout, borderColor, borderRadius, borderStyle, borderWidth, customColorsEnabled, customColors, customDuotone, themeColors, defaultColors, defaultPalette, defaultDuotone, userDuotonePalette, themeDuotonePalette, defaultDuotonePalette, userGradientPalette, themeGradientPalette, defaultGradientPalette, defaultGradients, areCustomGradientsEnabled, isBackgroundEnabled, isLinkEnabled, isTextEnabled, isHeadingEnabled, isButtonEnabled]);
   return useSettingsForBlockElement(rawSettings, name);
 }
 
@@ -26712,6 +26712,7 @@ function AutoBlockPreview(props) {
 
 
 
+
 function BlockPreview({
   blocks,
   viewportWidth = 1200,
@@ -26794,6 +26795,8 @@ function useBlockPreview({
   const originalSettings = (0,external_wp_data_namespaceObject.useSelect)(select => select(store).getSettings(), []);
   const settings = (0,external_wp_element_namespaceObject.useMemo)(() => ({
     ...originalSettings,
+    styles: undefined,
+    // Clear styles included by the parent settings, as they are already output by the parent's EditorStyles.
     __unstableIsPreviewMode: true
   }), [originalSettings]);
   const disabledRef = (0,external_wp_compose_namespaceObject.useDisabled)();
@@ -26802,7 +26805,7 @@ function useBlockPreview({
   const children = (0,external_wp_element_namespaceObject.createElement)(ExperimentalBlockEditorProvider, {
     value: renderedBlocks,
     settings: settings
-  }, (0,external_wp_element_namespaceObject.createElement)(BlockListItems, {
+  }, (0,external_wp_element_namespaceObject.createElement)(EditorStyles, null), (0,external_wp_element_namespaceObject.createElement)(BlockListItems, {
     renderAppender: false,
     layout: layout
   }));
@@ -41953,7 +41956,14 @@ function FiltersPanel({
 
 
 
+
 const duotone_EMPTY_ARRAY = [];
+
+// Safari does not always update the duotone filter when the duotone colors
+// are changed. This browser check is later used to force a re-render of the block
+// element to ensure the duotone filter is updated. The check is included at the
+// root of this file as it only needs to be run once per page load.
+const isSafari = window?.navigator.userAgent && window.navigator.userAgent.includes('Safari') && !window.navigator.userAgent.includes('Chrome') && !window.navigator.userAgent.includes('Chromium');
 k([names]);
 function useMultiOriginPresets({
   presetSetting,
@@ -42106,6 +42116,7 @@ const withDuotoneControls = (0,external_wp_compose_namespaceObject.createHigherO
   }));
 }, 'withDuotoneControls');
 function DuotoneStyles({
+  clientId,
   id: filterId,
   selector: duotoneSelector,
   attribute: duotoneAttr
@@ -42155,6 +42166,7 @@ function DuotoneStyles({
     setStyleOverride,
     deleteStyleOverride
   } = unlock((0,external_wp_data_namespaceObject.useDispatch)(store));
+  const blockElement = useBlockElement(clientId);
   (0,external_wp_element_namespaceObject.useEffect)(() => {
     if (!isValidFilter) return;
     setStyleOverride(filterId, {
@@ -42165,11 +42177,28 @@ function DuotoneStyles({
       assets: colors !== 'unset' ? getDuotoneFilter(filterId, colors) : '',
       __unstableType: 'svgs'
     });
+
+    // Safari does not always update the duotone filter when the duotone colors
+    // are changed. When using Safari, force the block element to be repainted by
+    // the browser to ensure any changes are reflected visually. This logic matches
+    // that used on the site frontend in `block-supports/duotone.php`.
+    if (blockElement && isSafari) {
+      const display = blockElement.style.display;
+      // Switch to `inline-block` to force a repaint. In the editor, `inline-block`
+      // is used instead of `none` to ensure that scroll position is not affected,
+      // as `none` results in the editor scrolling to the top of the block.
+      blockElement.style.display = 'inline-block';
+      // Simply accessing el.offsetHeight flushes layout and style
+      // changes in WebKit without having to wait for setTimeout.
+      // eslint-disable-next-line no-unused-expressions
+      blockElement.offsetHeight;
+      blockElement.style.display = display;
+    }
     return () => {
       deleteStyleOverride(filterId);
       deleteStyleOverride(`duotone-${filterId}`);
     };
-  }, [isValidFilter, colors, selector, filterId, setStyleOverride, deleteStyleOverride]);
+  }, [isValidFilter, blockElement, colors, selector, filterId, setStyleOverride, deleteStyleOverride]);
   return null;
 }
 
@@ -42219,6 +42248,7 @@ const withDuotoneStyles = (0,external_wp_compose_namespaceObject.createHigherOrd
   // above this line should be carefully evaluated for its impact on
   // performance.
   return (0,external_wp_element_namespaceObject.createElement)(external_wp_element_namespaceObject.Fragment, null, shouldRender && (0,external_wp_element_namespaceObject.createElement)(DuotoneStyles, {
+    clientId: props.clientId,
     id: filterClass,
     selector: selector,
     attribute: attribute
@@ -43026,13 +43056,13 @@ const withLayoutStyles = (0,external_wp_compose_namespaceObject.createHigherOrde
   } = unlock((0,external_wp_data_namespaceObject.useDispatch)(store));
   (0,external_wp_element_namespaceObject.useEffect)(() => {
     if (!css) return;
-    setStyleOverride(id, {
+    setStyleOverride(selector, {
       css
     });
     return () => {
-      deleteStyleOverride(id);
+      deleteStyleOverride(selector);
     };
-  }, [id, css, setStyleOverride, deleteStyleOverride]);
+  }, [selector, css, setStyleOverride, deleteStyleOverride]);
   return (0,external_wp_element_namespaceObject.createElement)(BlockListBlock, {
     ...props,
     __unstableLayoutClassNames: layoutClassNames
@@ -43092,13 +43122,13 @@ const withChildLayoutStyles = (0,external_wp_compose_namespaceObject.createHighe
   } = unlock((0,external_wp_data_namespaceObject.useDispatch)(store));
   (0,external_wp_element_namespaceObject.useEffect)(() => {
     if (!css) return;
-    setStyleOverride(id, {
+    setStyleOverride(selector, {
       css
     });
     return () => {
-      deleteStyleOverride(id);
+      deleteStyleOverride(selector);
     };
-  }, [id, css, setStyleOverride, deleteStyleOverride]);
+  }, [selector, css, setStyleOverride, deleteStyleOverride]);
   return (0,external_wp_element_namespaceObject.createElement)(BlockListBlock, {
     ...props,
     className: className
@@ -45430,7 +45460,7 @@ const fullscreen = (0,external_wp_element_namespaceObject.createElement)(externa
   xmlns: "http://www.w3.org/2000/svg",
   viewBox: "0 0 24 24"
 }, (0,external_wp_element_namespaceObject.createElement)(external_wp_primitives_namespaceObject.Path, {
-  d: "M4.2 9h1.5V5.8H9V4.2H4.2V9zm14 9.2H15v1.5h4.8V15h-1.5v3.2zM15 4.2v1.5h3.2V9h1.5V4.2H15zM5.8 15H4.2v4.8H9v-1.5H5.8V15z"
+  d: "M6 4a2 2 0 0 0-2 2v3h1.5V6a.5.5 0 0 1 .5-.5h3V4H6Zm3 14.5H6a.5.5 0 0 1-.5-.5v-3H4v3a2 2 0 0 0 2 2h3v-1.5Zm6 1.5v-1.5h3a.5.5 0 0 0 .5-.5v-3H20v3a2 2 0 0 1-2 2h-3Zm3-16a2 2 0 0 1 2 2v3h-1.5V6a.5.5 0 0 0-.5-.5h-3V4h3Z"
 }));
 /* harmony default export */ var library_fullscreen = (fullscreen);
 
