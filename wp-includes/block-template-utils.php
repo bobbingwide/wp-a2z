@@ -125,11 +125,11 @@ function get_default_block_template_types() {
 		),
 		'single'         => array(
 			'title'       => _x( 'Single Posts', 'Template name' ),
-			'description' => __( 'Displays single posts on your website unless a custom template has been applied to that post or a dedicated template exists.' ),
+			'description' => __( 'Displays a single post on your website unless a custom template has been applied to that post or a dedicated template exists.' ),
 		),
 		'page'           => array(
 			'title'       => _x( 'Pages', 'Template name' ),
-			'description' => __( 'Display all static pages unless a custom template has been applied or a dedicated template exists.' ),
+			'description' => __( 'Displays a static page unless a custom template has been applied to that page or a dedicated template exists.' ),
 		),
 		'archive'        => array(
 			'title'       => _x( 'All Archives', 'Template name' ),
@@ -224,14 +224,21 @@ function _filter_block_template_part_area( $type ) {
  * @return string[] A list of paths to all template part files.
  */
 function _get_block_templates_paths( $base_directory ) {
+	static $template_path_list = array();
+	if ( isset( $template_path_list[ $base_directory ] ) ) {
+		return $template_path_list[ $base_directory ];
+	}
 	$path_list = array();
-	if ( file_exists( $base_directory ) ) {
+	try {
 		$nested_files      = new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $base_directory ) );
 		$nested_html_files = new RegexIterator( $nested_files, '/^.+\.html$/i', RecursiveRegexIterator::GET_MATCH );
 		foreach ( $nested_html_files as $path => $file ) {
 			$path_list[] = $path;
 		}
+	} catch ( Exception $e ) {
+		// Do nothing.
 	}
+	$template_path_list[ $base_directory ] = $path_list;
 	return $path_list;
 }
 
@@ -244,7 +251,7 @@ function _get_block_templates_paths( $base_directory ) {
  * @param string $template_type 'wp_template' or 'wp_template_part'.
  * @param string $slug          Template slug.
  * @return array|null {
- *    Array with template metadata if $template_type is one of 'wp_template' or 'wp_template_part'.
+ *    Array with template metadata if $template_type is one of 'wp_template' or 'wp_template_part',
  *    null otherwise.
  *
  *    @type string   $slug      Template slug.
@@ -894,6 +901,14 @@ function _build_block_template_result_from_post( $post ) {
 		}
 	}
 
+	$hooked_blocks = get_hooked_blocks();
+	if ( ! empty( $hooked_blocks ) || has_filter( 'hooked_block_types' ) ) {
+		$before_block_visitor = make_before_block_visitor( $hooked_blocks, $template );
+		$after_block_visitor  = make_after_block_visitor( $hooked_blocks, $template );
+		$blocks               = parse_blocks( $template->content );
+		$template->content    = traverse_and_serialize_blocks( $blocks, $before_block_visitor, $after_block_visitor );
+	}
+
 	return $template;
 }
 
@@ -1416,4 +1431,40 @@ function get_template_hierarchy( $slug, $is_custom = false, $template_prefix = '
 	}
 	$template_hierarchy[] = 'index';
 	return $template_hierarchy;
+}
+/**
+ * Inject ignoredHookedBlocks metadata attributes into a template or template part.
+ *
+ * Given a `wp_template` or `wp_template_part` post object, locate all blocks that have
+ * hooked blocks, and inject a `metadata.ignoredHookedBlocks` attribute into the anchor
+ * blocks to reflect the latter.
+ *
+ * @param WP_Post $post A post object with post type set to `wp_template` or `wp_template_part`.
+ * @return WP_Post The updated post object.
+ */
+function inject_ignored_hooked_blocks_metadata_attributes( $post ) {
+	$hooked_blocks = get_hooked_blocks();
+	if ( empty( $hooked_blocks ) && ! has_filter( 'hooked_block_types' ) ) {
+		return;
+	}
+
+	// At this point, the post has already been created.
+	// We need to build the corresponding `WP_Block_Template` object as context argument for the visitor.
+	// To that end, we need to suppress hooked blocks from getting inserted into the template.
+	add_filter( 'hooked_block_types', '__return_empty_array', 99999, 0 );
+	$template = _build_block_template_result_from_post( $post );
+	remove_filter( 'hooked_block_types', '__return_empty_array', 99999 );
+
+	$before_block_visitor = make_before_block_visitor( $hooked_blocks, $template, 'set_ignored_hooked_blocks_metadata' );
+	$after_block_visitor  = make_after_block_visitor( $hooked_blocks, $template, 'set_ignored_hooked_blocks_metadata' );
+
+	$blocks  = parse_blocks( $template->content );
+	$content = traverse_and_serialize_blocks( $blocks, $before_block_visitor, $after_block_visitor );
+
+	wp_update_post(
+		array(
+			'ID'            => $post->ID,
+			'post_content'  => $content,
+		)
+	);
 }
