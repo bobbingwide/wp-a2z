@@ -6,6 +6,11 @@
  * @subpackage Media
  */
 
+// Don't load directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	die( '-1' );
+}
+
 /**
  * Retrieves additional image sizes.
  *
@@ -288,7 +293,7 @@ function image_downsize( $id, $size = 'medium' ) {
  *     If true, image will be cropped to the specified dimensions using center positions.
  *     If an array, the image will be cropped using the array to specify the crop location:
  *
- *     @type string $0 The x crop position. Accepts 'left' 'center', or 'right'.
+ *     @type string $0 The x crop position. Accepts 'left', 'center', or 'right'.
  *     @type string $1 The y crop position. Accepts 'top', 'center', or 'bottom'.
  * }
  */
@@ -350,7 +355,7 @@ function remove_image_size( $name ) {
  *     If true, image will be cropped to the specified dimensions using center positions.
  *     If an array, the image will be cropped using the array to specify the crop location:
  *
- *     @type string $0 The x crop position. Accepts 'left' 'center', or 'right'.
+ *     @type string $0 The x crop position. Accepts 'left', 'center', or 'right'.
  *     @type string $1 The y crop position. Accepts 'top', 'center', or 'bottom'.
  * }
  */
@@ -530,7 +535,7 @@ function wp_constrain_dimensions( $current_width, $current_height, $max_width = 
  *     If true, image will be cropped to the specified dimensions using center positions.
  *     If an array, the image will be cropped using the array to specify the crop location:
  *
- *     @type string $0 The x crop position. Accepts 'left' 'center', or 'right'.
+ *     @type string $0 The x crop position. Accepts 'left', 'center', or 'right'.
  *     @type string $1 The y crop position. Accepts 'top', 'center', or 'bottom'.
  * }
  * @return array|false Returned array matches parameters for `imagecopyresampled()`. False on failure.
@@ -684,7 +689,7 @@ function image_resize_dimensions( $orig_w, $orig_h, $dest_w, $dest_h, $crop = fa
  *     If true, image will be cropped to the specified dimensions using center positions.
  *     If an array, the image will be cropped using the array to specify the crop location:
  *
- *     @type string $0 The x crop position. Accepts 'left' 'center', or 'right'.
+ *     @type string $0 The x crop position. Accepts 'left', 'center', or 'right'.
  *     @type string $1 The y crop position. Accepts 'top', 'center', or 'bottom'.
  * }
  * @return array|false Metadata array on success. False if no image was created.
@@ -4455,7 +4460,6 @@ function wp_plupload_default_settings() {
  *     @type string $url                   Direct URL to the attachment file (from wp-content).
  *     @type int    $width                 If the attachment is an image, represents the width of the image in pixels.
  * }
- *
  */
 function wp_prepare_attachment_for_js( $attachment ) {
 	$attachment = get_post( $attachment );
@@ -5466,6 +5470,8 @@ function attachment_url_to_postid( $url ) {
 	 * {@link https://www.php.net/manual/en/language.types.boolean.php PHP documentation}.
 	 * Use the === operator for testing the post ID when developing filters using
 	 * this hook.
+	 *
+	 * @since 6.7.0
 	 *
 	 * @param int|null $post_id The result of the post ID lookup. Null to indicate
 	 *                          no lookup has been attempted. Default null.
